@@ -64,7 +64,6 @@ General midi events which can be represented by 32bit (e.g. note on, note off, c
     </ParameterRow>
     <ParameterRow platform="all" name="tick" type="number">
         The absolute midi tick of when this event is played. 
-        Or in case of metronome tick events, it contains the numerator index of the metronome tick within the bar. 
     </ParameterRow>
     <ParameterRow platform="all" name="channel" type="number">
         The midi channel to which this event belongs (not valid for all events).
@@ -132,6 +131,16 @@ For special alphaTab specific events (e.g. rest played, metronome tick).
     </ParameterRow>  
     <ParameterRow platform="all" name="isMetronome" type="boolean">
         Whether this event is a metronome tick event. 
+    </ParameterRow>  
+    <ParameterRow platform="all" name="metronomeNumerator" type="boolean">
+        If the event is a metronome event it contains the zero based metronome numerator according to the time signature (e.g. 0, 1, 2 on a 3/4 signature).
+    </ParameterRow>  
+    <ParameterRow platform="all" name="metronomeDurationInTicks" type="boolean">
+        If the event is a metronome event it contains the current duration of the metronome event in ticks. 
+    </ParameterRow>  
+    <ParameterRow platform="all" name="metronomeDurationInMilliseconds" type="boolean">
+        If the event is a metronome event it contains the current duration of the metronome event in milliseconds.
+        This duration is assuming playback speed=1. 
     </ParameterRow>  
     <ParameterRow platform="all" name="isRest" type="boolean">
         Whether this event is a rest play event. 

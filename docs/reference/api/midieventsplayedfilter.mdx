@@ -48,7 +48,7 @@ api.midiEventsPlayedFilter = [alphaTab.midi.MidiEventType.SystemExclusive2];
 api.midiEventsPlayed.on(function(e) {
   for(const midi of e.events) {
     if(midi.isMetronome) {
-      console.log('Metronome tick ' + midi.tick); 
+      console.log('Metronome tick ' + midi.metronomeNumerator); 
     }
   }
 });
@@ -63,7 +63,7 @@ $('#alphaTab')
   .on('alphaTab.midiEventsPlayed', (e, args) => {
     for(const midi of args.events) {
       if(midi.isMetronome) {
-        console.log('Metronome tick ' + midi.tick); 
+        console.log('Metronome tick ' + midi.metronomeNumerator); 
       }
     }
   });
@@ -81,7 +81,7 @@ api.MidiEventsPlayed.On(e =>
   {
     if(midi is AlphaTab.Midi.SystemExclusiveEvent sysex && sysex.IsMetronome) 
     {
-      Console.WriteLine("Metronome tick " + midi.Tick); 
+      Console.WriteLine("Metronome tick " + midi.MetronomeNumerator); 
     }
   }
 });
