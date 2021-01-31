@@ -646,7 +646,7 @@ class PlayerControlsGroup extends React.Component {
               className={
                 "at-count-in" +
                 (this.props.api?.isReadyForPlayback ? "" : " disabled") +
-                (this.state.isMetronomeActive ? " active" : "")
+                (this.state.isCountInActive ? " active" : "")
               }
               data-toggle="tooltip"
               data-placement="top"
