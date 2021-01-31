@@ -503,7 +503,7 @@ class PlayerControlsGroup extends React.Component {
     e.preventDefault();
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = ".gp3,.gp4,.gp5,.gpx,.musicxml,.mxml,.xml,.capx";
+    input.accept = ".gp,.gp3,.gp4,.gp5,.gpx,.musicxml,.mxml,.xml,.capx";
     input.onchange = () => {
       if (input.files.length === 1) {
         this.openFile(input.files[0]);
