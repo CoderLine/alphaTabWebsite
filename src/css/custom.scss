@@ -1,0 +1,63 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+:root {
+  --ifm-color-primary: #426d9d;
+  --ifm-color-primary-dark: #3b628d;
+  --ifm-color-primary-darker: #385d85;
+  --ifm-color-primary-darkest: #2e4c6e;
+  --ifm-color-primary-light: #4978ad;
+  --ifm-color-primary-lighter: #4c7db4;
+  --ifm-color-primary-lightest: #648ebe;
+  --ifm-code-font-size: 95%;
+  --bs-body-bg: transparent;
+  --bs-body-color: var(--ifm-font-color-base);
+}
+
+/* For readability concerns, you should choose a lighter palette in dark mode. */
+[data-theme="dark"] {
+  --ifm-color-primary: #70acf0;
+  --ifm-color-primary-dark: #509aed;
+  --ifm-color-primary-darker: #4090eb;
+  --ifm-color-primary-darkest: #1775df;
+  --ifm-color-primary-light: #90bef3;
+  --ifm-color-primary-lighter: #a0c8f5;
+  --ifm-color-primary-lightest: #d0e3fa;
+}
+
+.docusaurus-highlight-code-line {
+  background-color: rgba(0, 0, 0, 0.1);
+  display: block;
+  margin: 0 calc(-1 * var(--ifm-pre-padding));
+  padding: 0 var(--ifm-pre-padding);
+}
+
+[data-theme="dark"] .docusaurus-highlight-code-line {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+@import "bootstrap/scss/bootstrap";
+
+a {
+  text-decoration: none;
+}
+
+img.thumbnail {
+  max-width: 400px;
+  transition: transform 0.2s;
+  &:hover {
+    transform: scale(1.5);
+  }
+}
+
+.badge--header {
+  font-size: 0.75rem;
+}
+
+.theme-doc-markdown {
+  position: relative;
+}

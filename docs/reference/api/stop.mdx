@@ -5,8 +5,11 @@ description: Stops the playback of the current song, and moves the playback posi
 sidebarPath: /docs/reference/api
 since:  0.9.4
 ---
+import { SinceBadge } from '@site/src/components/SinceBadge';
 
-import {TypeTable, TypeRow} from '../../../src/type-table';
+<SinceBadge since="0.9.4" />
+
+import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 
 ## Description
 Stops the playback of the current song, and moves the playback position back to the start. If a dedicated playback range is selected, 

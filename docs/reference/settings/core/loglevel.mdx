@@ -6,9 +6,12 @@ description: The log level to use within alphaTab.
 sidebarPath: /docs/reference/settings
 since: 0.9.6
 ---
+import { SinceBadge } from '@site/src/components/SinceBadge';
 
-import PropertyDescription from '../../../../src/property-description';
-import {TypeTable, TypeRow} from '../../../../src/type-table';
+<SinceBadge since="0.9.6" />
+
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 
 ## Description
 AlphaTab internally does quite a bit of logging for debugging and informational purposes. The log level of alphaTab can be controlled via this setting.
