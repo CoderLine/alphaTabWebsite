@@ -1,19 +1,31 @@
-import { PropSidebarItem } from '@docusaurus/plugin-content-docs/src/sidebars/types';
-
 export class Page {
-  constructor(private pageMeta: PropSidebarItem) {}
+  constructor(private pageMeta: any) {}
 
   public prop<T>(key: string, defaultValue: T): T {
-    if(this.pageMeta.type === 'link') {
-      if(key === 'link'){
-        return this.pageMeta.href as any as T;
-      } else if(key === 'label') {
-        return this.pageMeta.label as any as T;
+    if (this.pageMeta.type === "link") {
+      if (key === "link") {
+        return this.pageMeta.href as T;
+      } else if (key === "title") {
+        return this.pageMeta.label as T;
       }
     }
-    if (this.pageMeta.customProps && key in this.pageMeta.customProps) {
-      return this.pageMeta.customProps[key] as T /* TODO */;
+
+    if('customProps' in this.pageMeta && this.pageMeta.customProps) {
+      if (key in this.pageMeta.customProps) {
+        return this.pageMeta.customProps[key] as T;
+      }
     }
+
+    if('frontMatter' in this.pageMeta && this.pageMeta.frontMatter) {
+      if ('sidebar_custom_props' in this.pageMeta.frontMatter &&
+          key in this.pageMeta.frontMatter.sidebar_custom_props) {
+        return this.pageMeta.frontMatter.sidebar_custom_props[key] as T;
+      }
+      if (key in this.pageMeta.frontMatter) {
+        return this.pageMeta.frontMatter[key] as T;
+      }
+    }
+    
     return defaultValue;
   }
 

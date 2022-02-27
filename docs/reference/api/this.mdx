@@ -1,7 +1,8 @@
 ---
 title: this
 sidebar_custom_props:
-  javaScriptOnly: true
+  jQueryOnly: true
+  jQueryName: alphaTab('api')
   category: Properties - Core
   description: Returns the underlying API object.
   since:  0.9.4
@@ -15,17 +16,9 @@ import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 ## Description
 This jQuery specific function returns the underlying API object.
 
-## Signatures
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
 
-<TypeTable>
-    <TypeRow type="jquery" name="alphaTab('api')" />
-</TypeTable>
-
-### Parameters
-None
-
-### Returns
-Nothing
+<PropertyDescription metadata={metadata} />
 
 ## Example - jQuery
 

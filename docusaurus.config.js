@@ -72,6 +72,7 @@ const config = {
           {
             href: "https://github.com/CoderLine/alphaTab",
             label: "GitHub",
+            className: 'header-github-link',
             position: "right",
           },
         ],
@@ -114,6 +115,7 @@ const config = {
       },
       prism: {
         theme: lightCodeTheme,
+        darkCodeTheme: darkCodeTheme,
         additionalLanguages: ["csharp"],
       },
       colorMode: {
@@ -168,8 +170,7 @@ const config = {
         };
       },
     }),
-  ],
-  clientModules: [require.resolve("bootstrap/dist/js/bootstrap.bundle.min.js")],
+  ]
 };
 
 module.exports = config;

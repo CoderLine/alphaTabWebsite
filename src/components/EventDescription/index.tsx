@@ -1,3 +1,4 @@
+import { buildNames } from '@site/src/names';
 import { Page } from '@site/src/page';
 import React from 'react';
 import { CodeBadge } from '../CodeBadge';
@@ -13,23 +14,29 @@ export class EventDescription extends React.Component<EventDescriptionProps> {
 
     public render() {
         const page = new Page(this.props.metadata);
-        const dotNetName = page.prop("title", "");
-        const jsNames = page.props("jsName");
-        const domNames = page.props("domName");
+        const { jsNames, csNames, jQueryNames, domNames } = buildNames(page);
+
         return (
-            <table className="table table-striped table-condensed type-table" >
+            <table className="table table-striped table-condensed type-table">
                 <tbody>
-                    <tr>
-                        <td><CodeBadge type="net" name={dotNetName} /></td>
-                    </tr>
                     {jsNames.map((name, index) => (
                         <tr key={index}>
                             <td><CodeBadge type="js" name={name} /></td>
                         </tr>
                     ))}
+                    {jQueryNames.map((name, index) => (
+                        <tr key={index}>
+                            <td><CodeBadge type="jquery" name={name} /></td>
+                        </tr>
+                    ))}
                     {domNames.map((name, index) => (
                         <tr key={index}>
                             <td><CodeBadge type="html" name={name} /></td>
+                        </tr>
+                    ))}
+                    {csNames.map((name, index) => (
+                        <tr key={index}>
+                            <td><CodeBadge type="net" name={name} /></td>
                         </tr>
                     ))}
                 </tbody>

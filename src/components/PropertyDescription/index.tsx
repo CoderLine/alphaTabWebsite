@@ -3,11 +3,12 @@ import { Page } from "@site/src/page";
 import React from 'react';
 import { CodeBadge } from "../CodeBadge";
 
-export class PropertyDescription extends React.Component<{ metadata: any }>
+export class PropertyDescription extends React.Component<{ metadata: any, showJson:boolean }>
 {
     public render() {
         const page = new Page(this.props.metadata);
-        const { jsNames, csNames, domNames } = buildNames(page);
+        const { jsNames, csNames, jQueryNames, domNames } = buildNames(page);
+        const jsonNames = this.props.showJson ? jsNames : [];
         return (
             <table className="table table-striped table-condensed type-table">
                 <tbody>
@@ -16,9 +17,14 @@ export class PropertyDescription extends React.Component<{ metadata: any }>
                             <td><CodeBadge type="js" name={n} /></td>
                         </tr>
                     ))}
-                    {jsNames.map(n => (
+                    {jsonNames.map(n => (
                         <tr>
                             <td><CodeBadge type="json" name={n} /></td>
+                        </tr>
+                    ))}
+                    {jQueryNames.map(n => (
+                        <tr>
+                            <td><CodeBadge type="jquery" name={n} /></td>
                         </tr>
                     ))}
                     {domNames.map(n => (

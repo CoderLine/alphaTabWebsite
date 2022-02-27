@@ -1,6 +1,5 @@
 import * as alphaTab from '@coderline/alphatab';
 import React from 'react';
-import { OverlayTrigger, Tooltip, Dropdown } from 'react-bootstrap';
 
 export interface PlaybackSpeedSliderProps {
     api: alphaTab.AlphaTabApi;
@@ -32,40 +31,51 @@ export class PlaybackSpeedSlider extends React.Component<PlaybackSpeedSliderProp
 
     public render() {
         return (
-            <OverlayTrigger placement="bottom" overlay={<Tooltip>Playback Speed</Tooltip>}>
-                <Dropdown drop="up">
-                    <Dropdown.Toggle>
-                        {this.state.speed}x
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                        <Dropdown.Item href="#" onClick={e => this.setSpeed(0.25, e)}>
+            <div className="dropdown dropdown--hoverable">
+                <span title="Playback Speed">{this.state.speed}x</span>
+                <ul className="dropdown__menu">
+                    <li>
+                        <a className="dropdown__link" href="#" onClick={e => this.setSpeed(0.25, e)}>
                             0.25x
-                        </Dropdown.Item>
-                        <Dropdown.Item href="#" onClick={e => this.setSpeed(0.5, e)}>
+                        </a>
+                    </li>
+                    <li>
+                        <a className="dropdown__link" href="#" onClick={e => this.setSpeed(0.5, e)}>
                             0.5x
-                        </Dropdown.Item>
-                        <Dropdown.Item href="#" onClick={e => this.setSpeed(0.75, e)}>
+                        </a>
+                    </li>
+                    <li>
+                        <a className="dropdown__link" href="#" onClick={e => this.setSpeed(0.75, e)}>
                             0.75x
-                        </Dropdown.Item>
-                        <Dropdown.Item href="#" onClick={e => this.setSpeed(0.9, e)}>
+                        </a>
+                    </li>
+                    <li>
+                        <a className="dropdown__link" href="#" onClick={e => this.setSpeed(0.9, e)}>
                             0.9x
-                        </Dropdown.Item>
-                        <Dropdown.Item href="#" onClick={e => this.setSpeed(1, e)}>
+                        </a>
+                    </li>
+                    <li>
+                        <a className="dropdown__link" href="#" onClick={e => this.setSpeed(1, e)}>
                             1x
-                        </Dropdown.Item>
-                        <Dropdown.Item href="#" onClick={e => this.setSpeed(1.25, e)}>
+                        </a>
+                    </li>
+                    <li>
+                        <a className="dropdown__link" href="#" onClick={e => this.setSpeed(1.25, e)}>
                             1.25x
-                        </Dropdown.Item>
-                        <Dropdown.Item href="#" onClick={e => this.setSpeed(1.5, e)}>
+                        </a>
+                    </li>
+                    <li>
+                        <a className="dropdown__link" href="#" onClick={e => this.setSpeed(1.5, e)}>
                             1.5x
-                        </Dropdown.Item>
-                        <Dropdown.Item href="#" onClick={e => this.setSpeed(2, e)}>
+                        </a>
+                    </li>
+                    <li>
+                        <a className="dropdown__link" href="#" onClick={e => this.setSpeed(2, e)}>
                             2x
-                        </Dropdown.Item>
-                    </Dropdown.Menu>
-                </Dropdown>
-            </OverlayTrigger>
-
+                        </a>
+                    </li>
+                </ul>
+            </div>
         );
     }
 }

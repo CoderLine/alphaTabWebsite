@@ -1,7 +1,7 @@
 ---
 title: core.scriptFile
 sidebar_custom_props:
-  jsOnly: true
+  javaScriptOnly: true
   jsOnParent: true
   category: Core - JavaScript Specific
   description: The full URL to the alphaTab JavaScript file.
@@ -21,7 +21,7 @@ be defined before initializing. Please be aware that bundling alphaTab together 
 in case those scripts are not suitable for web workers. e.g. if there is a script bundled together with alphaTab that accesses the DOM,
 this will cause an error when alphaTab starts this script as worker. 
 
-<PropertyDescription metadata={metadata} />
+<PropertyDescription metadata={metadata} showJson={true} />
 
 ## Types
 

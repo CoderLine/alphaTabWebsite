@@ -2,7 +2,6 @@ import * as alphaTab from '@coderline/alphatab';
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { solid } from '@fortawesome/fontawesome-svg-core/import.macro'
-import { OverlayTrigger, Tooltip, Dropdown } from 'react-bootstrap';
 
 export interface ZoomLevelSelectorProps {
     api: alphaTab.AlphaTabApi;
@@ -37,44 +36,59 @@ export class ZoomLevelSelector extends React.Component<ZoomLevelSelectorProps, Z
 
     render() {
         return (
-            <OverlayTrigger placement="bottom" overlay={<Tooltip>Zoom Level</Tooltip>}>
-
-                <Dropdown drop="up">
-                    <Dropdown.Toggle>
-                        <FontAwesomeIcon icon={solid('search')}></FontAwesomeIcon>
-                        {this.state.zoom}%
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                        <Dropdown.Item href="#" onClick={e => this.setZoom(25, e)}>
+            <div className="dropdown dropdown--hoverable">
+                <span title="Zoom Level">
+                    <FontAwesomeIcon icon={solid('search')}></FontAwesomeIcon>
+                    {this.state.zoom}%
+                </span>
+                <ul className="dropdown__menu">
+                    <li>
+                        <a className="dropdown__link" href="#" onClick={e => this.setZoom(25, e)}>
                             25%
-                        </Dropdown.Item>
-                        <Dropdown.Item href="#" onClick={e => this.setZoom(50, e)}>
+                        </a>
+                    </li>
+                    <li>
+                        <a className="dropdown__link" href="#" onClick={e => this.setZoom(50, e)}>
                             50%
-                        </Dropdown.Item>
-                        <Dropdown.Item href="#" onClick={e => this.setZoom(75, e)}>
+                        </a>
+                    </li>
+                    <li>
+                        <a className="dropdown__link" href="#" onClick={e => this.setZoom(75, e)}>
                             75%
-                        </Dropdown.Item>
-                        <Dropdown.Item href="#" onClick={e => this.setZoom(90, e)}>
+                        </a>
+                    </li>
+                    <li>
+                        <a className="dropdown__link" href="#" onClick={e => this.setZoom(90, e)}>
                             90%
-                        </Dropdown.Item>
-                        <Dropdown.Item href="#" onClick={e => this.setZoom(100, e)}>
+                        </a>
+                    </li>
+                    <li>
+                        <a className="dropdown__link" href="#" onClick={e => this.setZoom(100, e)}>
                             100%
-                        </Dropdown.Item>
-                        <Dropdown.Item href="#" onClick={e => this.setZoom(110, e)}>
+                        </a>
+                    </li>
+                    <li>
+                        <a className="dropdown__link" href="#" onClick={e => this.setZoom(110, e)}>
                             110%
-                        </Dropdown.Item>
-                        <Dropdown.Item href="#" onClick={e => this.setZoom(125, e)}>
+                        </a>
+                    </li>
+                    <li>
+                        <a className="dropdown__link" href="#" onClick={e => this.setZoom(125, e)}>
                             125%
-                        </Dropdown.Item>
-                        <Dropdown.Item href="#" onClick={e => this.setZoom(150, e)}>
+                        </a>
+                    </li>
+                    <li>
+                        <a className="dropdown__link" href="#" onClick={e => this.setZoom(150, e)}>
                             150%
-                        </Dropdown.Item>
-                        <Dropdown.Item href="#" onClick={e => this.setZoom(200, e)}>
+                        </a>
+                    </li>
+                    <li>
+                        <a className="dropdown__link" href="#" onClick={e => this.setZoom(200, e)}>
                             200%
-                        </Dropdown.Item>
-                    </Dropdown.Menu>
-                </Dropdown>
-            </OverlayTrigger>
+                        </a>
+                    </li>
+                </ul>
+            </div>
         );
     }
 }

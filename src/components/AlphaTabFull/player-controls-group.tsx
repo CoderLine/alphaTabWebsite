@@ -8,10 +8,10 @@ import { ZoomLevelSelector } from './zoom-level-selector';
 import styles from './styles.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { solid } from '@fortawesome/fontawesome-svg-core/import.macro'
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 export interface PlayerControlsGroupProps {
     api: alphaTab.AlphaTabApi;
+    onLayoutChange: (layoutMode: alphaTab.LayoutMode, scrollMode: alphaTab.ScrollMode) => void;
 }
 
 export interface PlayerControlsGroupState {
@@ -161,26 +161,20 @@ export class PlayerControlsGroup extends React.Component<PlayerControlsGroupProp
                 </div>
                 <div className={styles['at-player']}>
                     <div className={styles['at-player-left']}>
-                        <OverlayTrigger placement="top" overlay={<Tooltip>Open File</Tooltip>}>
-                            <a href="#" onClick={this.open.bind(this)}>
-                                <FontAwesomeIcon icon={solid('folder-open')} />
-                            </a>
-                        </OverlayTrigger>
+                        <a href="#" onClick={this.open.bind(this)} title="Open File">
+                            <FontAwesomeIcon icon={solid('folder-open')} />
+                        </a>
 
-                        <OverlayTrigger placement="top" overlay={<Tooltip>Stop</Tooltip>}>
-                            <a href="#" onClick={this.stop.bind(this)}
-                                className={(this.props.api?.isReadyForPlayback ? "" : " disabled")}>
-                                <FontAwesomeIcon icon={solid('step-backward')} />
-                            </a>
-                        </OverlayTrigger>
+                        <a href="#" onClick={this.stop.bind(this)} title="Stop"
+                            className={(this.props.api?.isReadyForPlayback ? "" : " disabled")}>
+                            <FontAwesomeIcon icon={solid('step-backward')} />
+                        </a>
 
 
-                        <OverlayTrigger placement="top" overlay={<Tooltip>Play/Pause</Tooltip>}>
-                            <a href="#" onClick={this.playPause.bind(this)}
-                                className={(this.props.api?.isReadyForPlayback ? "" : " disabled")}>
-                                <FontAwesomeIcon icon={this.state.isPlaying ? solid("pause") : solid("play")} />
-                            </a>
-                        </OverlayTrigger>
+                        <a href="#" onClick={this.playPause.bind(this)} title="Play/Pause"
+                            className={(this.props.api?.isReadyForPlayback ? "" : " disabled")}>
+                            <FontAwesomeIcon icon={this.state.isPlaying ? solid("pause") : solid("play")} />
+                        </a>
 
                         <PlaybackSpeedSlider api={this.props.api} />
                         <PlayerProgressIndicator
@@ -189,83 +183,76 @@ export class PlayerControlsGroup extends React.Component<PlayerControlsGroupProp
                         <ScoreDetails score={this.props.api?.score} />
 
 
-                        <OverlayTrigger placement="top" overlay={<Tooltip>Time Position</Tooltip>}>
-                            <div className={styles['at-time-position']}>
-                                {this.formatDuration(this.state.currentTime)} /{" "}
-                                {this.formatDuration(this.state.endTime)}
-                            </div>
-                        </OverlayTrigger>
+                        <div className={styles['at-time-position']} title="Time Position">
+                            {this.formatDuration(this.state.currentTime)} /{" "}
+                            {this.formatDuration(this.state.endTime)}
+                        </div>
                     </div>
 
                     <div className={styles['at-player-right']}>
-                        <OverlayTrigger placement="top" overlay={<Tooltip>Count-In</Tooltip>}>
-                            <a href="#"
-                                onClick={this.toggleCountIn.bind(this)}
-                                className={
-                                    (this.props.api?.isReadyForPlayback ? "" : " disabled") +
-                                    (this.state.isCountInActive ? " " + styles.active : "")
-                                }
-                            >
-                                <FontAwesomeIcon icon={solid("hourglass-half")} />
-                            </a>
-                        </OverlayTrigger>
-                        <OverlayTrigger placement="top" overlay={<Tooltip>Metronome</Tooltip>}>
-                            <a
-                                href="#"
-                                onClick={this.toggleMetronome.bind(this)}
-                                className={
-                                    (this.props.api?.isReadyForPlayback ? "" : " disabled") +
-                                    (this.state.isMetronomeActive ? " " + styles.active : "")
-                                }
-                            >
-                                <FontAwesomeIcon icon={solid("edit")} />
-                            </a>
-                        </OverlayTrigger>
-                        <OverlayTrigger placement="top" overlay={<Tooltip>Loop</Tooltip>}>
-                            <a
-                                href="#"
-                                onClick={this.toggleLoop.bind(this)}
-                                className={
-                                    (this.props.api?.isReadyForPlayback ? "" : " disabled") +
-                                    (this.state.isLooping ? " " + styles.active : "")
-                                }
-                            >
-                                <FontAwesomeIcon icon={solid("retweet")} />
-                            </a>
-                        </OverlayTrigger>
+                        <a href="#"
+                            onClick={this.toggleCountIn.bind(this)}
+                            className={
+                                (this.props.api?.isReadyForPlayback ? "" : " disabled") +
+                                (this.state.isCountInActive ? " " + styles.active : "")
+                            }
+                            title="Count-In"
+                        >
+                            <FontAwesomeIcon icon={solid("hourglass-half")} />
+                        </a>
+                        <a
+                            href="#"
+                            onClick={this.toggleMetronome.bind(this)}
+                            className={
+                                (this.props.api?.isReadyForPlayback ? "" : " disabled") +
+                                (this.state.isMetronomeActive ? " " + styles.active : "")
+                            }
+                            title="Metronome"
+                        >
+                            <FontAwesomeIcon icon={solid("edit")} />
+                        </a>
+                        <a
+                            href="#"
+                            onClick={this.toggleLoop.bind(this)}
+                            className={
+                                (this.props.api?.isReadyForPlayback ? "" : " disabled") +
+                                (this.state.isLooping ? " " + styles.active : "")
+                            }
+                            title="Loop"
+                        >
+                            <FontAwesomeIcon icon={solid("retweet")} />
+                        </a>
 
-                        <OverlayTrigger placement="top" overlay={<Tooltip>Print</Tooltip>}>
-                            <a
-                                href="#"
-                                onClick={this.print.bind(this)}
-                                className={
-                                    (this.props.api?.isReadyForPlayback ? "" : " disabled")
-                                }
-                            >
-                                <FontAwesomeIcon icon={solid("print")} />
-                            </a>
-                        </OverlayTrigger>
+                        <a
+                            href="#"
+                            onClick={this.print.bind(this)}
+                            className={
+                                (this.props.api?.isReadyForPlayback ? "" : " disabled")
+                            }
+                            title="Print"
+                        >
+                            <FontAwesomeIcon icon={solid("print")} />
+                        </a>
 
-                        <OverlayTrigger placement="top" overlay={<Tooltip>Export to Guitar Pro 7</Tooltip>}>
-                            <a
-                                href="#"
-                                onClick={this.download.bind(this)}
-                                className={
-                                    (this.props.api?.isReadyForPlayback ? "" : " disabled")
-                                }
-                            >
-                                <FontAwesomeIcon icon={solid("download")} />
-                            </a>
-                        </OverlayTrigger>
+                        <a
+                            href="#"
+                            onClick={this.download.bind(this)}
+                            className={
+                                (this.props.api?.isReadyForPlayback ? "" : " disabled")
+                            }
+                            title="Export to Guitar Pro 7"
+                        >
+                            <FontAwesomeIcon icon={solid("download")} />
+                        </a>
 
                         <ZoomLevelSelector api={this.props.api} />
-                        <LayoutSelector api={this.props.api} />
+                        <LayoutSelector api={this.props.api} onLayoutChange={this.props.onLayoutChange} />
 
                         <div className={styles['at-logo']}>
                             powered by <img src="/img/alphatab.png" />
                         </div>
                     </div>
-                </div>
+                </div >
             </>
         );
     }

@@ -14,18 +14,25 @@ function buildPropertyUrl(property: Page) {
     return url;
 }
 
-class ReferenceRow extends React.Component<{ property: Page }> {
+class ReferenceRow extends React.Component<{ property: Page, showJson:boolean }> {
     public render() {
         const { jsNames, csNames, jQueryNames, domNames } = buildNames(this.props.property);
+        const jsonNames = this.props.showJson ? jsNames : [];
         return (
             <tr>
                 <td>
                     <a href={buildPropertyUrl(this.props.property)}>
                         {jsNames.map(n => <CodeBadge type="js" name={n} />)}
-                        {jQueryNames.length > 0 && <br />}
+                        
+                        {jsonNames.length > 0 && <br />}
+                        {jsonNames.map(n => <CodeBadge type="json" name={n} />)}
+                        
+                        {(jsonNames.length > 0 || jsonNames.length > 0) && jQueryNames.length > 0 && <br />}
                         {jQueryNames.map(n => (<CodeBadge type="jquery" name={n} />))}
+
                         {domNames.length > 0 && <br />}
                         {domNames.map(n => (<CodeBadge type="html" name={n} />))}
+
                         {csNames.length > 0 && <br />}
                         {csNames.map(n => (<CodeBadge type="net" name={n} />))}
                     </a>
@@ -36,7 +43,7 @@ class ReferenceRow extends React.Component<{ property: Page }> {
     }
 }
 
-class ReferenceCategory extends React.Component<{ name: string, pages: Page[] }> {
+class ReferenceCategory extends React.Component<{ name: string, pages: Page[], showJson: boolean }> {
     public render() {
         const rows = this.props.pages
             .sort((a, b) => {
@@ -54,7 +61,7 @@ class ReferenceCategory extends React.Component<{ name: string, pages: Page[] }>
 
                 return 0;
             })
-            .map((p, i) => (<ReferenceRow key={p.prop('id', i)} property={p} />));
+            .map((p, i) => (<ReferenceRow key={p.prop('id', i)} property={p} showJson={this.props.showJson} />));
         return (
             <>
                 <tr>
@@ -76,7 +83,7 @@ function collectPages(target: PropSidebarItem[], items: PropSidebarItem[]) {
     }
 }
 
-export class ReferenceTable extends React.Component<{ currentSidebarCategory: PropSidebarItemCategory, type: string }> {
+export class ReferenceTable extends React.Component<{ currentSidebarCategory: PropSidebarItemCategory, type: string, showJson: boolean }> {
     public render() {
         const allPages: PropSidebarItem[] = [];
         collectPages(allPages, this.props.currentSidebarCategory.items);
@@ -96,7 +103,7 @@ export class ReferenceTable extends React.Component<{ currentSidebarCategory: Pr
             return a.key.localeCompare(b.key);
         });
         const categories = pages
-            .map(p => (<ReferenceCategory key={p.key} name={p.key} pages={p.items} />));
+            .map(p => (<ReferenceCategory key={p.key} name={p.key} pages={p.items} showJson={this.props.showJson} />));
         return (
             <table className="table table-striped table-condensed reference-table" >
                 <thead>

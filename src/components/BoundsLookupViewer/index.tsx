@@ -1,5 +1,6 @@
 import React from "react";
 import * as alphaTab from '@coderline/alphatab';
+import styles from './styles.module.scss';
 
 enum GuideType {
     VisualBounds = 0,
@@ -14,25 +15,21 @@ enum GuideElements {
     Notes = 4,
 };
 
-export interface BoundsLookupViewerState {
-    type: GuideType;
-    elements: GuideElements;
-}
-
 export interface BoundsLookupViewerProps {
     children: string | React.ReactElement
 }
 
-export class BoundsLookupViewer extends React.Component<BoundsLookupViewerProps, BoundsLookupViewerState> {
+export class BoundsLookupViewer extends React.Component<BoundsLookupViewerProps> {
     private _api: alphaTab.AlphaTabApi;
     private _element: React.RefObject<HTMLDivElement> = React.createRef();
-
+    private _type: GuideType;
+    private _elements: GuideElements;
     constructor(props) {
         super(props);
-        this.state = {
-            type: GuideType.VisualBounds,
-            elements: GuideElements.StaveGroups,
-        };
+        this._type = GuideType.VisualBounds;
+        this._elements = GuideElements.StaveGroups;
+        this.setElements = this.setElements.bind(this);
+        this.setType = this.setType.bind(this);
     }
 
     componentDidMount() {
@@ -76,7 +73,7 @@ export class BoundsLookupViewer extends React.Component<BoundsLookupViewerProps,
 
     createStaveGroupGuides(wrapper: HTMLDivElement, lookup: alphaTab.rendering.BoundsLookup) {
         for (const staveGroup of lookup.staveGroups) {
-            if (this.state.elements === GuideElements.StaveGroups) {
+            if (this._elements === GuideElements.StaveGroups) {
                 this.createGuide(wrapper, staveGroup, "#1976d2");
             } else {
                 this.createMasterBarGuides(wrapper, staveGroup);
@@ -86,7 +83,7 @@ export class BoundsLookupViewer extends React.Component<BoundsLookupViewerProps,
 
     createMasterBarGuides(wrapper: HTMLDivElement, staveGroup: alphaTab.rendering.StaveGroupBounds) {
         for (const masterBar of staveGroup.bars) {
-            if (this.state.elements === GuideElements.MasterBars) {
+            if (this._elements === GuideElements.MasterBars) {
                 this.createGuide(wrapper, masterBar, "#388e3c");
             } else {
                 this.createBarGuides(wrapper, masterBar);
@@ -96,7 +93,7 @@ export class BoundsLookupViewer extends React.Component<BoundsLookupViewerProps,
 
     createBarGuides(wrapper: HTMLDivElement, masterBar: alphaTab.rendering.MasterBarBounds) {
         for (const bar of masterBar.bars) {
-            if (this.state.elements === GuideElements.Bars) {
+            if (this._elements === GuideElements.Bars) {
                 this.createGuide(wrapper, bar, "#fdd835");
             } else {
                 this.createBeatGuides(wrapper, bar);
@@ -106,7 +103,7 @@ export class BoundsLookupViewer extends React.Component<BoundsLookupViewerProps,
 
     createBeatGuides(wrapper: HTMLDivElement, bar: alphaTab.rendering.BarBounds) {
         for (const beat of bar.beats) {
-            if (this.state.elements === GuideElements.Beats) {
+            if (this._elements === GuideElements.Beats) {
                 this.createGuide(wrapper, beat, "#e64a19");
             } else {
                 this.createNoteGuides(wrapper, beat);
@@ -131,7 +128,7 @@ export class BoundsLookupViewer extends React.Component<BoundsLookupViewerProps,
         const rect =
             "x" in bounds
                 ? bounds
-                : this.state.type === GuideType.VisualBounds
+                : this._type === GuideType.VisualBounds
                     ? bounds.visualBounds
                     : bounds.realBounds;
         guide.style.left = rect.x + "px";
@@ -157,100 +154,60 @@ export class BoundsLookupViewer extends React.Component<BoundsLookupViewerProps,
     }
 
     setType(type: GuideType) {
-        this.setState({
-            type
-        });
+        this._type = type;
         this.updateVisualGuides();
     }
 
     setElements(elements: GuideElements) {
-        this.setState({
-            elements
-        });
+        this._elements = elements;
         this.updateVisualGuides();
     }
 
     typeClass(ownType) {
-        return ownType === this.state.type ? " active" : "";
+        return ownType === this._type ? " pills__item--active" : "";
     }
 
     elementClass(ownElements) {
-        return ownElements === this.state.elements ? " active" : "";
+        return ownElements === this._elements ? " pills__item--active" : "";
     }
 
     render() {
         return (
             <>
-                <div className="btn-toolbar" role="toolbar">
-                    <div className="btn-group mr-2" role="group">
-                        <button
-                            type="button"
-                            className={
-                                "btn btn-secondary" + this.typeClass(GuideType.VisualBounds)
-                            }
-                            onClick={this.setType.bind(this, GuideType.VisualBounds)}
-                        >
+                <div className={styles.toolbar}>
+                    <ul className="pills">
+                        <li className={`pills__item ${this.typeClass(GuideType.VisualBounds)}`}
+                            onClick={() => this.setType(GuideType.VisualBounds)}>
                             Visual Bounds
-                        </button>
-                        <button
-                            type="button"
-                            className={
-                                "btn btn-secondary" + this.typeClass(GuideType.RealBounds)
-                            }
-                            onClick={this.setType.bind(this, GuideType.RealBounds)}
-                        >
+                        </li>
+                        <li className={`pills__item ${this.typeClass(GuideType.RealBounds)}`}
+                            onClick={() => this.setType(GuideType.RealBounds)}>
                             Real Bounds
-                        </button>
-                    </div>
-                    <div className="btn-group mr-2" role="group">
-                        <button
-                            type="button"
-                            className={
-                                "btn btn-secondary" +
-                                this.elementClass(GuideElements.StaveGroups)
-                            }
-                            onClick={this.setElements.bind(this, GuideElements.StaveGroups)}
-                        >
+                        </li>
+                    </ul>
+                    <span>|</span>
+                    <ul className="pills">
+                        <li className={`pills__item ${this.elementClass(GuideElements.StaveGroups)}`}
+                            onClick={() => this.setElements(GuideElements.StaveGroups)}>
                             Stave Groups
-                        </button>
-                        <button
-                            type="button"
-                            className={
-                                "btn btn-secondary" +
-                                this.elementClass(GuideElements.MasterBars)
-                            }
-                            onClick={this.setElements.bind(this, GuideElements.MasterBars)}
-                        >
+                        </li>
+                        <li className={`pills__item ${this.elementClass(GuideElements.MasterBars)}`}
+                            onClick={() => this.setElements(GuideElements.MasterBars)}>
                             Master Bars
-                        </button>
-                        <button
-                            type="button"
-                            className={
-                                "btn btn-secondary" + this.elementClass(GuideElements.Bars)
-                            }
-                            onClick={this.setElements.bind(this, GuideElements.Bars)}
-                        >
+                        </li>
+                        <li className={`pills__item ${this.elementClass(GuideElements.Bars)}`}
+                            onClick={() => this.setElements(GuideElements.Bars)}>
                             Bars
-                        </button>
-                        <button
-                            type="button"
-                            className={
-                                "btn btn-secondary" + this.elementClass(GuideElements.Beats)
-                            }
-                            onClick={this.setElements.bind(this, GuideElements.Beats)}
-                        >
+                        </li>
+                        <li className={`pills__item ${this.elementClass(GuideElements.Beats)}`}
+                            onClick={() => this.setElements(GuideElements.Beats)}>
                             Beats
-                        </button>
-                        <button
-                            type="button"
-                            className={
-                                "btn btn-secondary" + this.elementClass(GuideElements.Notes)
-                            }
-                            onClick={this.setElements.bind(this, GuideElements.Notes)}
-                        >
+                        </li>
+                        <li className={`pills__item ${this.elementClass(GuideElements.Notes)}`}
+                            onClick={() => this.setElements(GuideElements.Notes)}>
                             Notes
-                        </button>
-                    </div>
+                        </li>
+                    </ul>
                 </div>
                 <div ref={this._element}>
                     {this.props.children}

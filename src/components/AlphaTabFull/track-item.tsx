@@ -45,6 +45,7 @@ export class TrackItem extends React.Component<TrackItemProps, TrackItemState> {
 
     public updateVolume(e: Event) {
         e.preventDefault();
+        e.stopPropagation();
         const volumeSlider = this._volumeSlider.current;
         this.props.api.changeTrackVolume(
             [this.props.track],
@@ -54,6 +55,7 @@ export class TrackItem extends React.Component<TrackItemProps, TrackItemState> {
 
     public selectTrack(e: Event) {
         e.preventDefault();
+        e.stopPropagation();
         this.props.api.renderTracks([this.props.track]);
     }
 
@@ -75,14 +77,14 @@ export class TrackItem extends React.Component<TrackItemProps, TrackItemState> {
                     <button
                         type="button"
                         onClick={this.toggleMute.bind(this)}
-                        className={`btn btn-sm btn-outline-danger at-track-mute ${isMute ? "active" : ""}`}
+                        className={`button button--danger button--sm ${isMute ? "" : "button--outline"}`}
                     >
                         Mute
                     </button>
                     <button
                         type="button"
                         onClick={this.toggleSolo.bind(this)}
-                        className={`btn btn-sm btn-outline-success at-track-solo ${isSolo ? "active" : ""}`}
+                        className={`button button--success button--sm ${isSolo ? "" : "button--outline"}`}
                     >
                         Solo
                     </button>
@@ -94,7 +96,7 @@ export class TrackItem extends React.Component<TrackItemProps, TrackItemState> {
                         ref={this._volumeSlider}
                         defaultValue={volume}
                         onInput={this.updateVolume.bind(this)}
-                        onClick={(e) => e.preventDefault()}
+                        onClick={(e) => { e.preventDefault(); e.stopPropagation() }}
                         className={styles['at-track-volume']}
                     />
                 </div>

@@ -3,6 +3,8 @@ import React from 'react';
 import { PlayerControlsGroup } from './player-controls-group';
 import { TrackItem } from './track-item';
 import styles from './styles.module.scss';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { solid } from '@fortawesome/fontawesome-svg-core/import.macro'
 
 interface AlphaTabProps {
     settings: any
@@ -14,6 +16,9 @@ interface AlphaTabState {
     api?: alphaTab.AlphaTabApi,
     score?: alphaTab.model.Score;
     selectedTracks?: Map<number, alphaTab.model.Track>;
+
+    layoutMode: alphaTab.LayoutMode | undefined;
+    scrollMode: alphaTab.ScrollMode | undefined;
 }
 
 export class AlphaTabFull extends React.Component<AlphaTabProps, AlphaTabState>  {
@@ -26,9 +31,9 @@ export class AlphaTabFull extends React.Component<AlphaTabProps, AlphaTabState> 
     constructor(props: AlphaTabProps | Readonly<AlphaTabProps>) {
         super(props);
         this._viewPort = React.createRef();
-        this._alphaTab = React.createRef();
         this._wrapper = React.createRef();
         this._playerControls = React.createRef();
+        this._alphaTab = React.createRef();
 
         // pull fonts
         const settings = new alphaTab.Settings();
@@ -39,16 +44,23 @@ export class AlphaTabFull extends React.Component<AlphaTabProps, AlphaTabState> 
 
         this.state = {
             settings: settings,
-            isLoading: true
+            isLoading: true,
+            layoutMode: undefined,
+            scrollMode: undefined
         };
+
+        this.onLayoutChange = this.onLayoutChange.bind(this);
     }
 
     componentDidMount(): void {
-        this.state.settings.player.scrollElement = this._viewPort.current as any;
-        this.setupEvents();
+        const viewPort = this._viewPort.current;
+        const alphaTabHost = this._alphaTab.current;
+        this.state.settings.player.scrollElement = viewPort;
 
+        // we avoid re-creation of the alphaTab element here.
+        this.setupEvents(alphaTabHost);
         this.setState({
-            api: new alphaTab.AlphaTabApi(this._alphaTab.current, this.state.settings)
+            api: new alphaTab.AlphaTabApi(alphaTabHost, this.state.settings)
         });
         this._wrapper.current.ondragover = (e) => {
             e.stopPropagation();
@@ -69,6 +81,38 @@ export class AlphaTabFull extends React.Component<AlphaTabProps, AlphaTabState> 
         this.state.api?.destroy();
     }
 
+    private onLayoutChange(layoutMode: alphaTab.LayoutMode | undefined, scrollMode: alphaTab.ScrollMode | undefined) {
+        this.setState({
+            layoutMode: layoutMode,
+            scrollMode: scrollMode
+        });
+
+        const settings = this.state.api.settings;
+        this.updateSettingsForLayout(settings, layoutMode, scrollMode, this._viewPort.current?.offsetWidth ?? window.innerWidth);
+        this.state.api.updateSettings();
+        this.state.api.render();
+    }
+
+    private updateSettingsForLayout(settings: alphaTab.Settings, layoutMode: alphaTab.LayoutMode | undefined, scrollMode: alphaTab.ScrollMode | undefined, width: number) {
+        if (layoutMode == undefined) {
+            if (width > 750) {
+                settings.display.scale = 1;
+                settings.display.layoutMode = alphaTab.LayoutMode.Page;
+            } else {
+                settings.display.scale = 0.8;
+                settings.display.layoutMode = alphaTab.LayoutMode.Horizontal;
+            }
+        } else {
+            if (width > 750) {
+                settings.display.scale = 1;
+            } else {
+                settings.display.scale = 0.8;
+            }
+            settings.display.layoutMode = layoutMode;
+            settings.player.scrollMode = scrollMode;
+        }
+    }
+
     private updateMasterBarTimes(currentMasterBar: alphaTab.model.MasterBar) {
         const masterBarCount = currentMasterBar.score.masterBars.length;
         if (currentMasterBar.tempoAutomation != null) {
@@ -84,10 +128,7 @@ export class AlphaTabFull extends React.Component<AlphaTabProps, AlphaTabState> 
         });
     }
 
-    private setupEvents() {
-        const at = this._alphaTab.current;
-        const playerControls = this._playerControls.current;
-
+    private setupEvents(at: HTMLDivElement) {
         at.addEventListener("alphaTab.scoreLoaded", (e: CustomEvent) => {
             this.setState({
                 score: e.detail,
@@ -102,19 +143,17 @@ export class AlphaTabFull extends React.Component<AlphaTabProps, AlphaTabState> 
 
         at.addEventListener("alphaTab.playerStateChanged", (e: CustomEvent) => {
             const args = e.detail;
-            playerControls.setState({
+            this._playerControls.current?.setState({
                 isPlaying: args.state == 1,
             });
         });
 
         at.addEventListener("alphaTab.resize", (e: CustomEvent) => {
-            if (e.detail.newWidth > 750) {
-                e.detail.settings.display.scale = 1;
-                e.detail.settings.display.layoutMode = alphaTab.LayoutMode.Page;
-            } else {
-                e.detail.settings.display.scale = 0.8;
-                e.detail.settings.display.layoutMode = alphaTab.LayoutMode.Horizontal;
-            }
+            this.updateSettingsForLayout(e.detail.settings,
+                this.state.layoutMode,
+                this.state.scrollMode,
+                e.detail.newWidth
+            );
         });
 
         at.addEventListener("alphaTab.renderStarted", (e: CustomEvent) => {
@@ -147,16 +186,16 @@ export class AlphaTabFull extends React.Component<AlphaTabProps, AlphaTabState> 
                 return;
             }
             previousTime = currentSeconds;
-            playerControls.setState(args);
+            this._playerControls.current.setState(args);
         });
 
-        at.addEventListener("alphaTab.soundFontLoad", function (e: CustomEvent) {
-            playerControls.setState({
+        at.addEventListener("alphaTab.soundFontLoad", (e: CustomEvent) => {
+            this._playerControls.current.setState({
                 soundFontLoadPercentage: e.detail.loaded / e.detail.total,
             });
         });
-        at.addEventListener("alphaTab.soundFontLoaded", function (e) {
-            playerControls.setState({
+        at.addEventListener("alphaTab.soundFontLoaded", () => {
+            this._playerControls.current.setState({
                 soundFontLoadPercentage: 1,
             });
         });
@@ -168,11 +207,7 @@ export class AlphaTabFull extends React.Component<AlphaTabProps, AlphaTabState> 
                 {this.state.isLoading && (
                     <div className={styles['at-overlay']}>
                         <div className={styles['at-overlay-content']}>
-                            <div
-                                className={styles['spinner-border']}
-                                style={{ width: "3rem", height: "3rem" }}
-                                role="status"
-                            ></div>
+                            <FontAwesomeIcon icon={solid('spinner')} size="2x" spin={true} />
                         </div>
                     </div>
                 )}
@@ -194,12 +229,14 @@ export class AlphaTabFull extends React.Component<AlphaTabProps, AlphaTabState> 
                     </div>
 
                     <div className={styles['at-viewport']} ref={this._viewPort}>
-                        <div className={styles['at-canvas']} ref={this._alphaTab}></div>
+                        <div ref={this._alphaTab}></div>
                     </div>
                 </div>
 
                 <div className={styles['at-footer']}>
-                    <PlayerControlsGroup ref={this._playerControls} api={this.state.api} />
+                    <PlayerControlsGroup ref={this._playerControls}
+                        api={this.state.api}
+                        onLayoutChange={this.onLayoutChange} />
                 </div>
             </div>
         );

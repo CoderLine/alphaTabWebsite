@@ -50,7 +50,7 @@ export function SlideRow({setting}) {
             <td>
                 <CodeBadge type="js" name={setting.name} /><br />
                 <CodeBadge type="json" name={setting.name} /><br />
-                <CodeBadge type="html" name={setting.name.toLowerCase()} /> <br />
+                <CodeBadge type="html" name={'data-player-' + setting.name.toLowerCase()} /> <br />
                 <CodeBadge type="net" name={toPascalCase(setting.name)} />
             </td>
             <td>
