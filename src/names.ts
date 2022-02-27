@@ -56,14 +56,14 @@ export function buildNames(property: Page) {
   const domWildcard = property.prop("domWildcard", false);
   const category = property.prop("category", "");
 
-  let jsNames = property.props("title");
+  let jsNames = property.props("label");
 
   let csNames = property.props("csName");
   if (!javaScriptOnly && csNames.length === 0) {
     csNames = toPascalCase(jsNames);
   }
 
-  if (property.prop("jsOnParent", false)) {
+  if (property.prop("jsOnParent", false) && jsNames.length > 0) {
     jsNames.push(jsNames[0].split(".")[1]);
   }
 

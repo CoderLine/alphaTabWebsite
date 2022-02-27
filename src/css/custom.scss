@@ -61,3 +61,7 @@ img.thumbnail {
 .theme-doc-markdown {
   position: relative;
 }
+
+li.reference-item ul {
+  display: none !important;
+}

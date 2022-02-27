@@ -37,6 +37,7 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      hideableSidebar: true,
       navbar: {
         title: "alphaTab",
         logo: {
@@ -69,7 +70,7 @@ const config = {
             label: "Showcase",
           },
           {
-            href: 'https://github.com/CoderLine/alphaTab',
+            href: "https://github.com/CoderLine/alphaTab",
             label: "GitHub",
             position: "right",
           },
@@ -113,7 +114,7 @@ const config = {
       },
       prism: {
         theme: lightCodeTheme,
-        additionalLanguages: ['csharp']
+        additionalLanguages: ["csharp"],
       },
       colorMode: {
         disableSwitch: true,
@@ -151,10 +152,17 @@ const config = {
           ],
           resolve: {
             fallback: {
-              fs: require.resolve("fs"),
-              util: require.resolve("util"),
-              assert: require.resolve("assert"),
-              path: require.resolve("path-browserify"),
+              fs: false,
+              buffer: false,
+              path: false,
+              os: false,
+              util: false,
+              assert: false,
+              stream: false,
+              crypto: false,
+              constants: false,
+              child_process: false,
+              module: false
             },
           },
         };

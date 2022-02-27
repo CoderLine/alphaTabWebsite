@@ -1,17 +1,15 @@
 import React from 'react';
-import useBaseUrl from '@docusaurus/useBaseUrl';
 import { Page } from '@site/src/page';
 import { buildNames } from '@site/src/names';
 import { CodeBadge } from '../CodeBadge';
+import { PropSidebarItem, PropSidebarItemCategory } from '@docusaurus/plugin-content-docs/src/sidebars/types';
 
 function buildPropertyUrl(property: Page) {
     let url = '';
     if (property.prop('todo', false)) {
         url = "#todo";
-    } else if (url = property.prop('link')) {
-        url = useBaseUrl('docs/' + url);
     } else {
-        url = useBaseUrl('docs/' + property.prop('id'));
+        url = property.prop('link', '')
     }
     return url;
 }
@@ -32,7 +30,7 @@ class ReferenceRow extends React.Component<{ property: Page }> {
                         {csNames.map(n => (<CodeBadge type="net" name={n} />))}
                     </a>
                 </td>
-                <td>{this.props.property.prop('description')}</td>
+                <td>{this.props.property.prop('description', '')}</td>
             </tr>
         )
     }
@@ -56,7 +54,7 @@ class ReferenceCategory extends React.Component<{ name: string, pages: Page[] }>
 
                 return 0;
             })
-            .map(p => (<ReferenceRow key={p.prop('id')} property={p} />));
+            .map((p, i) => (<ReferenceRow key={p.prop('id', i)} property={p} />));
         return (
             <>
                 <tr>
@@ -68,13 +66,35 @@ class ReferenceCategory extends React.Component<{ name: string, pages: Page[] }>
     }
 }
 
-export class ReferenceTable extends React.Component<{ filter: string, type: string }> {
+function collectPages(target: PropSidebarItem[], items: PropSidebarItem[]) {
+    for (const item of items) {
+        if (item.type === 'category') {
+            collectPages(target, item.items);
+        } else if (item.type === 'link') {
+            target.push(item);
+        }
+    }
+}
+
+export class ReferenceTable extends React.Component<{ currentSidebarCategory: PropSidebarItemCategory, type: string }> {
     public render() {
-        // TODO: https://github.com/facebook/docusaurus/issues/6302
-        const pages: { key: string, items: Page[] }[] = /*getPageList(filter)
-            .filter(p => p.prop('showInTable', true))
-            .groupBy(p => p.prop('category', ''))
-            .orderBy(p => p.key)*/ [];
+        const allPages: PropSidebarItem[] = [];
+        collectPages(allPages, this.props.currentSidebarCategory.items);
+        const existingKeys = new Map<string, Page[]>();
+        const pages: { key: string, items: Page[] }[] = [];
+        for (const page of allPages) {
+            const category = page.customProps?.category as string ?? '';
+            let items = existingKeys.get(category);
+            if (!items) {
+                items = [];
+                existingKeys.set(category, items);
+                pages.push({ key: category, items: items });
+            }
+            items.push(new Page(page));
+        }
+        pages.sort((a, b) => {
+            return a.key.localeCompare(b.key);
+        });
         const categories = pages
             .map(p => (<ReferenceCategory key={p.key} name={p.key} pages={p.items} />));
         return (
