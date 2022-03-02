@@ -5,6 +5,7 @@ import { TrackItem } from './track-item';
 import styles from './styles.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { solid } from '@fortawesome/fontawesome-svg-core/import.macro'
+import environment from '@site/src/environment';
 
 interface AlphaTabProps {
     settings: any
@@ -39,6 +40,7 @@ export class AlphaTabFull extends React.Component<AlphaTabProps, AlphaTabState> 
         const settings = new alphaTab.Settings();
         settings.player.scrollOffsetY = -10;
         settings.player.enablePlayer = true;
+        settings.core.fontDirectory = environment.fontDirectory;
         settings.player.soundFont = require('@coderline/alphatab/soundfont/sonivox.sf2');
         settings.fillFromJson(props.settings);
 

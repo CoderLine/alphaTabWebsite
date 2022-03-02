@@ -3,6 +3,7 @@ import { Page } from '@site/src/page';
 import { buildNames } from '@site/src/names';
 import { CodeBadge } from '../CodeBadge';
 import { PropSidebarItem, PropSidebarItemCategory } from '@docusaurus/plugin-content-docs/src/sidebars/types';
+import { useDocById } from '@docusaurus/theme-common';
 
 function buildPropertyUrl(property: Page) {
     let url = '';
@@ -14,7 +15,7 @@ function buildPropertyUrl(property: Page) {
     return url;
 }
 
-class ReferenceRow extends React.Component<{ property: Page, showJson:boolean }> {
+class ReferenceRow extends React.Component<{ property: Page, showJson: boolean }> {
     public render() {
         const { jsNames, csNames, jQueryNames, domNames } = buildNames(this.props.property);
         const jsonNames = this.props.showJson ? jsNames : [];
@@ -23,10 +24,10 @@ class ReferenceRow extends React.Component<{ property: Page, showJson:boolean }>
                 <td>
                     <a href={buildPropertyUrl(this.props.property)}>
                         {jsNames.map(n => <CodeBadge type="js" name={n} />)}
-                        
+
                         {jsonNames.length > 0 && <br />}
                         {jsonNames.map(n => <CodeBadge type="json" name={n} />)}
-                        
+
                         {(jsonNames.length > 0 || jsonNames.length > 0) && jQueryNames.length > 0 && <br />}
                         {jQueryNames.map(n => (<CodeBadge type="jquery" name={n} />))}
 
@@ -83,39 +84,45 @@ function collectPages(target: PropSidebarItem[], items: PropSidebarItem[]) {
     }
 }
 
-export class ReferenceTable extends React.Component<{ currentSidebarCategory: PropSidebarItemCategory, type: string, showJson: boolean }> {
-    public render() {
-        const allPages: PropSidebarItem[] = [];
-        collectPages(allPages, this.props.currentSidebarCategory.items);
-        const existingKeys = new Map<string, Page[]>();
-        const pages: { key: string, items: Page[] }[] = [];
-        for (const page of allPages) {
-            const category = page.customProps?.category as string ?? '';
-            let items = existingKeys.get(category);
-            if (!items) {
-                items = [];
-                existingKeys.set(category, items);
-                pages.push({ key: category, items: items });
-            }
-            items.push(new Page(page));
+export interface ReferenceTableProps {
+    currentSidebarCategory: PropSidebarItemCategory;
+    type: string;
+    showJson: boolean;
+}
+
+export function ReferenceTable({currentSidebarCategory, type, showJson}: ReferenceTableProps): JSX.Element {
+    const allPages: PropSidebarItem[] = [];
+    collectPages(allPages, currentSidebarCategory.items);
+    const existingKeys = new Map<string, Page[]>();
+    const pages: { key: string, items: Page[] }[] = [];
+    for (const page of allPages) {
+        const category = page.customProps?.category as string ?? '';
+        let items = existingKeys.get(category);
+        if (!items) {
+            items = [];
+            existingKeys.set(category, items);
+            pages.push({ key: category, items: items });
         }
-        pages.sort((a, b) => {
-            return a.key.localeCompare(b.key);
-        });
-        const categories = pages
-            .map(p => (<ReferenceCategory key={p.key} name={p.key} pages={p.items} showJson={this.props.showJson} />));
-        return (
-            <table className="table table-striped table-condensed reference-table" >
-                <thead>
-                    <tr>
-                        <th>{this.props.type}</th>
-                        <th>Summary</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {categories}
-                </tbody>
-            </table>
-        )
+
+        const doc = page.type === 'link' ? useDocById(page.docId) : undefined;
+        items.push(new Page(page, doc));
     }
+    pages.sort((a, b) => {
+        return a.key.localeCompare(b.key);
+    });
+    const categories = pages
+        .map(p => (<ReferenceCategory key={p.key} name={p.key} pages={p.items} showJson={showJson} />));
+    return (
+        <table className="table table-striped table-condensed reference-table" >
+            <thead>
+                <tr>
+                    <th>{type}</th>
+                    <th>Summary</th>
+                </tr>
+            </thead>
+            <tbody>
+                {categories}
+            </tbody>
+        </table>
+    )
 }

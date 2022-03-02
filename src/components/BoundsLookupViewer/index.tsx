@@ -1,6 +1,7 @@
 import React from "react";
 import * as alphaTab from '@coderline/alphatab';
 import styles from './styles.module.scss';
+import environment from "@site/src/environment";
 
 enum GuideType {
     VisualBounds = 0,
@@ -38,7 +39,8 @@ export class BoundsLookupViewer extends React.Component<BoundsLookupViewerProps>
         settings.core.tex = true;
         settings.core.tracks = 'all';
         settings.core.includeNoteBounds = true;
-
+        settings.core.fontDirectory = environment.fontDirectory;
+        
         this._api = new alphaTab.AlphaTabApi(container, settings);
         this._api.postRenderFinished.on(this.updateVisualGuides.bind(this));
     }

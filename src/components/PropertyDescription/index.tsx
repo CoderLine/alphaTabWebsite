@@ -2,11 +2,20 @@ import { buildNames } from "@site/src/names";
 import { Page } from "@site/src/page";
 import React from 'react';
 import { CodeBadge } from "../CodeBadge";
+import {
+    PropVersionDoc,
+} from "@docusaurus/plugin-content-docs";
 
-export class PropertyDescription extends React.Component<{ metadata: any, showJson:boolean }>
+export interface PropertyDescriptionProps {
+    metadata: any;
+    showJson: boolean;
+    doc: PropVersionDoc
+}
+
+export class PropertyDescription extends React.Component<PropertyDescriptionProps>
 {
     public render() {
-        const page = new Page(this.props.metadata);
+        const page = new Page(this.props.metadata, this.props.doc);
         const { jsNames, csNames, jQueryNames, domNames } = buildNames(page);
         const jsonNames = this.props.showJson ? jsNames : [];
         return (

@@ -28,7 +28,7 @@ export class PlayerProgressIndicator extends React.Component<PlayerProgressIndic
                         height={this._radius * 2}>
                         <circle
                             stroke="white"
-                            stroke-dasharray={`${this._circumference} ${this._circumference}`}
+                            strokeDasharray={`${this._circumference} ${this._circumference}`}
                             style={ {
                                 strokeDashoffset: this._circumference - (v / 100 * this._circumference),
                                 transformOrigin: `50% 50%`,

@@ -2,9 +2,13 @@ import { buildNames } from '@site/src/names';
 import { Page } from '@site/src/page';
 import React from 'react';
 import { CodeBadge } from '../CodeBadge';
+import {
+    PropVersionDoc,
+} from "@docusaurus/plugin-content-docs";
 
 export interface EventDescriptionProps {
     metadata: any;
+    doc: PropVersionDoc
 }
 
 export class EventDescription extends React.Component<EventDescriptionProps> {
@@ -13,7 +17,7 @@ export class EventDescription extends React.Component<EventDescriptionProps> {
     }
 
     public render() {
-        const page = new Page(this.props.metadata);
+        const page = new Page(this.props.metadata, this.props.doc);
         const { jsNames, csNames, jQueryNames, domNames } = buildNames(page);
 
         return (

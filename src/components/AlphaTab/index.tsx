@@ -1,4 +1,5 @@
 import * as alphaTab from '@coderline/alphatab';
+import environment from '@site/src/environment';
 import React from 'react';
 
 export interface AlphaTabProps {
@@ -20,6 +21,7 @@ export class AlphaTab extends React.Component<AlphaTabProps> {
     componentDidMount() {
         const container = this._element.current;
         const settings = new alphaTab.Settings();
+        settings.core.fontDirectory = environment.fontDirectory;
         if (this.props.file) {
             settings.core.file = this.props.file;
         }
