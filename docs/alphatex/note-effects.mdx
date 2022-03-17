@@ -16,7 +16,7 @@ Please find the list of support effects in the examples below.
 
 natural `nh`, artificial `ah`, pinch `ph` and semi `sh`
 
-<AlphaTexSample>{`
+<AlphaTexSample>{`\
 :8 3.3{nh} 3.3{ah} 3.3{th} 3.3{ph} 3.3{sh}
 `}</AlphaTexSample>
 
@@ -24,13 +24,13 @@ natural `nh`, artificial `ah`, pinch `ph` and semi `sh`
 
 `tr <fret> <duration>`
 
-<AlphaTexSample>{`
+<AlphaTexSample>{`\
 :4 3.3{tr 4 16} 3.3{tr 5 32} 3.3{tr 6 64}
 `}</AlphaTexSample>
 
 ### Vibrato
 
-<AlphaTexSample>{`
+<AlphaTexSample>{`\
 3.3{v}
 `}</AlphaTexSample>
 
@@ -39,7 +39,7 @@ natural `nh`, artificial `ah`, pinch `ph` and semi `sh`
 legato `sl`, shift `ss`, into-from-below `sib`, into-from-above `sia`,
 out-up `sou`, out-down `sod`, pick-slide-down `psd`, pick-slide-up `psu`
 
-<AlphaTexSample>{`
+<AlphaTexSample>{`\
 3.3{sl} 4.3 3.3{ss} 4.3 |
 3.3{sib} 3.3{sia} 3.3{sou} 3.3{sod} |
 3.3{sib sou} 3.3{sib sod} 3.3{sia sod} 3.3{sia sou} |
@@ -49,19 +49,19 @@ x.3{psu} 3.3 |
 
 ### Hammer-On / Pull-Off
 
-<AlphaTexSample>{`
+<AlphaTexSample>{`\
 3.3{h} 4.3{h}
 `}</AlphaTexSample>
 
 ### Left Hand Tapping
 
-<AlphaTexSample>{`
+<AlphaTexSample>{`\
 :16 15.1{h} 13.1{h} 12.1{h} 15.2{lht} 
 `}</AlphaTexSample>
 
 ### Ghost Note
 
-<AlphaTexSample>{`
+<AlphaTexSample>{`\
 3.3{g}
 `}</AlphaTexSample>
 
@@ -69,7 +69,7 @@ x.3{psu} 3.3 |
 
 Dead Notes are notated by using `x` as fret. 
 
-<AlphaTexSample>{`
+<AlphaTexSample>{`\
 3.3{x} x.3
 `}</AlphaTexSample>
 
@@ -77,25 +77,25 @@ Dead Notes are notated by using `x` as fret.
 
 normal `ac` and heavy `hac`
 
-<AlphaTexSample>{`
+<AlphaTexSample>{`\
 3.3{ac} 3.3{hac}
 `}</AlphaTexSample>
 
 ### Staccato
 
-<AlphaTexSample>{`
+<AlphaTexSample>{`\
 3.3{st}
 `}</AlphaTexSample>
 
 ### Palm Mute
 
-<AlphaTexSample>{`
+<AlphaTexSample>{`\
 3.3{pm} 3.3{pm} 3.3{pm} 3.3{pm}
 `}</AlphaTexSample>
 
 ### Let Ring
 
-<AlphaTexSample>{`
+<AlphaTexSample>{`\
 3.3{lr} 3.3{lr} 3.3{lr} 3.3{lr}
 `}</AlphaTexSample>
 
@@ -105,7 +105,7 @@ left hand `lf` and right hand `rf` where the fingers are:
 
 `1` for Thumb, `2` for Index, `3` for Middle, `4` for Annual, `5` for Little
 
-<AlphaTexSample>{`
+<AlphaTexSample>{`\
 :8 3.3{lf 1} 3.3{lf 2} 3.3{lf 3} 3.3{lf 4} 3.3{lf 5} (2.2{lf 4} 2.3{lf 3} 2.4{lf 2}) |
 :8 3.3{rf 1} 3.3{rf 2} 3.3{rf 3} 3.3{rf 4} 3.3{lf 5} |
 `}</AlphaTexSample>
@@ -117,7 +117,7 @@ You can specify a number of values which are evenly distributed over the
 time when the note is played. The values indicate the number of quarter notes
 increased bend up upon playing. `b (value1 value2 ...)`
 
-<AlphaTexSample>{`
+<AlphaTexSample>{`\
 3.3{b (0 4 )} |
 3.3{b (0 4 0 8)} |
 `}</AlphaTexSample>
@@ -127,13 +127,13 @@ increased bend up upon playing. `b (value1 value2 ...)`
 There are multiple ways to indicate tied notes depending on whether the instrument is stringed or not stringed. 
 For stringed instruments the fret simply can be set to `-` and the note will be tied to the note of the same string.
 
-<AlphaTexSample>{`
+<AlphaTexSample>{`\
 3.3 -.3 | (1.1 3.2 2.3 0.4) (-.1 -.4)
 `}</AlphaTexSample>
 
 For non stringed instrument it can be a bit more tricky as we cannot use the string to identify which note to tie. There are multiple ways to work around this problem. AlphaTab will try to find the start note for the tie via several rules, if this does not match the desired behavior, you can specify the note value as alternative and indicate the tie via a note effect.
 
-<AlphaTexSample>{`
+<AlphaTexSample>{`\
 \\tuning piano
 .
 // If there is a single note on the previous beat, we tie to this one
