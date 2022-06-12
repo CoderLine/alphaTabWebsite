@@ -17,11 +17,11 @@ The long name can be used e.g. in your custom UI.
 If the short name is not specified, the first 10 characters of the long name are used as short name. <br />
 Be sure to finish the previous beat with a vertical bar `|` to start a new bar of a new track.
 
-<AlphaTexSample tracks="all">{`\
+<AlphaTexSample tracks="all">{`
 \\track "First Track" "frst"
 1.1 2.1 3.1 4.1 |
-\\track "Second" // new track
-\\tuning D2 A2 D3 G3 B3 E4 // tuning of new track
+\\track // new track
+\\tuning A1 D2 A2 D3 G3 B3 E4 // tuning of new track (with 7 strings)
 4.1 3.1 2.1 1.1 |
 `}</AlphaTexSample>
 
@@ -32,7 +32,7 @@ In braces you can optionally define via the options `score` (for standard notati
 whether the corresponding notation should be shown.
 By default both notation systems are shown.
 
-<AlphaTexSample tracks="all">{`\
+<AlphaTexSample tracks="all">{`
 \\track "Piano with Grand Staff" "pno."
     \\staff{score} \\tuning piano \\instrument acousticgrandpiano 
     c4 d4 e4 f4 |
@@ -48,7 +48,7 @@ By default both notation systems are shown.
 The staff with the largest number of bars defines how long the overall song is. There is no need to 
 manually ensure that all staves have the correct number of bars. AlphaTab will create missing empty bars automatically. 
 
-<AlphaTexSample tracks="all">{`\
+<AlphaTexSample tracks="all">{`
 \\track "Piano with Grand Staff" "pno."
     \\staff{score} \\tuning piano \\instrument acousticgrandpiano 
     c4 d4 e4 f4 |

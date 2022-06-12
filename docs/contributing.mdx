@@ -64,7 +64,7 @@ Beside the IDE you will need following tools:
 * [Node.js](https://nodejs.org/)
 * [.net Core SDK](https://dotnet.microsoft.com/download)
 
-After that you can run the following commands and should have already a compiled version of alphaTab in the output folder: 
+After that you can run the following commands to get a compiled version of alphaTab in the output folder:
 
 ```
 > npm install
@@ -75,19 +75,33 @@ After that you can run the following commands and should have already a compiled
 
 The repository has a set of NPM scripts that take over actions like compiling and testing. Execute them via 
 `npm run <scriptname>`. Refer to the [npm documentation](https://docs.npmjs.com/cli/run-script) for more details. 
- 
+
 * `clean` - cleans all output
 * `lint` - checks the source code for style violations
+
+#### Web
+
 * `build` - compiles a web version of alphaTab using the current code state
 * `build-ci` - compiles a web version of alphaTab using the current code state (used by GitHub Actions)
-* `build-csharp` - compiles a C#/.net version of alphaTab using the current code state
-* `build-csharp-ci` - compiles a C#/.net version of alphaTab using the current code state (used by GitHub Actions)
 * `start` - used during development time to build alphaTab quickly via watchers and incremental compilation
 * `test` - Runs the unit test suite in Chrome
 * `test-ci` - Runs the unit test suite in Chrome Headless (used by GitHub Actions)
+
+#### C#/.net
+
 * `generate-csharp` - Translates the TypeScript codebase to C#
+* `build-csharp` - compiles a C#/.net version of alphaTab using the current code state
+* `build-csharp-ci` - compiles a C#/.net version of alphaTab using the current code state (used by GitHub Actions)
 * `test-csharp` - runs the unit test suite for C#
 * `test-csharp-ci` - runs the unit test suite for C# (used by GitHub Actions)
+
+#### Kotlin
+
+* `generate-kotlin` - Translates the TypeScript codebase to Kotlin
+* `build-kotlin` - compiles a Kotlin version of alphaTab using the current code state
+* `build-kotlin-ci` - compiles a Kotlin version of alphaTab using the current code state (used by GitHub Actions)
+* `test-kotlin` - runs the unit test suite for Kotlin
+* `test-kotlin-ci` - runs the unit test suite for Kotlin (used by GitHub Actions)
 
 ### Project Structure
 
