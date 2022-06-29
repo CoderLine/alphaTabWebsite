@@ -104,7 +104,7 @@ The bars contain voices as a next level.
 ![Bar](/img/reference/score/bar.png)
 
 
-### Voice (Score.tracks[].staves[].voices[])
+### Voice (Score.tracks[].staves[].bars[].voices)
 
 A [`Voice`](https://en.wikipedia.org/wiki/Voicing_(music)) allows to have multiple independent notes placed within the same bar indicating the simultaneous playing of them with different duration.
 
@@ -119,7 +119,7 @@ This list is ordered in the fashion that the first item is the primary voice, an
 By default alphaTab renders the primary voices fully black and additional voices as semi transparent.
 ![Voice](/img/reference/score/voices.png)
 
-### Beat (Score.tracks[].staves[].voices[].beats)
+### Beat (Score.tracks[].staves[].bars[].voices[].beats)
 
 A [`Beat`](https://en.wikipedia.org/wiki/Chord_(music)) (aka. Chord) group multiple notes played at the same time with the same length. 
 
@@ -131,7 +131,7 @@ The notes will ultimately contain the individual notes.
 **Example**
 ![Beat](/img/reference/score/beats.png)
 
-### Note (Score.tracks[].staves[].voices[].beats[].notes)
+### Note (Score.tracks[].staves[].bars[].voices[].beats[].notes)
 
 A [`Note`](https://en.wikipedia.org/wiki/Note_(music)) represents a single musical sound played by the instrument. 
 
