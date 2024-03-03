@@ -6,19 +6,21 @@ interface InitDemoState {
 }
 
 export class InitDemo extends React.Component<{}, InitDemoState> {
+    private _element: React.RefObject<HTMLDivElement> = React.createRef();
+    
     constructor(props) {
         super(props);
         this.state = {};
     }
     componentDidMount() {
-        const element = document.getElementById('alphaTab');
+        const element = this._element.current;
         this.setState({
             api: new alphaTab.AlphaTabApi(element, {})
         })
     }
     render() {
         return (
-            <div id="alphaTab" data-tex="true" style={{ border: '1px solid #E5E6E7' }}>
+            <div ref={this._element} data-tex="true" style={{ border: '1px solid #E5E6E7' }}>
                 \title "Hello alphaTab"
                 .
                 :4 0.6 1.6 3.6 0.5 2.5 3.5 0.4 2.4 |

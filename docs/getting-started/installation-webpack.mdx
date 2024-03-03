@@ -1,0 +1,21 @@
+---
+title: Installation (WebPack)
+---
+
+🚧 This guide is still work in progress. 
+
+tl;dr: Add the alphaTab plugin to your webpack config: 
+
+```js
+// CJS
+const AlphaTabWebPackPlugin = require('@coderline/alphatab/webpack');
+// MJS
+import { AlphaTabWebPackPlugin } from '@coderline/alphatab/webpack';
+
+// Add the plugin to your config
+const config = {
+    plugins: [
+        new AlphaTabWebPackPlugin()
+    ]
+};
+```

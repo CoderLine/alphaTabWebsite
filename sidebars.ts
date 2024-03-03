@@ -5,6 +5,8 @@ const sidebars: SidebarsConfig = {
     alphaTab: ["introduction", "contributing"],
     "Getting Started (Web)": [
       "getting-started/installation-web",
+      "getting-started/installation-webpack",
+      "getting-started/installation-vite",
       "getting-started/configuration-web",
     ],
     "Getting Started (.net)": [
