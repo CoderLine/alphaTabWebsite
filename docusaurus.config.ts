@@ -5,7 +5,6 @@ import type * as Preset from '@docusaurus/preset-classic';
 import * as path from "path";
 import * as fs from "fs";
 import { AlphaTabWebPackPlugin } from '@coderline/alphatab/webpack'
-import CopyPlugin from 'copy-webpack-plugin'
 
 const alphaTabVersionFull = JSON.parse(
   fs.readFileSync(
@@ -36,6 +35,11 @@ const config: Config = {
     alphaTabVersion: alphaTabVersion,
     alphaTabVersionFull: alphaTabVersionFull
   },
+
+  markdown: {
+    mermaid: true,
+  },
+  themes: ['@docusaurus/theme-mermaid'],
 
   presets: [
     [
