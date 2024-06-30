@@ -1,49 +1,81 @@
 ---
 title: display.layoutMode
-description: The layouting mode used to arrange the the notation.
+description: The mode used to arrange staves and systems.
 sidebar_custom_props:
-  jsOnParent: true
   category: Display
   since: 0.9.6
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 
 <SinceBadge since="0.9.6" />
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><CodeBadge type="js" name="display.layoutMode" /></td>
+          <td><CodeBadge type="js" name="LayoutMode" /></td>
+          <td><code>LayoutMode.Page</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="display.layoutMode" /></td>
+          <td><CodeBadge type="json" name="LayoutMode" /></td>
+          <td><code>LayoutMode.Page</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="net" name="Display.LayoutMode" /></td>
+          <td><CodeBadge type="net" name="LayoutMode" /></td>
+          <td><code>LayoutMode.Page</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="android" name="display.layoutMode" /></td>
+          <td><CodeBadge type="android" name="LayoutMode" /></td>
+          <td><code>LayoutMode.Page</code></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Description
+AlphaTab has various layout engines that arrange the rendered bars differently.
+This setting controls which layout mode is used.
 
-AlphaTab has various layout engines that arrange the rendered bars differently. This setting controls which layout mode is used. 
+## Related Types
 
-<PropertyDescription metadata={metadata} showJson={true} />
+### `enum alphaTab.LayoutMode`
 
-## Types
+<Tabs defaultValue="js" values={[
+  { label: "JavaScript", value: "js" },
+  { label: "Json", value: "json" },
+  { label: "C#", value: "net" },
+  { label: "Kotlin (Android)", value: "kotlin" },
+]}>
+<TabItem value="js">
+`import * as alphaTab from '@coderline/alphaTab';`
 
-<TypeTable>
-    <TypeRow type="js" name="alphaTab.LayoutMode">
-        `Page` - The bars are aligned in a [page-style fashion](/docs/showcase/layouts#page-layout)<br />
-        `Horizontal`  - The bars are aligned in a [left-to-right](/docs/showcase/layouts#horizontal-layout)
-    </TypeRow>
-    <TypeRow type="json-js-html" name="string">
-        `page`<br />
-        `horizontal`
-    </TypeRow>
-    <TypeRow type="json-js-html" name="int">
-        `0` - Page<br />
-        `1` - Horizontal
-    </TypeRow>
-    <TypeRow type="net" name="AlphaTab.LayoutMode">
-        `Page`<br />
-        `Horizontal`
-    </TypeRow>
-    <TypeRow type="android" name="alphaTab.LayoutMode">
-        `Page`<br />
-        `Horizontal`
-    </TypeRow>
-</TypeTable>
-
-## Default Value
-
-`page`
+* `alphaTab.LayoutMode.Page` - Bars are aligned in rows using a fixed width. [Demo](/docs/showcase/layouts#page-layout)
+* `alphaTab.LayoutMode.Horizontal` - Bars are aligned horizontally in one row. [Demo](/docs/showcase/layouts#horizontal-layout)
+</TabItem>
+<TabItem value="json">
+* `"Page"` - Bars are aligned in rows using a fixed width. [Demo](/docs/showcase/layouts#page-layout)
+* `"Horizontal"` - Bars are aligned horizontally in one row. [Demo](/docs/showcase/layouts#horizontal-layout)
+</TabItem>
+<TabItem value="net">
+* `AlphaTab.LayoutMode.Page` - Bars are aligned in rows using a fixed width. [Demo](/docs/showcase/layouts#page-layout)
+* `AlphaTab.LayoutMode.Horizontal` - Bars are aligned horizontally in one row. [Demo](/docs/showcase/layouts#horizontal-layout)
+</TabItem>
+<TabItem value="kotlin">
+* `alphaTab.LayoutMode.Page` - Bars are aligned in rows using a fixed width. [Demo](/docs/showcase/layouts#page-layout)
+* `alphaTab.LayoutMode.Horizontal` - Bars are aligned horizontally in one row. [Demo](/docs/showcase/layouts#horizontal-layout)
+</TabItem>
+</Tabs>

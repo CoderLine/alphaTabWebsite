@@ -6,43 +6,63 @@ sidebar_custom_props:
   category: Core
   since: 0.9.6
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 
 <SinceBadge since="0.9.6" />
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><CodeBadge type="js" name="core.engine" /></td>
+          <td><CodeBadge type="js" name="string" /></td>
+          <td><code>'default'</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="js" name="engine" /></td>
+          <td><CodeBadge type="js" name="string" /></td>
+          <td><code>'default'</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="core.engine" /></td>
+          <td><CodeBadge type="json" name="string" /></td>
+          <td><code>"default"</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="engine" /></td>
+          <td><CodeBadge type="json" name="string" /></td>
+          <td><code>"default"</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="net" name="Core.Engine" /></td>
+          <td><CodeBadge type="net" name="string" /></td>
+          <td><code>"default"</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="android" name="core.engine" /></td>
+          <td><CodeBadge type="android" name="String" /></td>
+          <td><code>"default"</code></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Description
-AlphaTab can use various render engines to draw the music notation. The available render engines is specific to the platform. Please refer to the table below to find out which engines are available on which platform.    
+AlphaTab can use various render engines to draw the music notation. The available render engines are specific to the platform.
 
-<PropertyDescription metadata={metadata} showJson={true} />
-
-## Types
-
-<TypeTable>
-    <TypeRow type="js" name="string">
-        `svg` - Outputs SVG strings. <br />
-        `html5` - Uses HTML5 canvas elements to render the music notation. 
-    </TypeRow>
-    <TypeRow type="net" name="string">
-        `skia` - Available on all .net platforms. Uses [Skia](https://skia.org/) for rendering<br />
-        `gdi` - Only available desktop .net. Uses [GDI+](https://docs.microsoft.com/en-us/dotnet/framework/winforms/advanced/graphics-and-drawing-in-windows-forms) for rendering <br /> 
-        `svg` - Available on all .net platforms. Outputs SVG strings. 
-    </TypeRow>
-    <TypeRow type="android" name="string">
-        `skia` - Uses [Skia](https://skia.org/) for rendering<br />
-        `android` - Uses [android.graphics.Canvas](https://developer.android.com/reference/android/graphics/Canvas) for rendering<br />
-        `svg` - Outputs SVG strings. 
-    </TypeRow>
-</TypeTable>
-
-## Default Value
-
-`default` which is mapped per platform: 
-
-<TypeTable>
-    <TypeRow type="js-html" name="svg" />
-    <TypeRow type="net" name="skia" />
-    <TypeRow type="android" name="skia" />
-</TypeTable>
+| Type      | Values                                                                  | Available On Platform    |
+|-----------|-------------------------------------------------------------------------|--------------------------|
+| `default` | Platform specific default engine (`svg` for web, `skia` for others)     | all                      |
+| `svg`     | Uses a SVG string with Web Fonts to render the music notation.          | all                      |
+| `html5`   | Uses HTML5 canvas elements to render the music notation.                | `web`                    |
+| `skia`    | Uses alphaSkia (a cross platform Skia wrapper) to render music notation | `net`, `android`, `node` |

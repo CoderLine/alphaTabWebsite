@@ -5,30 +5,51 @@ sidebar_custom_props:
   category: Notation
   since: 0.9.6
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 
 <SinceBadge since="0.9.6" />
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><CodeBadge type="js" name="notation.extendBendArrowsOnTiedNotes" /></td>
+          <td><CodeBadge type="js" name="boolean" /></td>
+          <td><code>true</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="notation.extendBendArrowsOnTiedNotes" /></td>
+          <td><CodeBadge type="json" name="boolean" /></td>
+          <td><code>true</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="net" name="Notation.ExtendBendArrowsOnTiedNotes" /></td>
+          <td><CodeBadge type="net" name="bool" /></td>
+          <td><code>true</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="android" name="notation.extendBendArrowsOnTiedNotes" /></td>
+          <td><CodeBadge type="android" name="Boolean" /></td>
+          <td><code>true</code></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Description
-
-By default the arrows and lines on bend effects are extended to the space of tied notes. This behavior is the Guitar Pro default but some applications and songbooks practice it different. 
+By default the arrows and lines on bend effects are extended to the space of tied notes. This behavior is the Guitar Pro default but some applications and songbooks practice it different.
 There the bend only is drawn to the next beat.
-
-<PropertyDescription metadata={metadata} showJson={true} />
 
 | Enabled                                                                     | Disabled                                                                      |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------|
 | ![Enabled](/img/reference/property/extendbendarrowsontiednotes-enabled.png) | ![Disabled](/img/reference/property/extendbendarrowsontiednotes-disabled.png) |
-
-## Types
-
-<TypeTable>
-    <TypeRow name="bool" />
-</TypeTable>
-
-## Default Value
-
-`true`

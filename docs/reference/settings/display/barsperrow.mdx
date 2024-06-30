@@ -2,30 +2,50 @@
 title: display.barsPerRow
 description: Limit the displayed bars per row.
 sidebar_custom_props:
-  jsOnParent: true
   category: Display
   since: 0.9.6
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 
 <SinceBadge since="0.9.6" />
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><CodeBadge type="js" name="display.barsPerRow" /></td>
+          <td><CodeBadge type="js" name="number" /></td>
+          <td><code>-1</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="display.barsPerRow" /></td>
+          <td><CodeBadge type="json" name="number" /></td>
+          <td><code>-1</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="net" name="Display.BarsPerRow" /></td>
+          <td><CodeBadge type="net" name="double" /></td>
+          <td><code>-1</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="android" name="display.barsPerRow" /></td>
+          <td><CodeBadge type="android" name="Double" /></td>
+          <td><code>-1</code></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Description
-
 This setting sets the number of bars that should be put into one row during layouting. This setting is only respected
-when using the layoutMode `page` where bars are aligned in rows. [Demo](/docs/showcase/layouts#page-layout-5-bars-per-row)
-
-<PropertyDescription metadata={metadata} showJson={true} />
-
-## Types
-
-<TypeTable>
-    <TypeRow name="int" />
-</TypeTable>
-
-## Default Value
-
-`-1` - automatic 
+when using the layoutMode `page` where bars are aligned in rows.

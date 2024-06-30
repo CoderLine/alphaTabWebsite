@@ -6,36 +6,70 @@ sidebar_custom_props:
   category: Player - JavaScript Specific
   since: 1.3.0
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 
 <SinceBadge since="1.3.0" />
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><CodeBadge type="js" name="player.outputMode" /></td>
+          <td><CodeBadge type="js" name="PlayerOutputMode" /></td>
+          <td><code>PlayerOutputMode.WebAudioAudioWorklets</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="player.outputMode" /></td>
+          <td><CodeBadge type="json" name="PlayerOutputMode" /></td>
+          <td><code>PlayerOutputMode.WebAudioAudioWorklets</code></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Description
-
 Controls how alphaTab will play the audio samples in the browser.
 
-<PropertyDescription metadata={metadata} showJson={true} />
+## Related Types
 
-## Types
+### `enum alphaTab.PlayerOutputMode`
 
-<TypeTable>
-    <TypeRow type="js" name="alphaTab.PlayerOutputMode">
-        `WebAudioAudioWorklets` - If [audio worklets](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Using_AudioWorklet) are available, they are used. If not fallback to the ScriptProcessorNode<br />
-        `WebAudioScriptProcessor` - Using the [ScriptProcessorNode](https://developer.mozilla.org/en-US/docs/Web/API/ScriptProcessorNode) for playback<br />
-    </TypeRow>
-    <TypeRow type="json-js-html" name="string">
-        `webaudioaudioworklets`<br />
-        `webaudioscriptprocessor`
-    </TypeRow>
-    <TypeRow type="json-js-html" name="int">
-        `0` - WebAudioAudioWorklets<br />
-        `1` - WebAudioScriptProcessor<br />
-    </TypeRow>
-</TypeTable>
+<Tabs defaultValue="js" values={[
+  { label: "JavaScript", value: "js" },
+  { label: "Json", value: "json" },
+  { label: "C#", value: "net" },
+  { label: "Kotlin (Android)", value: "kotlin" },
+]}>
+<TabItem value="js">
+`import * as alphaTab from '@coderline/alphaTab';`
 
-## Default Value
-
-`WebAudioAudioWorklets`
+* `alphaTab.PlayerOutputMode.WebAudioAudioWorklets` - If [audio worklets](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Using_AudioWorklet) are available, they are used.
+If not fallback to the [ScriptProcessorNode](https://developer.mozilla.org/en-US/docs/Web/API/ScriptProcessorNode)
+* `alphaTab.PlayerOutputMode.WebAudioScriptProcessor` - Using the [ScriptProcessorNode](https://developer.mozilla.org/en-US/docs/Web/API/ScriptProcessorNode) for playback.
+</TabItem>
+<TabItem value="json">
+* `"WebAudioAudioWorklets"` - If [audio worklets](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Using_AudioWorklet) are available, they are used.
+If not fallback to the [ScriptProcessorNode](https://developer.mozilla.org/en-US/docs/Web/API/ScriptProcessorNode)
+* `"WebAudioScriptProcessor"` - Using the [ScriptProcessorNode](https://developer.mozilla.org/en-US/docs/Web/API/ScriptProcessorNode) for playback.
+</TabItem>
+<TabItem value="net">
+* `AlphaTab.PlayerOutputMode.WebAudioAudioWorklets` - If [audio worklets](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Using_AudioWorklet) are available, they are used.
+If not fallback to the [ScriptProcessorNode](https://developer.mozilla.org/en-US/docs/Web/API/ScriptProcessorNode)
+* `AlphaTab.PlayerOutputMode.WebAudioScriptProcessor` - Using the [ScriptProcessorNode](https://developer.mozilla.org/en-US/docs/Web/API/ScriptProcessorNode) for playback.
+</TabItem>
+<TabItem value="kotlin">
+* `alphaTab.PlayerOutputMode.WebAudioAudioWorklets` - If [audio worklets](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Using_AudioWorklet) are available, they are used.
+If not fallback to the [ScriptProcessorNode](https://developer.mozilla.org/en-US/docs/Web/API/ScriptProcessorNode)
+* `alphaTab.PlayerOutputMode.WebAudioScriptProcessor` - Using the [ScriptProcessorNode](https://developer.mozilla.org/en-US/docs/Web/API/ScriptProcessorNode) for playback.
+</TabItem>
+</Tabs>

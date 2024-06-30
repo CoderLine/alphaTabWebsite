@@ -5,48 +5,48 @@ sidebar_custom_props:
   category: Importer
   since: 1.2.0
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 
 <SinceBadge since="1.2.0" />
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><CodeBadge type="js" name="importer.beatTextAsLyrics" /></td>
+          <td><CodeBadge type="js" name="boolean" /></td>
+          <td><code>false</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="importer.beatTextAsLyrics" /></td>
+          <td><CodeBadge type="json" name="boolean" /></td>
+          <td><code>false</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="net" name="Importer.BeatTextAsLyrics" /></td>
+          <td><CodeBadge type="net" name="bool" /></td>
+          <td><code>false</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="android" name="importer.beatTextAsLyrics" /></td>
+          <td><CodeBadge type="android" name="Boolean" /></td>
+          <td><code>false</code></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Description
-
-On various old Guitar Pro 3-5 files tab authors often used the "beat text" feature to add lyrics to the individual tracks. 
-This was easier and quicker than using the lyrics feature. 
-
-These texts were optimized to align correctly when viewed in Guitar Pro with the default layout but can lead to 
-disturbed display in alphaTab. When `beatTextAsLyrics` is set to true, alphaTab will try to rather parse beat text 
-values as lyrics using typical text patterns like dashes, underscores and spaces. 
-
-The lyrics are only detected if not already proper lyrics are applied to the track.
-
-Enable this option for input files which suffer from this practice.
-
-:::note
-
-alphaTab tries to relate the texts and chunks to the beats but this is not perfect. 
-Errors are likely to happen with such kind of files.
-
-:::
-
-<PropertyDescription metadata={metadata} showJson={true} />
-
-## Types
-
-<TypeTable>
-    <TypeRow name="bool" />
-</TypeTable>
-
-## Default Value
-`false`
-
-## Example
-
-**Enabled**
-![Enabled](/img/reference/property/beattextaslyrics-enabled.png)
-
-**Disabled**
- ![Disabled](/img/reference/property/beattextaslyrics-disabled.png)
+If set to true, text annotations on beats are attempted to be parsed as
+lyrics considering spaces as separators and removing underscores.
+If a track/staff has explicit lyrics the beat texts will not be detected as lyrics.

@@ -2,33 +2,51 @@
 title: display.startBar
 description: The bar start index to start layouting with.
 sidebar_custom_props:
-  jsOnParent: true
   category: Display
   since: 0.9.6
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 
 <SinceBadge since="0.9.6" />
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
-
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><CodeBadge type="js" name="display.startBar" /></td>
+          <td><CodeBadge type="js" name="number" /></td>
+          <td><code>1</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="display.startBar" /></td>
+          <td><CodeBadge type="json" name="number" /></td>
+          <td><code>1</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="net" name="Display.StartBar" /></td>
+          <td><CodeBadge type="net" name="double" /></td>
+          <td><code>1</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="android" name="display.startBar" /></td>
+          <td><CodeBadge type="android" name="Double" /></td>
+          <td><code>1</code></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Description
-
-This setting sets the index of the first bar that should be rendered from the overall song. This setting can be used to 
+This setting sets the index of the first bar that should be rendered from the overall song. This setting can be used to
 achieve a paging system or to only show partial bars of the same file. By this a tutorial alike display can be achieved
 that explains various parts of the song. Please note that this is the bar number as shown in the music sheet (1-based) not the array index (0-based).
-[Demo](/docs/showcase/layouts#page-layout-bar-5-to-8)
-
-<PropertyDescription metadata={metadata} showJson={true} />
-
-## Types
-
-<TypeTable>
-    <TypeRow name="int" type="all" />
-</TypeTable>
-
-## Default Value
-
-`1`

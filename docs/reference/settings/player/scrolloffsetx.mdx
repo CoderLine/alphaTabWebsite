@@ -1,34 +1,52 @@
 ---
-title: player.playerOffsetX
+title: player.scrollOffsetX
 description: The X-offset to add when scrolling.
 sidebar_custom_props:
   category: Player
   since: 0.9.6
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 
 <SinceBadge since="0.9.6" />
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><CodeBadge type="js" name="player.scrollOffsetX" /></td>
+          <td><CodeBadge type="js" name="number" /></td>
+          <td><code>0</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="player.scrollOffsetX" /></td>
+          <td><CodeBadge type="json" name="number" /></td>
+          <td><code>0</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="net" name="Player.ScrollOffsetX" /></td>
+          <td><CodeBadge type="net" name="double" /></td>
+          <td><code>0</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="android" name="player.scrollOffsetX" /></td>
+          <td><CodeBadge type="android" name="Double" /></td>
+          <td><code>0</code></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Description
-
-When alphaTab does an auto-scrolling to the displayed bar, it will try to align the view port to the displayed bar. If due to 
-some layout specifics or for aesthetics a small padding is needed, this setting allows an additional X-offset that is added to the 
-scroll position. 
-
-<PropertyDescription metadata={metadata} showJson={true} />
-
-## Types
-
-<TypeTable>
-    <TypeRow type="all" name="int">
-        `-10`<br />
-        `20`
-    </TypeRow>
-</TypeTable>
-
-## Default Value
-
-`0`
+When alphaTab does an auto-scrolling to the displayed bar, it will try to align the view port to the displayed bar. If due to
+some layout specifics or for aesthetics a small padding is needed, this setting allows an additional X-offset that is added to the
+scroll position.

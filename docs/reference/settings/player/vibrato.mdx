@@ -1,118 +1,317 @@
 ---
 title: player.vibrato
-description: The Vibrato settings allow control how the different vibrato types are generated for audio. 
+description: The Vibrato settings allow control how the different vibrato types are generated for audio.
 sidebar_custom_props:
-  domWildCard: true
   category: Player
   since: 0.9.6
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 
 <SinceBadge since="0.9.6" />
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
-import { CodeBadge } from '@site/src/components/CodeBadge';
-
-export var VibratoSettings = [
-    {
-        name: 'beatSlightAmplitude',
-        defaultValue: 3,
-        description: 'The amplitude for the beat-slight vibrato in semitones.'
-    },
-    {
-        name: 'beatSlightLength',
-        defaultValue: 240,
-        description: 'The wavelength of the beat-slight vibrato in midi ticks.'
-    },
-    {
-        name: 'beatWideAmplitude',
-        defaultValue: 3,
-        description: 'The amplitude for the beat-wide vibrato in semitones.'
-    },
-    {
-        name: 'beatWideLength',
-        defaultValue: 240,
-        description: 'The wavelength of the beat-wide vibrato in midi ticks.'
-    },
-    {
-        name: 'noteSlightAmplitude',
-        defaultValue: 2,
-        description: 'The amplitude for the note-slight vibrato in semitones.'
-    },
-    {
-        name: 'noteSlightLength',
-        defaultValue: 480,
-        description: 'The wavelength of the note-slight vibrato in midi ticks.'
-    },
-    {
-        name: 'noteWideAmplitude',
-        defaultValue: 2,
-        description: 'The amplitude for the note-wide vibrato in semitones.'
-    },
-    {
-        name: 'noteWideLength',
-        defaultValue: 480,
-        description: 'The wavelength of the note-wide vibrato in midi ticks.'
-    }
-];
-
-export function toPascalCase(v) {
-    return v.substr(0, 1).toUpperCase() + v.substr(1);
-}
-
-export function VibratoRow({setting}) {  
-    return (
+<table className="table table-striped table-condensed type-table">
+    <thead>
         <tr>
-            <td>
-                <CodeBadge type="js" name={setting.name} /><br />
-                <CodeBadge type="json" name={setting.name} /><br />
-                <CodeBadge type="html" name={setting.name.toLowerCase()} /><br />
-                <CodeBadge type="net" name={toPascalCase(setting.name)} /><br />
-                <CodeBadge type="android" name={setting.name} />
-            </td>
-            <td>
-                <CodeBadge type="all" name="int" />
-            </td>
-            <td>{setting.defaultValue}</td>
-            <td>
-                {setting.description}
-            </td>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
         </tr>
-    );
-}
-
-export function VibratoTable() {
-    const settings = VibratoSettings.map(c => <VibratoRow setting={c} />);
-    return (
-        <table className="table table-striped table-condensed type-table">
-            <thead>
-                <tr>
-                    <th>Setting</th>
-                    <th>Type</th>
-                    <th>Default</th>
-                    <th>Summary</th>
-                </tr>
-            </thead>    
-            <tbody> 
-                {settings}
-            </tbody>
-        </table>
-    );
-}
-
+    </thead>
+    <tbody>
+        <tr>
+          <td><CodeBadge type="js" name="player.vibrato" /></td>
+          <td><CodeBadge type="js" name="VibratoPlaybackSettings" /></td>
+          <td><code></code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="player.vibrato" /></td>
+          <td><CodeBadge type="json" name="VibratoPlaybackSettings" /></td>
+          <td><code></code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="net" name="Player.Vibrato" /></td>
+          <td><CodeBadge type="net" name="VibratoPlaybackSettings" /></td>
+          <td><code></code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="android" name="player.vibrato" /></td>
+          <td><CodeBadge type="android" name="VibratoPlaybackSettings" /></td>
+          <td><code></code></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Description
-
 AlphaTab supports 4 types of vibratos, for each vibrato the amplitude and the wavelength can be configured. The amplitude controls how many semitones
 the vibrato changes the pitch up and down while playback. The wavelength controls how many midi ticks it will take to complete one up and down vibrato.
-The 4 vibrato types are: 
+The 4 vibrato types are:
 
 1. Beat Slight - A fast vibrato on the whole beat. This vibrato is usually done with the whammy bar.
 2. Beat Wide - A slow vibrato on the whole beat. This vibrato is usually done with the whammy bar.
 3. Note Slight - A fast vibrato on a single note. This vibrato is usually done with the finger on the fretboard.
 4. Note Wide - A slow vibrato on a single note. This vibrato is usually done with the finger on the fretboard.
 
-## Vibrato Settings
+## Related Types
 
-<VibratoTable />
+### `class alphaTab.VibratoPlaybackSettings`
+
+<Tabs defaultValue="js" values={[
+  { label: "JavaScript", value: "js" },
+  { label: "Json", value: "json" },
+  { label: "C#", value: "net" },
+  { label: "Kotlin (Android)", value: "kotlin" },
+]}>
+<TabItem value="js">
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+            <th>Property</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Summary</th>
+        </tr>
+    </thead>    
+    <tbody> 
+        <tr>
+            <td><CodeBadge type="js" name="noteWideLength" /></td>
+            <td><code>number</code></td>
+            <td><code>480</code></td>
+            <td>The wavelength of the note-wide vibrato in midi ticks.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="js" name="noteWideAmplitude" /></td>
+            <td><code>number</code></td>
+            <td><code>2</code></td>
+            <td>The amplitude for the note-wide vibrato in semitones.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="js" name="noteSlightLength" /></td>
+            <td><code>number</code></td>
+            <td><code>480</code></td>
+            <td>The wavelength of the note-slight vibrato in midi ticks.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="js" name="noteSlightAmplitude" /></td>
+            <td><code>number</code></td>
+            <td><code>2</code></td>
+            <td>The amplitude for the note-slight vibrato in semitones.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="js" name="beatWideLength" /></td>
+            <td><code>number</code></td>
+            <td><code>240</code></td>
+            <td>The wavelength of the beat-wide vibrato in midi ticks.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="js" name="beatWideAmplitude" /></td>
+            <td><code>number</code></td>
+            <td><code>3</code></td>
+            <td>The amplitude for the beat-wide vibrato in semitones.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="js" name="beatSlightLength" /></td>
+            <td><code>number</code></td>
+            <td><code>240</code></td>
+            <td>The wavelength of the beat-slight vibrato in midi ticks.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="js" name="beatSlightAmplitude" /></td>
+            <td><code>number</code></td>
+            <td><code>3</code></td>
+            <td>The amplitude for the beat-slight vibrato in semitones.</td>
+        </tr>
+    </tbody>
+</table>
+</TabItem>
+<TabItem value="json">
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+            <th>Setting</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Summary</th>
+        </tr>
+    </thead>    
+    <tbody> 
+        <tr>
+            <td><CodeBadge type="json" name="noteWideLength" /></td>
+            <td><code>number</code></td>
+            <td><code>480</code></td>
+            <td>The wavelength of the note-wide vibrato in midi ticks.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="json" name="noteWideAmplitude" /></td>
+            <td><code>number</code></td>
+            <td><code>2</code></td>
+            <td>The amplitude for the note-wide vibrato in semitones.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="json" name="noteSlightLength" /></td>
+            <td><code>number</code></td>
+            <td><code>480</code></td>
+            <td>The wavelength of the note-slight vibrato in midi ticks.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="json" name="noteSlightAmplitude" /></td>
+            <td><code>number</code></td>
+            <td><code>2</code></td>
+            <td>The amplitude for the note-slight vibrato in semitones.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="json" name="beatWideLength" /></td>
+            <td><code>number</code></td>
+            <td><code>240</code></td>
+            <td>The wavelength of the beat-wide vibrato in midi ticks.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="json" name="beatWideAmplitude" /></td>
+            <td><code>number</code></td>
+            <td><code>3</code></td>
+            <td>The amplitude for the beat-wide vibrato in semitones.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="json" name="beatSlightLength" /></td>
+            <td><code>number</code></td>
+            <td><code>240</code></td>
+            <td>The wavelength of the beat-slight vibrato in midi ticks.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="json" name="beatSlightAmplitude" /></td>
+            <td><code>number</code></td>
+            <td><code>3</code></td>
+            <td>The amplitude for the beat-slight vibrato in semitones.</td>
+        </tr>
+    </tbody>
+</table>
+</TabItem>
+<TabItem value="net">
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+            <th>Setting</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Summary</th>
+        </tr>
+    </thead>    
+    <tbody> 
+        <tr>
+            <td><CodeBadge type="net" name="NoteWideLength" /></td>
+            <td><code>double</code></td>
+            <td><code>480</code></td>
+            <td>The wavelength of the note-wide vibrato in midi ticks.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="NoteWideAmplitude" /></td>
+            <td><code>double</code></td>
+            <td><code>2</code></td>
+            <td>The amplitude for the note-wide vibrato in semitones.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="NoteSlightLength" /></td>
+            <td><code>double</code></td>
+            <td><code>480</code></td>
+            <td>The wavelength of the note-slight vibrato in midi ticks.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="NoteSlightAmplitude" /></td>
+            <td><code>double</code></td>
+            <td><code>2</code></td>
+            <td>The amplitude for the note-slight vibrato in semitones.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="BeatWideLength" /></td>
+            <td><code>double</code></td>
+            <td><code>240</code></td>
+            <td>The wavelength of the beat-wide vibrato in midi ticks.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="BeatWideAmplitude" /></td>
+            <td><code>double</code></td>
+            <td><code>3</code></td>
+            <td>The amplitude for the beat-wide vibrato in semitones.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="BeatSlightLength" /></td>
+            <td><code>double</code></td>
+            <td><code>240</code></td>
+            <td>The wavelength of the beat-slight vibrato in midi ticks.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="BeatSlightAmplitude" /></td>
+            <td><code>double</code></td>
+            <td><code>3</code></td>
+            <td>The amplitude for the beat-slight vibrato in semitones.</td>
+        </tr>
+    </tbody>
+</table>
+</TabItem>
+<TabItem value="kotlin">
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+            <th>Setting</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Summary</th>
+        </tr>
+    </thead>    
+    <tbody> 
+        <tr>
+            <td><CodeBadge type="net" name="noteWideLength" /></td>
+            <td><code>Double</code></td>
+            <td><code>480</code></td>
+            <td>The wavelength of the note-wide vibrato in midi ticks.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="noteWideAmplitude" /></td>
+            <td><code>Double</code></td>
+            <td><code>2</code></td>
+            <td>The amplitude for the note-wide vibrato in semitones.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="noteSlightLength" /></td>
+            <td><code>Double</code></td>
+            <td><code>480</code></td>
+            <td>The wavelength of the note-slight vibrato in midi ticks.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="noteSlightAmplitude" /></td>
+            <td><code>Double</code></td>
+            <td><code>2</code></td>
+            <td>The amplitude for the note-slight vibrato in semitones.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="beatWideLength" /></td>
+            <td><code>Double</code></td>
+            <td><code>240</code></td>
+            <td>The wavelength of the beat-wide vibrato in midi ticks.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="beatWideAmplitude" /></td>
+            <td><code>Double</code></td>
+            <td><code>3</code></td>
+            <td>The amplitude for the beat-wide vibrato in semitones.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="beatSlightLength" /></td>
+            <td><code>Double</code></td>
+            <td><code>240</code></td>
+            <td>The wavelength of the beat-slight vibrato in midi ticks.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="beatSlightAmplitude" /></td>
+            <td><code>Double</code></td>
+            <td><code>3</code></td>
+            <td>The amplitude for the beat-slight vibrato in semitones.</td>
+        </tr>
+    </tbody>
+</table>
+</TabItem>
+</Tabs>

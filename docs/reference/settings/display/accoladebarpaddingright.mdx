@@ -1,9 +1,9 @@
 ---
-title: player.scrollSpeed
-description: How fast the scrolling to the new position should happen.
+title: display.accoladeBarPaddingRight
+description: The padding between the accolade bar and the start of the bar itself.
 sidebar_custom_props:
-  category: Player
-  since: 0.9.6
+  category: Display
+  since: 1.4.0
 ---
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -12,7 +12,7 @@ import { CodeBadge } from '@site/src/components/CodeBadge';
 import { PropertyDescription } from '@site/src/components/PropertyDescription';
 import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 
-<SinceBadge since="0.9.6" />
+<SinceBadge since="1.4.0" />
 
 <table className="table table-striped table-condensed type-table">
     <thead>
@@ -24,29 +24,27 @@ import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
     </thead>
     <tbody>
         <tr>
-          <td><CodeBadge type="js" name="player.scrollSpeed" /></td>
+          <td><CodeBadge type="js" name="display.accoladeBarPaddingRight" /></td>
           <td><CodeBadge type="js" name="number" /></td>
-          <td><code>300</code></td>
+          <td><code>3</code></td>
         </tr>
         <tr>
-          <td><CodeBadge type="json" name="player.scrollSpeed" /></td>
+          <td><CodeBadge type="json" name="display.accoladeBarPaddingRight" /></td>
           <td><CodeBadge type="json" name="number" /></td>
-          <td><code>300</code></td>
+          <td><code>3</code></td>
         </tr>
         <tr>
-          <td><CodeBadge type="net" name="Player.ScrollSpeed" /></td>
+          <td><CodeBadge type="net" name="Display.AccoladeBarPaddingRight" /></td>
           <td><CodeBadge type="net" name="double" /></td>
-          <td><code>300</code></td>
+          <td><code>3</code></td>
         </tr>
         <tr>
-          <td><CodeBadge type="android" name="player.scrollSpeed" /></td>
+          <td><CodeBadge type="android" name="display.accoladeBarPaddingRight" /></td>
           <td><CodeBadge type="android" name="Double" /></td>
-          <td><code>300</code></td>
+          <td><code>3</code></td>
         </tr>
     </tbody>
 </table>
 
 ## Description
-If possible from the platform, alphaTab will try to do a smooth scrolling to the played bar.
-This setting defines the speed of scrolling in milliseconds.
-Note that `PlayerSettings.nativeBrowserSmoothScroll` must be set to `false` for this to have an effect.
+The padding between the accolade (system bracket) and the start of the bar itself.

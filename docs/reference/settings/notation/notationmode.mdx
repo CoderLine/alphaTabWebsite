@@ -5,33 +5,81 @@ sidebar_custom_props:
   category: Notation
   since: 0.9.6
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 
 <SinceBadge since="0.9.6" />
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><CodeBadge type="js" name="notation.notationMode" /></td>
+          <td><CodeBadge type="js" name="NotationMode" /></td>
+          <td><code>NotationMode.GuitarPro</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="notation.notationMode" /></td>
+          <td><CodeBadge type="json" name="NotationMode" /></td>
+          <td><code>NotationMode.GuitarPro</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="net" name="Notation.NotationMode" /></td>
+          <td><CodeBadge type="net" name="NotationMode" /></td>
+          <td><code>NotationMode.GuitarPro</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="android" name="notation.notationMode" /></td>
+          <td><CodeBadge type="android" name="NotationMode" /></td>
+          <td><code>NotationMode.GuitarPro</code></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Description
-
-AlphaTab provides 2 main music notation display modes `GuitarPro` and `SongBook`. 
+AlphaTab provides 2 main music notation display modes `GuitarPro` and `SongBook`.
 As the names indicate they adjust the overall music notation rendering either to be more in line how [Arobas Guitar Pro](https://www.guitar-pro.com) displays it,
 or more like the common practice in paper song books practices the display.
 
-The main differences in the Songbook display mode are: 
+## Related Types
 
+### `enum alphaTab.NotationMode`
+
+<Tabs defaultValue="js" values={[
+  { label: "JavaScript", value: "js" },
+  { label: "Json", value: "json" },
+  { label: "C#", value: "net" },
+  { label: "Kotlin (Android)", value: "kotlin" },
+]}>
+<TabItem value="js">
+`import * as alphaTab from '@coderline/alphaTab';`
+
+* `alphaTab.NotationMode.GuitarPro` - Music elements will be displayed and played as in Guitar Pro.
+* `alphaTab.NotationMode.SongBook` - Music elements will be displayed and played as in traditional songbooks.
+Changes:
 1. **Bends**
-For bends additional grace beats are introduced. Bends are categorized into gradual and fast bends.
-    * Gradual bends are indicated by beat text "grad" or "grad.". Bend will sound along the beat duration.
-    * Fast bends are done right before the next note. If the next note is tied even on-beat of the next note.
-2.  **Whammy Bars**
-Dips are shown as simple annotation over the beats. Whammy Bars are categorized into gradual and fast. 
-    * Gradual whammys are indicated by beat text "grad" or "grad.". Whammys will sound along the beat duration.
-    * Fast whammys are done right the beat. 
-
+  For bends additional grace beats are introduced.
+  Bends are categorized into gradual and fast bends.
+    - Gradual bends are indicated by beat text "grad" or "grad.". Bend will sound along the beat duration.
+    - Fast bends are done right before the next note. If the next note is tied even on-beat of the next note.
+2. **Whammy Bars**
+  Dips are shown as simple annotation over the beats
+  Whammy Bars are categorized into gradual and fast.
+    - Gradual whammys are indicated by beat text "grad" or "grad.". Whammys will sound along the beat duration.
+    - Fast whammys are done right the beat.
 3. **Let Ring**
-Tied notes with let ring are not shown in standard notation. Let ring does not cause a longer playback, duration is defined via tied notes. 
-            
+  Tied notes with let ring are not shown in standard notation
+  Let ring does not cause a longer playback, duration is defined via tied notes.
 4. **Settings**
 Following default setting values are applied:
 ```js
@@ -48,34 +96,107 @@ Following default setting values are applied:
     }
 }
 ```
-
-<PropertyDescription metadata={metadata} showJson={true} />
-
-## Types
-
-<TypeTable>
-    <TypeRow name="alphaTab.DisplayMode" type="js">
-        `SongBook`<br />
-        `GuitarPro`
-    </TypeRow>
-    <TypeRow name="string" type="json-js-html">
-        `SongBook`<br />
-        `GuitarPro`
-    </TypeRow>
-    <TypeRow name="int" type="json-js-html">
-        `0` - SongBook<br />
-        `1` - GuitarPro
-    </TypeRow>
-    <TypeRow name="AlphaTab.DisplayMode" type="net">
-        `SongBook`<br />
-        `GuitarPro`
-    </TypeRow>
-    <TypeRow name="alphaTab.DisplayMode" type="android">
-        `SongBook`<br />
-        `GuitarPro`
-    </TypeRow>
-</TypeTable>
-
-## Default Value
-
-`GuitarPro`
+</TabItem>
+<TabItem value="json">
+* `"GuitarPro"` - Music elements will be displayed and played as in Guitar Pro.
+* `"SongBook"` - Music elements will be displayed and played as in traditional songbooks.
+Changes:
+1. **Bends**
+  For bends additional grace beats are introduced.
+  Bends are categorized into gradual and fast bends.
+    - Gradual bends are indicated by beat text "grad" or "grad.". Bend will sound along the beat duration.
+    - Fast bends are done right before the next note. If the next note is tied even on-beat of the next note.
+2. **Whammy Bars**
+  Dips are shown as simple annotation over the beats
+  Whammy Bars are categorized into gradual and fast.
+    - Gradual whammys are indicated by beat text "grad" or "grad.". Whammys will sound along the beat duration.
+    - Fast whammys are done right the beat.
+3. **Let Ring**
+  Tied notes with let ring are not shown in standard notation
+  Let ring does not cause a longer playback, duration is defined via tied notes.
+4. **Settings**
+Following default setting values are applied:
+```js
+{
+    notation: {
+        smallGraceTabNotes: false,
+        fingeringMode: alphaTab.FingeringMode.SingleNoteEffectBandm
+        extendBendArrowsOnTiedNotes: false
+    },
+    elements: {
+        parenthesisOnTiedBends: false,
+        tabNotesOnTiedBends: false,
+        zerosOnDiveWhammys: true
+    }
+}
+```
+</TabItem>
+<TabItem value="net">
+* `AlphaTab.NotationMode.GuitarPro` - Music elements will be displayed and played as in Guitar Pro.
+* `AlphaTab.NotationMode.SongBook` - Music elements will be displayed and played as in traditional songbooks.
+Changes:
+1. **Bends**
+  For bends additional grace beats are introduced.
+  Bends are categorized into gradual and fast bends.
+    - Gradual bends are indicated by beat text "grad" or "grad.". Bend will sound along the beat duration.
+    - Fast bends are done right before the next note. If the next note is tied even on-beat of the next note.
+2. **Whammy Bars**
+  Dips are shown as simple annotation over the beats
+  Whammy Bars are categorized into gradual and fast.
+    - Gradual whammys are indicated by beat text "grad" or "grad.". Whammys will sound along the beat duration.
+    - Fast whammys are done right the beat.
+3. **Let Ring**
+  Tied notes with let ring are not shown in standard notation
+  Let ring does not cause a longer playback, duration is defined via tied notes.
+4. **Settings**
+Following default setting values are applied:
+```js
+{
+    notation: {
+        smallGraceTabNotes: false,
+        fingeringMode: alphaTab.FingeringMode.SingleNoteEffectBandm
+        extendBendArrowsOnTiedNotes: false
+    },
+    elements: {
+        parenthesisOnTiedBends: false,
+        tabNotesOnTiedBends: false,
+        zerosOnDiveWhammys: true
+    }
+}
+```
+</TabItem>
+<TabItem value="kotlin">
+* `alphaTab.NotationMode.GuitarPro` - Music elements will be displayed and played as in Guitar Pro.
+* `alphaTab.NotationMode.SongBook` - Music elements will be displayed and played as in traditional songbooks.
+Changes:
+1. **Bends**
+  For bends additional grace beats are introduced.
+  Bends are categorized into gradual and fast bends.
+    - Gradual bends are indicated by beat text "grad" or "grad.". Bend will sound along the beat duration.
+    - Fast bends are done right before the next note. If the next note is tied even on-beat of the next note.
+2. **Whammy Bars**
+  Dips are shown as simple annotation over the beats
+  Whammy Bars are categorized into gradual and fast.
+    - Gradual whammys are indicated by beat text "grad" or "grad.". Whammys will sound along the beat duration.
+    - Fast whammys are done right the beat.
+3. **Let Ring**
+  Tied notes with let ring are not shown in standard notation
+  Let ring does not cause a longer playback, duration is defined via tied notes.
+4. **Settings**
+Following default setting values are applied:
+```js
+{
+    notation: {
+        smallGraceTabNotes: false,
+        fingeringMode: alphaTab.FingeringMode.SingleNoteEffectBandm
+        extendBendArrowsOnTiedNotes: false
+    },
+    elements: {
+        parenthesisOnTiedBends: false,
+        tabNotesOnTiedBends: false,
+        zerosOnDiveWhammys: true
+    }
+}
+```
+</TabItem>
+</Tabs>

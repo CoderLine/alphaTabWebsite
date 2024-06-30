@@ -2,35 +2,50 @@
 title: display.scale
 description: The zoom level of the rendered notation.
 sidebar_custom_props:
-  jsOnParent: true
   category: Display
   since: 0.9.6
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 
 <SinceBadge since="0.9.6" />
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><CodeBadge type="js" name="display.scale" /></td>
+          <td><CodeBadge type="js" name="number" /></td>
+          <td><code>1.0</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="display.scale" /></td>
+          <td><CodeBadge type="json" name="number" /></td>
+          <td><code>1.0</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="net" name="Display.Scale" /></td>
+          <td><CodeBadge type="net" name="double" /></td>
+          <td><code>1.0</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="android" name="display.scale" /></td>
+          <td><CodeBadge type="android" name="Double" /></td>
+          <td><code>1.0</code></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Description
-
-AlphaTab can scale up or down the rendered music notation for more optimized display scenarios. By default music notation is rendered at 100% scale (value 1) and can be scaled up or down by 
-percental values.
-
-<PropertyDescription metadata={metadata} showJson={true} />
-
-## Types
-
-
-<TypeTable>
-    <TypeRow name="double" type="all">
-        `1.0` - 100%<br />
-        `1.2` - 120%<br />
-        `0.8` - 80%
-    </TypeRow>
-</TypeTable>
-
-## Default Value
-
-`1.0`
+AlphaTab can scale up or down the rendered music notation for more optimized display scenarios.
+By default music notation is rendered at 100% scale (value 1) and can be scaled up or down by percental values.

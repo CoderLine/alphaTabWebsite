@@ -7,33 +7,67 @@ sidebar_custom_props:
   category: Core - JavaScript Specific
   since: 0.9.6
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 
 <SinceBadge since="0.9.6" />
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><CodeBadge type="js" name="core.tex" /></td>
+          <td><CodeBadge type="js" name="boolean" /></td>
+          <td><code>false</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="js" name="tex" /></td>
+          <td><CodeBadge type="js" name="boolean" /></td>
+          <td><code>false</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="core.tex" /></td>
+          <td><CodeBadge type="json" name="boolean" /></td>
+          <td><code>false</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="tex" /></td>
+          <td><CodeBadge type="json" name="boolean" /></td>
+          <td><code>false</code></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Description
-
-This setting allows you to fill alphaTex code into the DOM element and make alphaTab automatically 
+This setting allows you to fill alphaTex code into the DOM element and make alphaTab automatically
 load it when initializing. Note that this setting is only interpreted once on initialization.
 
+## Examples
+
+<Tabs defaultValue="web" values={[
+  {
+    "label": "JavaScript",
+    "value": "web"
+  }
+]}>
+<TabItem value="web">
+
 ```html
-<div id="alphaTab" data-tex="true">\title "Simple alphaTex init" . 3.3*4</div>
+<div id="alphaTab">\title "Simple alphaTex init" . 3.3*4</div>
 <script>
-const api = new alphaTab.AlphaTabApi(document.getElementById('alphaTab'));
+const api = new alphaTab.AlphaTabApi(document.getElementById('alphaTab'), { core: { tex: true } });
 </script>
 ```
 
-<PropertyDescription metadata={metadata} showJson={true} />
-
-## Types
-
-<TypeTable>
-    <TypeRow name="boolean" />
-</TypeTable>
-
-## Default Value
-
-`false`
+</TabItem>
+</Tabs>

@@ -1,64 +1,96 @@
 ---
 title: display.staveProfile
-description: The stave profile defining which staves are shown for the music sheet. 
+description: The stave profile defining which staves are shown for the music sheet.
 sidebar_custom_props:
-  jsOnParent: true
   category: Display
   since: 0.9.6
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 
 <SinceBadge since="0.9.6" />
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><CodeBadge type="js" name="display.staveProfile" /></td>
+          <td><CodeBadge type="js" name="StaveProfile" /></td>
+          <td><code>StaveProfile.Default</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="display.staveProfile" /></td>
+          <td><CodeBadge type="json" name="StaveProfile" /></td>
+          <td><code>StaveProfile.Default</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="net" name="Display.StaveProfile" /></td>
+          <td><CodeBadge type="net" name="StaveProfile" /></td>
+          <td><code>StaveProfile.Default</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="android" name="display.staveProfile" /></td>
+          <td><CodeBadge type="android" name="StaveProfile" /></td>
+          <td><code>StaveProfile.Default</code></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Description
-
 AlphaTab has various stave profiles that define which staves will be shown in for the rendered tracks.
 
-<PropertyDescription metadata={metadata} showJson={true} />
+## Related Types
 
-## Types
+### `enum alphaTab.StaveProfile`
 
-<TypeTable>
-    <TypeRow name="alphaTab.StaveProfile" type="js">
-        `Default` -  The profile is auto detected by the track configurations.<br />
-        `ScoreTab` -  Standard music notation and guitar tablature are rendered.<br />
-        `Score` -  Only standard music notation is rendered.<br />
-        `Tab` -  Only guitar tablature is rendered.<br />
-        `TabMixed` -  Only guitar tablature is rendered, but also rests and time signatures are not shown. This profile is typically used in multi-track scenarios.<br />
-    </TypeRow>
-    <TypeRow name="string" type="json-js-html">
-        `default`<br />
-        `scoretab`<br />
-        `score`<br />
-        `tab`<br />
-        `tabmixed`    
-    </TypeRow>
-    <TypeRow name="int" type="json-js-html">
-        `0` - Default<br />
-        `1` - ScoreTab<br />
-        `2` - Score<br />
-        `3` - Tab<br />
-        `4` - TabMixed  
-    </TypeRow>
-    <TypeRow name="AlphaTab.StaveProfile" type="net">
-        `Default`<br />
-        `ScoreTab`<br />
-        `Score`<br />
-        `Tab`<br />
-        `TabMixed`<br />
-    </TypeRow>
-    <TypeRow name="alphaTab.StaveProfile" type="android">
-        `Default`<br />
-        `ScoreTab`<br />
-        `Score`<br />
-        `Tab`<br />
-        `TabMixed`<br />
-    </TypeRow>
-</TypeTable>
+<Tabs defaultValue="js" values={[
+  { label: "JavaScript", value: "js" },
+  { label: "Json", value: "json" },
+  { label: "C#", value: "net" },
+  { label: "Kotlin (Android)", value: "kotlin" },
+]}>
+<TabItem value="js">
+`import * as alphaTab from '@coderline/alphaTab';`
 
-## Default Value
-
-`Default`
+* `alphaTab.StaveProfile.Default` - The profile is auto detected by the track configurations.
+* `alphaTab.StaveProfile.ScoreTab` - Standard music notation and guitar tablature are rendered.
+* `alphaTab.StaveProfile.Score` - Only standard music notation is rendered.
+* `alphaTab.StaveProfile.Tab` - Only guitar tablature is rendered.
+* `alphaTab.StaveProfile.TabMixed` - Only guitar tablature is rendered, but also rests and time signatures are not shown.
+This profile is typically used in multi-track scenarios.
+</TabItem>
+<TabItem value="json">
+* `"Default"` - The profile is auto detected by the track configurations.
+* `"ScoreTab"` - Standard music notation and guitar tablature are rendered.
+* `"Score"` - Only standard music notation is rendered.
+* `"Tab"` - Only guitar tablature is rendered.
+* `"TabMixed"` - Only guitar tablature is rendered, but also rests and time signatures are not shown.
+This profile is typically used in multi-track scenarios.
+</TabItem>
+<TabItem value="net">
+* `AlphaTab.StaveProfile.Default` - The profile is auto detected by the track configurations.
+* `AlphaTab.StaveProfile.ScoreTab` - Standard music notation and guitar tablature are rendered.
+* `AlphaTab.StaveProfile.Score` - Only standard music notation is rendered.
+* `AlphaTab.StaveProfile.Tab` - Only guitar tablature is rendered.
+* `AlphaTab.StaveProfile.TabMixed` - Only guitar tablature is rendered, but also rests and time signatures are not shown.
+This profile is typically used in multi-track scenarios.
+</TabItem>
+<TabItem value="kotlin">
+* `alphaTab.StaveProfile.Default` - The profile is auto detected by the track configurations.
+* `alphaTab.StaveProfile.ScoreTab` - Standard music notation and guitar tablature are rendered.
+* `alphaTab.StaveProfile.Score` - Only standard music notation is rendered.
+* `alphaTab.StaveProfile.Tab` - Only guitar tablature is rendered.
+* `alphaTab.StaveProfile.TabMixed` - Only guitar tablature is rendered, but also rests and time signatures are not shown.
+This profile is typically used in multi-track scenarios.
+</TabItem>
+</Tabs>

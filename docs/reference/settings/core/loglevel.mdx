@@ -6,58 +6,99 @@ sidebar_custom_props:
   category: Core
   since: 0.9.6
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 
 <SinceBadge since="0.9.6" />
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><CodeBadge type="js" name="core.logLevel" /></td>
+          <td><CodeBadge type="js" name="LogLevel" /></td>
+          <td><code>LogLevel.Info</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="js" name="logLevel" /></td>
+          <td><CodeBadge type="js" name="LogLevel" /></td>
+          <td><code>LogLevel.Info</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="core.logLevel" /></td>
+          <td><CodeBadge type="json" name="LogLevel" /></td>
+          <td><code>LogLevel.Info</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="logLevel" /></td>
+          <td><CodeBadge type="json" name="LogLevel" /></td>
+          <td><code>LogLevel.Info</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="net" name="Core.LogLevel" /></td>
+          <td><CodeBadge type="net" name="LogLevel" /></td>
+          <td><code>LogLevel.Info</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="android" name="core.logLevel" /></td>
+          <td><CodeBadge type="android" name="LogLevel" /></td>
+          <td><code>LogLevel.Info</code></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Description
-AlphaTab internally does quite a bit of logging for debugging and informational purposes. The log level of alphaTab can be controlled via this setting.
+AlphaTab internally does quite a bit of logging for debugging and informational purposes.
+The log level of alphaTab can be controlled via this setting.
 
-<PropertyDescription metadata={metadata} showJson={true} />
+## Related Types
 
-## Types
+### `enum alphaTab.LogLevel`
 
-<TypeTable>
-    <TypeRow type="js" name="alphaTab.LogLevel">
-        `None` - No logging<br />
-        `Debug` - Debug level (internal details are displayed)<br />
-        `Info` - Info level (only important details are shown)<br />
-        `Warning`<br />
-        `Error`
-    </TypeRow>
-    <TypeRow type="json-js-html" name="string">
-        `none`<br />
-        `debug`<br />
-        `info`<br />
-        `warning`<br />
-        `error`
-    </TypeRow>
-    <TypeRow type="json-js-html" name="int">
-        `0` - None<br />
-        `1` - Debug<br />
-        `2` - Info<br />
-        `3` - Warning<br />
-        `4` - Error
-    </TypeRow>
-    <TypeRow type="net" name="AlphaTab.LogLevel">
-        `None`<br />
-        `Debug`<br />
-        `Info`<br />
-        `Warning`<br />
-        `Error`
-    </TypeRow>
-    <TypeRow type="android" name="alphaTab.LogLevel">
-        `None`<br />
-        `Debug`<br />
-        `Info`<br />
-        `Warning`<br />
-        `Error`
-    </TypeRow>
-</TypeTable>
+<Tabs defaultValue="js" values={[
+  { label: "JavaScript", value: "js" },
+  { label: "Json", value: "json" },
+  { label: "C#", value: "net" },
+  { label: "Kotlin (Android)", value: "kotlin" },
+]}>
+<TabItem value="js">
+`import * as alphaTab from '@coderline/alphaTab';`
 
-## Default Value
-
-`Info`
+* `alphaTab.LogLevel.None` - No logging
+* `alphaTab.LogLevel.Debug` - Debug level (internal details are displayed).
+* `alphaTab.LogLevel.Info` - Info level (only important details are shown)
+* `alphaTab.LogLevel.Warning` - Warning level
+* `alphaTab.LogLevel.Error` - Error level.
+</TabItem>
+<TabItem value="json">
+* `"None"` - No logging
+* `"Debug"` - Debug level (internal details are displayed).
+* `"Info"` - Info level (only important details are shown)
+* `"Warning"` - Warning level
+* `"Error"` - Error level.
+</TabItem>
+<TabItem value="net">
+* `AlphaTab.LogLevel.None` - No logging
+* `AlphaTab.LogLevel.Debug` - Debug level (internal details are displayed).
+* `AlphaTab.LogLevel.Info` - Info level (only important details are shown)
+* `AlphaTab.LogLevel.Warning` - Warning level
+* `AlphaTab.LogLevel.Error` - Error level.
+</TabItem>
+<TabItem value="kotlin">
+* `alphaTab.LogLevel.None` - No logging
+* `alphaTab.LogLevel.Debug` - Debug level (internal details are displayed).
+* `alphaTab.LogLevel.Info` - Info level (only important details are shown)
+* `alphaTab.LogLevel.Warning` - Warning level
+* `alphaTab.LogLevel.Error` - Error level.
+</TabItem>
+</Tabs>

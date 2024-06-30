@@ -1,53 +1,84 @@
 ---
 title: notation.rhythmMode
-description: Controls how the rhythm notation is rendered for tab staves. 
+description: Controls how the rhythm notation is rendered for tab staves.
 sidebar_custom_props:
   category: Notation
   since: 0.9.6
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 
 <SinceBadge since="0.9.6" />
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><CodeBadge type="js" name="notation.rhythmMode" /></td>
+          <td><CodeBadge type="js" name="TabRhythmMode" /></td>
+          <td><code>TabRhythmMode.Hidden</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="notation.rhythmMode" /></td>
+          <td><CodeBadge type="json" name="TabRhythmMode" /></td>
+          <td><code>TabRhythmMode.Hidden</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="net" name="Notation.RhythmMode" /></td>
+          <td><CodeBadge type="net" name="TabRhythmMode" /></td>
+          <td><code>TabRhythmMode.Hidden</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="android" name="notation.rhythmMode" /></td>
+          <td><CodeBadge type="android" name="TabRhythmMode" /></td>
+          <td><code>TabRhythmMode.Hidden</code></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Description
-
 This setting enables the display of rhythm notation on tab staffs. [Demo](/docs/showcase/guitar-tabs)
 
-<PropertyDescription metadata={metadata} showJson={true} />
+## Related Types
 
-## Types
+### `enum alphaTab.TabRhythmMode`
 
-<TypeTable>
-    <TypeRow name="alphaTab.TabRhythmMode" type="js">
-        `Hidden` -  No rhythm notation is shown<br />
-        `ShowWithBeams` - Rhythm notation is rendered with all beats having individual beams<br />
-        `ShowWithBars` - Rhythm notation is rendered with normal bars like on standard notation
-    </TypeRow>
-    <TypeRow name="string" type="json-js-html">
-        `hidden`<br />
-        `showwithbeams`<br />
-        `showwithbars`
-    </TypeRow>
-    <TypeRow name="int" type="json-js-html">
-        `0` - Hidden<br />
-        `1` - ShowWithBeams<br />
-        `2` - ShowWithBars
-    </TypeRow>
-    <TypeRow name="AlphaTab.TabRhythmMode" type="net">
-        `Hidden`<br />
-        `ShowWithBeams`<br />
-        `ShowWithBars`
-    </TypeRow>
-    <TypeRow name="alphaTab.TabRhythmMode" type="android">
-        `Hidden`<br />
-        `ShowWithBeams`<br />
-        `ShowWithBars`
-    </TypeRow>
-</TypeTable>
+<Tabs defaultValue="js" values={[
+  { label: "JavaScript", value: "js" },
+  { label: "Json", value: "json" },
+  { label: "C#", value: "net" },
+  { label: "Kotlin (Android)", value: "kotlin" },
+]}>
+<TabItem value="js">
+`import * as alphaTab from '@coderline/alphaTab';`
 
-## Default Value
-
-`hidden`
+* `alphaTab.TabRhythmMode.Hidden` - Rhythm notation is hidden.
+* `alphaTab.TabRhythmMode.ShowWithBeams` - Rhythm notation is shown with individual beams per beat.
+* `alphaTab.TabRhythmMode.ShowWithBars` - Rhythm notation is shown and behaves like normal score notation with connected bars.
+</TabItem>
+<TabItem value="json">
+* `"Hidden"` - Rhythm notation is hidden.
+* `"ShowWithBeams"` - Rhythm notation is shown with individual beams per beat.
+* `"ShowWithBars"` - Rhythm notation is shown and behaves like normal score notation with connected bars.
+</TabItem>
+<TabItem value="net">
+* `AlphaTab.TabRhythmMode.Hidden` - Rhythm notation is hidden.
+* `AlphaTab.TabRhythmMode.ShowWithBeams` - Rhythm notation is shown with individual beams per beat.
+* `AlphaTab.TabRhythmMode.ShowWithBars` - Rhythm notation is shown and behaves like normal score notation with connected bars.
+</TabItem>
+<TabItem value="kotlin">
+* `alphaTab.TabRhythmMode.Hidden` - Rhythm notation is hidden.
+* `alphaTab.TabRhythmMode.ShowWithBeams` - Rhythm notation is shown with individual beams per beat.
+* `alphaTab.TabRhythmMode.ShowWithBars` - Rhythm notation is shown and behaves like normal score notation with connected bars.
+</TabItem>
+</Tabs>

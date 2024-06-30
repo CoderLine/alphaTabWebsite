@@ -2,194 +2,534 @@
 title: display.resources
 description: Allows adjusting of the used fonts and colors for rendering.
 sidebar_custom_props:
-  domWildcard: true
-  jsOnParent: true
   category: Display
   since: 0.9.6
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 
 <SinceBadge since="0.9.6" />
 
-import useBaseUrl from '@docusaurus/useBaseUrl';
-import { CodeBadge } from '@site/src/components/CodeBadge';
-
-export var Resources = {
-	colors: [
-		{
-			name: 'barNumberColor',
-			defaultValue: 'rgb(200, 0, 0)',
-			description: 'The color to use for displaying the bar numbers above the music sheet.',
-		},
-		{
-			name: 'barSeparatorColor',
-			defaultValue: 'rgb(34, 34, 17)',
-			description: 'The color to use for rendering bar separators, the accolade and repeat signs.',
-		},
-		{
-			name: 'mainGlyphColor',
-			defaultValue: 'rgb(0, 0, 0)',
-			description: 'The color to use for music notation elements of the primary voice.',
-		},
-		{
-			name: 'scoreInfoColor',
-			defaultValue: 'rgb(0, 0, 0)',
-			description: 'The color to use for displaying the song information above the music sheets.',
-		},
-		{
-			name: 'secondaryGlyphColor',
-			defaultValue: 'rgb(0,0,0,0.4)',
-			description: 'The color to use for music notation elements of the secondary voices.',
-		},
-		{
-			name: 'staffLineColor',
-			defaultValue: 'rgb(165, 165, 165)',
-			description: 'The color to use for rendering the lines of staves.',
-		},
-	],
-	fonts: [
-		{
-			name: 'barNumberFont',
-			defaultValue: '11px Arial, sans-serif',
-			description: 'The font to use for displaying the bar numbers above the music sheet.',
-		}, 
-		{
-			name: 'copyrightFont',
-			defaultValue: 'bold 12px Arial, sans-serif',
-			description: 'The font to use for displaying the songs copyright information in the header of the music sheet.,',
-		},
-		{
-			name: 'effectFont',
-			defaultValue: 'italic 12px Georgia, serif',
-			description: 'The font to use for displaying certain effect related elements in the music sheet.',
-		},
-		{
-			name: 'fingeringFont',
-			defaultValue: '14px Georgia, serif',
-			description: 'The font to use for displaying finger information in the music sheet.',
-		},
-		{
-			name: 'fretboardNumberFont',
-			defaultValue: '11px Arial, sans-serif',
-			description: 'The font to use for displaying the fretboard numbers in chord diagrams.',
-		},
-		{
-			name: 'graceFont',
-			defaultValue: '11px Arial, sans-serif',
-			description: 'The font to use for grace notation related texts in the music sheet.',
-		},
-		{
-			name: 'markerFont',
-			defaultValue: 'bold 14px Georgia, serif',
-			description: 'The font to use for section marker labels shown above the music sheet.',
-		},
-		{
-			name: 'subTitleFont',
-			defaultValue: '20px Georgia, serif',
-			description: 'The font to use for displaying the songs subtitle in the header of the music sheet.',
-		},
-		{
-			name: 'tablatureFont',
-			defaultValue: '13px Arial, sans-serif',
-			description: 'The font to use for displaying the guitar tablature numbers in the music sheet.',
-		},
-		{
-			name: 'titleFont',
-			defaultValue: '32px Georgia, serif',
-			description: 'The font to use for displaying the songs title in the header of the music sheet.',
-		},
-		{
-			name: 'wordsFont',
-			defaultValue: '15px Arial, sans-serif',
-			description: 'The font to use for displaying the lyrics information in the header of the music sheet.',
-		}
-	]
-};
-
-export function toPascalCase(v) {
-    return v.substr(0, 1).toUpperCase() + v.substr(1);
-}
-
-export function ResourceRow({resource, type}) {  
-    return (
+<table className="table table-striped table-condensed type-table">
+    <thead>
         <tr>
-            <td>
-                <CodeBadge type="js" name={resource.name} /><br />
-                <CodeBadge type="json" name={resource.name} /><br />
-                <CodeBadge type="html" name={resource.name.toLowerCase()} /><br />
-                <CodeBadge type="net" name={toPascalCase(resource.name)} />
-                <CodeBadge type="android" name={resource.name} />
-            </td>
-            <td>
-                <CodeBadge type="all" name={type} />
-            </td>
-            <td>{resource.defaultValue}</td>
-            <td>
-                {resource.description}
-            </td>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
         </tr>
-    );
-}
-
-export function ResourceTable() {
-    const colors = Resources.colors.map(c => <ResourceRow type="color" resource={c} />);
-    const fonts = Resources.fonts.map(f => <ResourceRow type="font" resource={f} />);
-    return (
-        <table className="table table-striped table-condensed type-table">
-            <thead>
-                <tr>
-                    <th>Resource</th>
-                    <th>Type</th>
-                    <th>Default</th>
-                    <th>Summary</th>
-                </tr>
-            </thead>    
-            <tbody> 
-                {colors}
-                {fonts}
-            </tbody>
-        </table>
-    );
-}
+    </thead>
+    <tbody>
+        <tr>
+          <td><CodeBadge type="js" name="display.resources" /></td>
+          <td><CodeBadge type="js" name="RenderingResources" /></td>
+          <td><code></code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="display.resources" /></td>
+          <td><CodeBadge type="json" name="RenderingResources" /></td>
+          <td><code></code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="net" name="Display.Resources" /></td>
+          <td><CodeBadge type="net" name="RenderingResources" /></td>
+          <td><code></code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="android" name="display.resources" /></td>
+          <td><CodeBadge type="android" name="RenderingResources" /></td>
+          <td><code></code></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Description
-
 AlphaTab allows configuring the colors and fonts used for rendering via the rendering resources settings. Please note that as of today
-this is the primary way of changing the way how alphaTab styles elements. CSS styling in the browser cannot be guaranteed to work due to its flexibility. 
+this is the primary way of changing the way how alphaTab styles elements. CSS styling in the browser cannot be guaranteed to work due to its flexibility.
 
-
-Due to space reasons in the following table the common prefix of the settings are removed. Please refer to these examples to eliminate confusion on the usage: 
-
+Due to space reasons in the following table the common prefix of the settings are removed. Please refer to these examples to eliminate confusion on the usage:
 | Platform   | Prefix                    | Example Usage                                                      |
 |------------|---------------------------|--------------------------------------------------------------------|
 | JavaScript | `display.resources.`      | `settings.display.resources.wordsFont = ...`                       |
 | JSON       | `display.resources.`      | `var settings = { display: { resources: { wordsFonts: '...'} } };` |
-| JSON       | `resources.`              | `var settings = { resources: { wordsFonts: '...'} };`              |
-| HTML       | `data-display-resources-` | `<div data-display-resources-wordsfont="...">`                     |
-| HTML       | `data-resources-`         | `<div data-resources-wordsfont="...">`                             |
 | .net       | `Display.Resources.`      | `settings.Display.Resources.WordsFonts = ...`                      |
 | Android    | `display.resources.`      | `settings.display.resources.wordsFonts = ...`                      |
 
+## Related Types
 
-## Resources
-Following resources exist for adjusting the style. 
+### `class alphaTab.RenderingResources`
 
-<ResourceTable />
-
-## Types
-
-### Fonts
-
-For the JavaScript platform any font that might be installed on the client machines can be used. 
-Any additional fonts can be added via WebFonts. The rendering of the score will be delayed until it is detected that the font was loaded. 
-Simply use any CSS font property compliant string as configuration. Relative font sizes with percentual values are not supported, remaining values will be considered if supported.
-
-<span class="badge badge--info badge--header">Since 1.2.3</span> Multiple fonts are also supported for the Web version. alphaTab will check if any of the fonts in the list is loaded instead of all. If none is available at the time alphaTab is initialized, it will try to initiate the load of the specified fonts individual through the Browser Font APIs.
-
-For the .net platform any installed font on the system can be used. Simply construct the `Font` object to configure your desired fonts. 
-
-### Colors
-
-For JavaScript you can use any CSS font property compliant string. (#RGB, #RGBA, #RRGGBB, #RRGGBBAA, rgb(r,g,b), rgba(r,g,b,a) )
-
-On .net simply construct the `Color` object to configure your desired color. 
+<Tabs defaultValue="js" values={[
+  { label: "JavaScript", value: "js" },
+  { label: "Json", value: "json" },
+  { label: "C#", value: "net" },
+  { label: "Kotlin (Android)", value: "kotlin" },
+]}>
+<TabItem value="js">
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+            <th>Property</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Summary</th>
+        </tr>
+    </thead>    
+    <tbody> 
+        <tr>
+            <td><CodeBadge type="js" name="copyrightFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'bold 12px Arial, sans-serif'</code></td>
+            <td>The font to use for displaying the songs copyright information in the header of the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="js" name="titleFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'32px Georgia, serif'</code></td>
+            <td>The font to use for displaying the songs title in the header of the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="js" name="subTitleFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'20px Georgia, serif'</code></td>
+            <td>The font to use for displaying the songs subtitle in the header of the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="js" name="wordsFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'15px Georgia, serif'</code></td>
+            <td>The font to use for displaying the lyrics information in the header of the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="js" name="effectFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'italic 12px Georgia, serif'</code></td>
+            <td>The font to use for displaying certain effect related elements in the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="js" name="fretboardNumberFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'11px Arial, sans-serif'</code></td>
+            <td>The font to use for displaying the fretboard numbers in chord diagrams.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="js" name="tablatureFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'13px Arial, sans-serif'</code></td>
+            <td>The font to use for displaying the guitar tablature numbers in the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="js" name="graceFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'11px Arial, sans-serif'</code></td>
+            <td>The font to use for grace notation related texts in the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="js" name="staffLineColor" /></td>
+            <td><code>Color</code></td>
+            <td><code>'rgba(165, 165, 165, 1)'</code></td>
+            <td>The color to use for rendering the lines of staves.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="js" name="barSeparatorColor" /></td>
+            <td><code>Color</code></td>
+            <td><code>'rgba(34, 34, 17, 1)'</code></td>
+            <td>The color to use for rendering bar separators, the accolade and repeat signs.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="js" name="barNumberFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'11px Arial, sans-serif'</code></td>
+            <td>The font to use for displaying the bar numbers above the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="js" name="barNumberColor" /></td>
+            <td><code>Color</code></td>
+            <td><code>'rgba(200, 0, 0, 1)'</code></td>
+            <td>The color to use for displaying the bar numbers above the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="js" name="fingeringFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'14px Georgia, serif'</code></td>
+            <td>The font to use for displaying finger information in the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="js" name="markerFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'bold 14px Georgia, serif'</code></td>
+            <td>The font to use for section marker labels shown above the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="js" name="mainGlyphColor" /></td>
+            <td><code>Color</code></td>
+            <td><code>'rgba(0, 0, 0, 1)'</code></td>
+            <td>The color to use for music notation elements of the primary voice.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="js" name="secondaryGlyphColor" /></td>
+            <td><code>Color</code></td>
+            <td><code>'rgba(0, 0, 0, 0.39)'</code></td>
+            <td>The color to use for music notation elements of the secondary voices.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="js" name="scoreInfoColor" /></td>
+            <td><code>Color</code></td>
+            <td><code>'rgba(0, 0, 0, 1)'</code></td>
+            <td>The color to use for displaying the song information above the music sheet.</td>
+        </tr>
+    </tbody>
+</table>
+</TabItem>
+<TabItem value="json">
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+            <th>Setting</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Summary</th>
+        </tr>
+    </thead>    
+    <tbody> 
+        <tr>
+            <td><CodeBadge type="json" name="copyrightFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'bold 12px Arial, sans-serif'</code></td>
+            <td>The font to use for displaying the songs copyright information in the header of the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="json" name="titleFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'32px Georgia, serif'</code></td>
+            <td>The font to use for displaying the songs title in the header of the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="json" name="subTitleFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'20px Georgia, serif'</code></td>
+            <td>The font to use for displaying the songs subtitle in the header of the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="json" name="wordsFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'15px Georgia, serif'</code></td>
+            <td>The font to use for displaying the lyrics information in the header of the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="json" name="effectFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'italic 12px Georgia, serif'</code></td>
+            <td>The font to use for displaying certain effect related elements in the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="json" name="fretboardNumberFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'11px Arial, sans-serif'</code></td>
+            <td>The font to use for displaying the fretboard numbers in chord diagrams.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="json" name="tablatureFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'13px Arial, sans-serif'</code></td>
+            <td>The font to use for displaying the guitar tablature numbers in the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="json" name="graceFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'11px Arial, sans-serif'</code></td>
+            <td>The font to use for grace notation related texts in the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="json" name="staffLineColor" /></td>
+            <td><code>Color</code></td>
+            <td><code>'rgba(165, 165, 165, 1)'</code></td>
+            <td>The color to use for rendering the lines of staves.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="json" name="barSeparatorColor" /></td>
+            <td><code>Color</code></td>
+            <td><code>'rgba(34, 34, 17, 1)'</code></td>
+            <td>The color to use for rendering bar separators, the accolade and repeat signs.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="json" name="barNumberFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'11px Arial, sans-serif'</code></td>
+            <td>The font to use for displaying the bar numbers above the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="json" name="barNumberColor" /></td>
+            <td><code>Color</code></td>
+            <td><code>'rgba(200, 0, 0, 1)'</code></td>
+            <td>The color to use for displaying the bar numbers above the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="json" name="fingeringFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'14px Georgia, serif'</code></td>
+            <td>The font to use for displaying finger information in the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="json" name="markerFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'bold 14px Georgia, serif'</code></td>
+            <td>The font to use for section marker labels shown above the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="json" name="mainGlyphColor" /></td>
+            <td><code>Color</code></td>
+            <td><code>'rgba(0, 0, 0, 1)'</code></td>
+            <td>The color to use for music notation elements of the primary voice.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="json" name="secondaryGlyphColor" /></td>
+            <td><code>Color</code></td>
+            <td><code>'rgba(0, 0, 0, 0.39)'</code></td>
+            <td>The color to use for music notation elements of the secondary voices.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="json" name="scoreInfoColor" /></td>
+            <td><code>Color</code></td>
+            <td><code>'rgba(0, 0, 0, 1)'</code></td>
+            <td>The color to use for displaying the song information above the music sheet.</td>
+        </tr>
+    </tbody>
+</table>
+</TabItem>
+<TabItem value="net">
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+            <th>Setting</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Summary</th>
+        </tr>
+    </thead>    
+    <tbody> 
+        <tr>
+            <td><CodeBadge type="net" name="CopyrightFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'bold 12px Arial, sans-serif'</code></td>
+            <td>The font to use for displaying the songs copyright information in the header of the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="TitleFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'32px Georgia, serif'</code></td>
+            <td>The font to use for displaying the songs title in the header of the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="SubTitleFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'20px Georgia, serif'</code></td>
+            <td>The font to use for displaying the songs subtitle in the header of the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="WordsFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'15px Georgia, serif'</code></td>
+            <td>The font to use for displaying the lyrics information in the header of the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="EffectFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'italic 12px Georgia, serif'</code></td>
+            <td>The font to use for displaying certain effect related elements in the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="FretboardNumberFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'11px Arial, sans-serif'</code></td>
+            <td>The font to use for displaying the fretboard numbers in chord diagrams.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="TablatureFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'13px Arial, sans-serif'</code></td>
+            <td>The font to use for displaying the guitar tablature numbers in the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="GraceFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'11px Arial, sans-serif'</code></td>
+            <td>The font to use for grace notation related texts in the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="StaffLineColor" /></td>
+            <td><code>Color</code></td>
+            <td><code>'rgba(165, 165, 165, 1)'</code></td>
+            <td>The color to use for rendering the lines of staves.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="BarSeparatorColor" /></td>
+            <td><code>Color</code></td>
+            <td><code>'rgba(34, 34, 17, 1)'</code></td>
+            <td>The color to use for rendering bar separators, the accolade and repeat signs.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="BarNumberFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'11px Arial, sans-serif'</code></td>
+            <td>The font to use for displaying the bar numbers above the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="BarNumberColor" /></td>
+            <td><code>Color</code></td>
+            <td><code>'rgba(200, 0, 0, 1)'</code></td>
+            <td>The color to use for displaying the bar numbers above the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="FingeringFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'14px Georgia, serif'</code></td>
+            <td>The font to use for displaying finger information in the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="MarkerFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'bold 14px Georgia, serif'</code></td>
+            <td>The font to use for section marker labels shown above the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="MainGlyphColor" /></td>
+            <td><code>Color</code></td>
+            <td><code>'rgba(0, 0, 0, 1)'</code></td>
+            <td>The color to use for music notation elements of the primary voice.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="SecondaryGlyphColor" /></td>
+            <td><code>Color</code></td>
+            <td><code>'rgba(0, 0, 0, 0.39)'</code></td>
+            <td>The color to use for music notation elements of the secondary voices.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="ScoreInfoColor" /></td>
+            <td><code>Color</code></td>
+            <td><code>'rgba(0, 0, 0, 1)'</code></td>
+            <td>The color to use for displaying the song information above the music sheet.</td>
+        </tr>
+    </tbody>
+</table>
+</TabItem>
+<TabItem value="kotlin">
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+            <th>Setting</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Summary</th>
+        </tr>
+    </thead>    
+    <tbody> 
+        <tr>
+            <td><CodeBadge type="net" name="copyrightFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'bold 12px Arial, sans-serif'</code></td>
+            <td>The font to use for displaying the songs copyright information in the header of the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="titleFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'32px Georgia, serif'</code></td>
+            <td>The font to use for displaying the songs title in the header of the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="subTitleFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'20px Georgia, serif'</code></td>
+            <td>The font to use for displaying the songs subtitle in the header of the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="wordsFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'15px Georgia, serif'</code></td>
+            <td>The font to use for displaying the lyrics information in the header of the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="effectFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'italic 12px Georgia, serif'</code></td>
+            <td>The font to use for displaying certain effect related elements in the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="fretboardNumberFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'11px Arial, sans-serif'</code></td>
+            <td>The font to use for displaying the fretboard numbers in chord diagrams.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="tablatureFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'13px Arial, sans-serif'</code></td>
+            <td>The font to use for displaying the guitar tablature numbers in the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="graceFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'11px Arial, sans-serif'</code></td>
+            <td>The font to use for grace notation related texts in the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="staffLineColor" /></td>
+            <td><code>Color</code></td>
+            <td><code>'rgba(165, 165, 165, 1)'</code></td>
+            <td>The color to use for rendering the lines of staves.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="barSeparatorColor" /></td>
+            <td><code>Color</code></td>
+            <td><code>'rgba(34, 34, 17, 1)'</code></td>
+            <td>The color to use for rendering bar separators, the accolade and repeat signs.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="barNumberFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'11px Arial, sans-serif'</code></td>
+            <td>The font to use for displaying the bar numbers above the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="barNumberColor" /></td>
+            <td><code>Color</code></td>
+            <td><code>'rgba(200, 0, 0, 1)'</code></td>
+            <td>The color to use for displaying the bar numbers above the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="fingeringFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'14px Georgia, serif'</code></td>
+            <td>The font to use for displaying finger information in the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="markerFont" /></td>
+            <td><code>Font</code></td>
+            <td><code>'bold 14px Georgia, serif'</code></td>
+            <td>The font to use for section marker labels shown above the music sheet.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="mainGlyphColor" /></td>
+            <td><code>Color</code></td>
+            <td><code>'rgba(0, 0, 0, 1)'</code></td>
+            <td>The color to use for music notation elements of the primary voice.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="secondaryGlyphColor" /></td>
+            <td><code>Color</code></td>
+            <td><code>'rgba(0, 0, 0, 0.39)'</code></td>
+            <td>The color to use for music notation elements of the secondary voices.</td>
+        </tr>
+        <tr>
+            <td><CodeBadge type="net" name="scoreInfoColor" /></td>
+            <td><code>Color</code></td>
+            <td><code>'rgba(0, 0, 0, 1)'</code></td>
+            <td>The color to use for displaying the song information above the music sheet.</td>
+        </tr>
+    </tbody>
+</table>
+</TabItem>
+</Tabs>

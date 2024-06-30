@@ -7,27 +7,48 @@ sidebar_custom_props:
   category: Core - JavaScript Specific
   since: 0.9.6
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 
 <SinceBadge since="0.9.6" />
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><CodeBadge type="js" name="core.file" /></td>
+          <td><CodeBadge type="js" name="string | null" /></td>
+          <td><code>null</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="js" name="file" /></td>
+          <td><CodeBadge type="js" name="string | null" /></td>
+          <td><code>null</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="core.file" /></td>
+          <td><CodeBadge type="json" name="string | null" /></td>
+          <td><code>null</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="file" /></td>
+          <td><CodeBadge type="json" name="string | null" /></td>
+          <td><code>null</code></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Description
-
 AlphaTab can automatically load and render a file after initialization. This eliminates the need of manually calling
 one of the load methods which are available. alphaTab will automatically initiate an `XMLHttpRequest` after initialization
 to load and display the provided url of this setting. Note that this setting is only interpreted once on initialization.
-
-<PropertyDescription metadata={metadata} showJson={true} />
-
-## Types
-
-<TypeTable>
-    <TypeRow name="string" />
-</TypeTable>
-
-## Default Value
-
-`null`

@@ -5,50 +5,80 @@ sidebar_custom_props:
   category: Player
   since: 0.9.6
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 
 <SinceBadge since="0.9.6" />
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><CodeBadge type="js" name="player.scrollMode" /></td>
+          <td><CodeBadge type="js" name="ScrollMode" /></td>
+          <td><code>ScrollMode.Continuous</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="player.scrollMode" /></td>
+          <td><CodeBadge type="json" name="ScrollMode" /></td>
+          <td><code>ScrollMode.Continuous</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="net" name="Player.ScrollMode" /></td>
+          <td><CodeBadge type="net" name="ScrollMode" /></td>
+          <td><code>ScrollMode.Continuous</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="android" name="player.scrollMode" /></td>
+          <td><CodeBadge type="android" name="ScrollMode" /></td>
+          <td><code>ScrollMode.Continuous</code></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Description
+This setting controls how alphaTab behaves for scrolling.
 
-This setting controls how alphaTab behaves for scrolling. It supports 3 modes: 
+## Related Types
 
-<PropertyDescription metadata={metadata} showJson={true} />
+### `enum alphaTab.ScrollMode`
 
-## Types
+<Tabs defaultValue="js" values={[
+  { label: "JavaScript", value: "js" },
+  { label: "Json", value: "json" },
+  { label: "C#", value: "net" },
+  { label: "Kotlin (Android)", value: "kotlin" },
+]}>
+<TabItem value="js">
+`import * as alphaTab from '@coderline/alphaTab';`
 
-<TypeTable>
-    <TypeRow type="js" name="alphaTab.ScrollMode">
-        `Off` - No automatic scrolling is done<br />
-        `Continuous` - Scrolling happens as soon the offsets of the cursors change<br />
-        `OffScreen` - Scrolling happens as soon the cursors exceed the displayed range
-    </TypeRow>
-    <TypeRow type="json-js-html" name="string">
-        `off`<br />
-        `continuous`<br />
-        `offscreen`
-    </TypeRow>
-    <TypeRow type="json-js-html" name="int">
-        `0` - Off<br />
-        `1` - Continuous<br />
-        `2` - OffScreen
-    </TypeRow>
-    <TypeRow type="net" name="AlphaTab.ScrollMode">
-        `Off`<br />
-        `Continuous`<br />
-        `OffScreen`
-    </TypeRow>
-    <TypeRow type="android" name="alphaTab.ScrollMode">
-        `Off`<br />
-        `Continuous`<br />
-        `OffScreen`
-    </TypeRow>
-
-</TypeTable>
-
-## Default Value
-
-`Continuous`
+* `alphaTab.ScrollMode.Off` - Do not scroll automatically
+* `alphaTab.ScrollMode.Continuous` - Scrolling happens as soon the offsets of the cursors change.
+* `alphaTab.ScrollMode.OffScreen` - Scrolling happens as soon the cursors exceed the displayed range.
+</TabItem>
+<TabItem value="json">
+* `"Off"` - Do not scroll automatically
+* `"Continuous"` - Scrolling happens as soon the offsets of the cursors change.
+* `"OffScreen"` - Scrolling happens as soon the cursors exceed the displayed range.
+</TabItem>
+<TabItem value="net">
+* `AlphaTab.ScrollMode.Off` - Do not scroll automatically
+* `AlphaTab.ScrollMode.Continuous` - Scrolling happens as soon the offsets of the cursors change.
+* `AlphaTab.ScrollMode.OffScreen` - Scrolling happens as soon the cursors exceed the displayed range.
+</TabItem>
+<TabItem value="kotlin">
+* `alphaTab.ScrollMode.Off` - Do not scroll automatically
+* `alphaTab.ScrollMode.Continuous` - Scrolling happens as soon the offsets of the cursors change.
+* `alphaTab.ScrollMode.OffScreen` - Scrolling happens as soon the cursors exceed the displayed range.
+</TabItem>
+</Tabs>

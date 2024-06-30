@@ -2,32 +2,63 @@
 title: core.enableLazyLoading
 description: Enables lazy loading of the rendered music sheet chunks.
 sidebar_custom_props:
-  javaScriptOnly: true
   jsOnParent: true
-  category: Core - JavaScript Specific
+  category: Core
   since: 0.9.6
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 
 <SinceBadge since="0.9.6" />
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><CodeBadge type="js" name="core.enableLazyLoading" /></td>
+          <td><CodeBadge type="js" name="boolean" /></td>
+          <td><code>true</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="js" name="enableLazyLoading" /></td>
+          <td><CodeBadge type="js" name="boolean" /></td>
+          <td><code>true</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="core.enableLazyLoading" /></td>
+          <td><CodeBadge type="json" name="boolean" /></td>
+          <td><code>true</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="enableLazyLoading" /></td>
+          <td><CodeBadge type="json" name="boolean" /></td>
+          <td><code>true</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="net" name="Core.EnableLazyLoading" /></td>
+          <td><CodeBadge type="net" name="bool" /></td>
+          <td><code>true</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="android" name="core.enableLazyLoading" /></td>
+          <td><CodeBadge type="android" name="Boolean" /></td>
+          <td><code>true</code></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Description
 AlphaTab renders the music sheet in smaller sub-chunks to have fast UI feedback. Not all of those sub-chunks are immediately
 appended to the DOM due to performance reasons. AlphaTab tries to detect which elements are visible on the screen, and only
-appends those elements to the DOM. This reduces the load of the browser heavily but is not working for all layouts and use cases. 
-This setting set to false, ensures that all rendered items are instantly appended to the DOM. 
-
-<PropertyDescription metadata={metadata} showJson={true}  />
-
-## Types
-
-<TypeTable>
-    <TypeRow name="bool" />
-</TypeTable>
-
-## Default Value
-
-`true`
+appends those elements to the DOM. This reduces the load of the browser heavily but is not working for all layouts and use cases.
+This setting set to false, ensures that all rendered items are instantly appended to the DOM.#

@@ -5,29 +5,51 @@ sidebar_custom_props:
   category: Notation
   since: 0.9.6
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 
 <SinceBadge since="0.9.6" />
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><CodeBadge type="js" name="notation.extendLineEffectsToBeatEnd" /></td>
+          <td><CodeBadge type="js" name="boolean" /></td>
+          <td><code>false</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="notation.extendLineEffectsToBeatEnd" /></td>
+          <td><CodeBadge type="json" name="boolean" /></td>
+          <td><code>false</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="net" name="Notation.ExtendLineEffectsToBeatEnd" /></td>
+          <td><CodeBadge type="net" name="bool" /></td>
+          <td><code>false</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="android" name="notation.extendLineEffectsToBeatEnd" /></td>
+          <td><CodeBadge type="android" name="Boolean" /></td>
+          <td><code>false</code></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Description
-
-By default effect annotations that render a line above the staff, stop on the beat. This is the typical display of Guitar Pro. In songbooks and some other tools 
-these effects are drawn to the end of this beat.     
-
-<PropertyDescription metadata={metadata} showJson={true} />
+By default effect annotations that render a line above the staff, stop on the beat. This is the typical display of Guitar Pro. In songbooks and some other tools
+these effects are drawn to the end of this beat.
 
 | Enabled                                                                     | Disabled                                                                      |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------|
 | ![Enabled](/img/reference/property/extendlineeffectstobeatend-enabled.png) | ![Disabled](/img/reference/property/extendlineeffectstobeatend-disabled.png) |
-
-## Types
-
-<TypeTable>
-    <TypeRow name="bool" />
-</TypeTable>
-
-## Default Value
-`false`

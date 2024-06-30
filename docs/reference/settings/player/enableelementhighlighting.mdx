@@ -5,26 +5,47 @@ sidebar_custom_props:
   category: Player
   since: 1.2.3
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 
 <SinceBadge since="1.2.3" />
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><CodeBadge type="js" name="player.enableElementHighlighting" /></td>
+          <td><CodeBadge type="js" name="boolean" /></td>
+          <td><code>true</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="player.enableElementHighlighting" /></td>
+          <td><CodeBadge type="json" name="boolean" /></td>
+          <td><code>true</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="net" name="Player.EnableElementHighlighting" /></td>
+          <td><CodeBadge type="net" name="bool" /></td>
+          <td><code>true</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="android" name="player.enableElementHighlighting" /></td>
+          <td><CodeBadge type="android" name="Boolean" /></td>
+          <td><code>true</code></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Description
-
-This setting configures whether the note elements are highlighted during playback. 
+This setting configures whether the note elements are highlighted during playback.
 The highlighting of elements might not be available on all targets and render engine, so it might not have any effect.
-
-<PropertyDescription metadata={metadata} showJson={true} />
-
-## Types
-
-<TypeTable>
-    <TypeRow name="bool" />
-</TypeTable>
-
-## Default Value
-
-`true`

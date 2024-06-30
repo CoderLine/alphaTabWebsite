@@ -5,25 +5,46 @@ sidebar_custom_props:
   category: Player
   since: 0.9.6
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 
 <SinceBadge since="0.9.6" />
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><CodeBadge type="js" name="player.playTripletFeel" /></td>
+          <td><CodeBadge type="js" name="boolean" /></td>
+          <td><code>true</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="player.playTripletFeel" /></td>
+          <td><CodeBadge type="json" name="boolean" /></td>
+          <td><code>true</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="net" name="Player.PlayTripletFeel" /></td>
+          <td><CodeBadge type="net" name="bool" /></td>
+          <td><code>true</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="android" name="player.playTripletFeel" /></td>
+          <td><CodeBadge type="android" name="Boolean" /></td>
+          <td><code>true</code></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Description
-
-If this setting is enabled alphaTab will play the triplet feels accordingly, if it is disabled the triplet feel is only displayed but not played. 
-
-<PropertyDescription metadata={metadata} showJson={true} />
-
-## Types
-
-<TypeTable>
-    <TypeRow name="bool" />
-</TypeTable>
-
-## Default Value
-
-`true`
+If this setting is enabled alphaTab will play the triplet feels accordingly, if it is disabled the triplet feel is only displayed but not played.

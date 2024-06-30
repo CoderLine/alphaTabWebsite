@@ -3,30 +3,41 @@ title: player.nativeBrowserSmoothScroll
 description: Whether the native browser smooth scroll mechanism should be used over a custom animation.
 sidebar_custom_props:
   javaScriptOnly: true
-  category: Player
+  category: Player - JavaScript Specific
   since: 1.2.3
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 
 <SinceBadge since="1.2.3" />
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><CodeBadge type="js" name="player.nativeBrowserSmoothScroll" /></td>
+          <td><CodeBadge type="js" name="boolean" /></td>
+          <td><code>true</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="player.nativeBrowserSmoothScroll" /></td>
+          <td><CodeBadge type="json" name="boolean" /></td>
+          <td><code>true</code></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Description
-
 This setting configures whether the [native browser feature](https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollTo)
 for smooth scrolling should be used over a custom animation.
-If this setting is enabled, options like `player.scrollSpeed` will not have an effect anymore.
-
-<PropertyDescription metadata={metadata} showJson={true} />
-
-## Types
-
-<TypeTable>
-    <TypeRow name="bool" />
-</TypeTable>
-
-## Default Value
-
-`true`
+If this setting is enabled, options like `PlayerSettings.scrollSpeed` will not have an effect anymore.

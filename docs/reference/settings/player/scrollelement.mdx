@@ -6,30 +6,38 @@ sidebar_custom_props:
   category: Player - JavaScript Specific
   since: 0.9.6
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 
 <SinceBadge since="0.9.6" />
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><CodeBadge type="js" name="player.scrollElement" /></td>
+          <td><CodeBadge type="js" name="string | HTMLElement" /></td>
+          <td><code>'html,body'</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="player.scrollElement" /></td>
+          <td><CodeBadge type="json" name="string | HTMLElement" /></td>
+          <td><code>"html,body"</code></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Description
-
-When the player is active, it by default automatically scrolls the browser window to the currently played bar. This setting 
+When the player is active, it by default automatically scrolls the browser window to the currently played bar. This setting
 defines which elements should be scrolled to bring the played bar into the view port. By default scrolling happens on the `html,body`
-selector. 
-
-<PropertyDescription metadata={metadata} showJson={true} />
-
-## Types
-
-<TypeTable>
-    <TypeRow name="string" type="json-js-html">
-        A selector for `document.querySelector`
-    </TypeRow>
-    <TypeRow name="DOM Element" type="js" />
-</TypeTable>
-
-## Default Value
-
-`html,body`
+selector.

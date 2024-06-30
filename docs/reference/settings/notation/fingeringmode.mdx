@@ -5,49 +5,105 @@ sidebar_custom_props:
   category: Notation
   since: 0.9.6
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 
 <SinceBadge since="0.9.6" />
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><CodeBadge type="js" name="notation.fingeringMode" /></td>
+          <td><CodeBadge type="js" name="FingeringMode" /></td>
+          <td><code>FingeringMode.ScoreDefault</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="notation.fingeringMode" /></td>
+          <td><CodeBadge type="json" name="FingeringMode" /></td>
+          <td><code>FingeringMode.ScoreDefault</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="net" name="Notation.FingeringMode" /></td>
+          <td><CodeBadge type="net" name="FingeringMode" /></td>
+          <td><code>FingeringMode.ScoreDefault</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="android" name="notation.fingeringMode" /></td>
+          <td><CodeBadge type="android" name="FingeringMode" /></td>
+          <td><code>FingeringMode.ScoreDefault</code></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Description
-
-AlphaTab supports multiple modes on how to display fingering information in the music sheet. This setting controls how they should be displayed. The default behavior is to show the finger information 
+AlphaTab supports multiple modes on how to display fingering information in the music sheet. This setting controls how they should be displayed. The default behavior is to show the finger information
 directly in the score along the notes. For some use cases of training courses and for beginners this notation might be hard to read. The effect band mode allows to show a single finger information above the staff.
-
-<PropertyDescription metadata={metadata} showJson={true} />
 
 | Score                                                       | Effect Band                                                       |
 |-------------------------------------------------------------|-------------------------------------------------------------------|
 | ![Enabled](/img/reference/property/fingeringmode-score.png) | ![Disabled](/img/reference/property/fingeringmode-effectband.png) |
 
-## Types
+## Related Types
 
-<TypeTable>
-    <TypeRow name="alphaTab.FingeringMode" type="js">
-        `Score`<br />
-        `SingleNoteEffectBand`
-    </TypeRow>
-    <TypeRow name="string" type="json-js-html">
-        `score`<br />
-        `effectband`
-    </TypeRow>
-    <TypeRow name="int" type="json-js-html">
-        `0` - Score <br />
-        `1` - SingleNoteEffectBand
-    </TypeRow>
-    <TypeRow name="AlphaTab.FingeringMode" type="net">
-        `Score`<br />
-        `SingleNoteEffectBand`
-    </TypeRow>
-    <TypeRow name="alphaTab.FingeringMode" type="android">
-        `Score`<br />
-        `SingleNoteEffectBand`
-    </TypeRow>
-</TypeTable>
+### `enum alphaTab.FingeringMode`
 
-## Default Value
+<Tabs defaultValue="js" values={[
+  { label: "JavaScript", value: "js" },
+  { label: "Json", value: "json" },
+  { label: "C#", value: "net" },
+  { label: "Kotlin (Android)", value: "kotlin" },
+]}>
+<TabItem value="js">
+`import * as alphaTab from '@coderline/alphaTab';`
 
-`Score`
+* `alphaTab.FingeringMode.ScoreDefault` - Fingerings will be shown in the standard notation staff.
+* `alphaTab.FingeringMode.ScoreForcePiano` - Fingerings will be shown in the standard notation staff. Piano finger style is enforced, where
+fingers are rendered as 1-5 instead of p,i,m,a,c and T,1,2,3,4.
+* `alphaTab.FingeringMode.SingleNoteEffectBand` - Fingerings will be shown in a effect band above the tabs in case
+they have only a single note on the beat.
+* `alphaTab.FingeringMode.SingleNoteEffectBandForcePiano` - Fingerings will be shown in a effect band above the tabs in case
+they have only a single note on the beat. Piano finger style is enforced, where
+fingers are rendered as 1-5 instead of p,i,m,a,c and T,1,2,3,4.
+</TabItem>
+<TabItem value="json">
+* `"ScoreDefault"` - Fingerings will be shown in the standard notation staff.
+* `"ScoreForcePiano"` - Fingerings will be shown in the standard notation staff. Piano finger style is enforced, where
+fingers are rendered as 1-5 instead of p,i,m,a,c and T,1,2,3,4.
+* `"SingleNoteEffectBand"` - Fingerings will be shown in a effect band above the tabs in case
+they have only a single note on the beat.
+* `"SingleNoteEffectBandForcePiano"` - Fingerings will be shown in a effect band above the tabs in case
+they have only a single note on the beat. Piano finger style is enforced, where
+fingers are rendered as 1-5 instead of p,i,m,a,c and T,1,2,3,4.
+</TabItem>
+<TabItem value="net">
+* `AlphaTab.FingeringMode.ScoreDefault` - Fingerings will be shown in the standard notation staff.
+* `AlphaTab.FingeringMode.ScoreForcePiano` - Fingerings will be shown in the standard notation staff. Piano finger style is enforced, where
+fingers are rendered as 1-5 instead of p,i,m,a,c and T,1,2,3,4.
+* `AlphaTab.FingeringMode.SingleNoteEffectBand` - Fingerings will be shown in a effect band above the tabs in case
+they have only a single note on the beat.
+* `AlphaTab.FingeringMode.SingleNoteEffectBandForcePiano` - Fingerings will be shown in a effect band above the tabs in case
+they have only a single note on the beat. Piano finger style is enforced, where
+fingers are rendered as 1-5 instead of p,i,m,a,c and T,1,2,3,4.
+</TabItem>
+<TabItem value="kotlin">
+* `alphaTab.FingeringMode.ScoreDefault` - Fingerings will be shown in the standard notation staff.
+* `alphaTab.FingeringMode.ScoreForcePiano` - Fingerings will be shown in the standard notation staff. Piano finger style is enforced, where
+fingers are rendered as 1-5 instead of p,i,m,a,c and T,1,2,3,4.
+* `alphaTab.FingeringMode.SingleNoteEffectBand` - Fingerings will be shown in a effect band above the tabs in case
+they have only a single note on the beat.
+* `alphaTab.FingeringMode.SingleNoteEffectBandForcePiano` - Fingerings will be shown in a effect band above the tabs in case
+they have only a single note on the beat. Piano finger style is enforced, where
+fingers are rendered as 1-5 instead of p,i,m,a,c and T,1,2,3,4.
+</TabItem>
+</Tabs>

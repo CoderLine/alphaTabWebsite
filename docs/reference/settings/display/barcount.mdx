@@ -1,32 +1,52 @@
 ---
 title: display.barCount
-description: The total number of bars that should be rendered from the song. 
+description: The total number of bars that should be rendered from the song.
 sidebar_custom_props:
-  jsOnParent: true
   category: Display
   since: 0.9.6
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 
 <SinceBadge since="0.9.6" />
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><CodeBadge type="js" name="display.barCount" /></td>
+          <td><CodeBadge type="js" name="number" /></td>
+          <td><code>-1</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="display.barCount" /></td>
+          <td><CodeBadge type="json" name="number" /></td>
+          <td><code>-1</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="net" name="Display.BarCount" /></td>
+          <td><CodeBadge type="net" name="double" /></td>
+          <td><code>-1</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="android" name="display.barCount" /></td>
+          <td><CodeBadge type="android" name="Double" /></td>
+          <td><code>-1</code></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Description
-
-This setting sets the number of bars that should be rendered from the overall song. This setting can be used to 
-achieve a paging system or to only show partial bars of the same file. By this a tutorial alike display can be achieved
-that explains various parts of the song. [Demo](/docs/showcase/layouts)
-
-<PropertyDescription metadata={metadata} showJson={true} />
-
-## Types
-
-<TypeTable>
-    <TypeRow name="int" />
-</TypeTable>
-
-## Default Value
-
-`-1` - All bars from start
+This setting sets the number of bars that should be rendered from the overall song. This setting can be used to
+achieve a paging system or to only show partial bars of the same file. By this, a tutorial alike display can be achieved
+that explains various parts of the song. Set this to `-1` (default) for showing all bars.

@@ -7,28 +7,49 @@ sidebar_custom_props:
   category: Core - JavaScript Specific
   since: 0.9.6
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 
 <SinceBadge since="0.9.6" />
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><CodeBadge type="js" name="core.fontDirectory" /></td>
+          <td><CodeBadge type="js" name="string | null" /></td>
+          <td><code>automatic</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="js" name="fontDirectory" /></td>
+          <td><CodeBadge type="js" name="string | null" /></td>
+          <td><code>automatic</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="core.fontDirectory" /></td>
+          <td><CodeBadge type="json" name="string | null" /></td>
+          <td><code>automatic</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="fontDirectory" /></td>
+          <td><CodeBadge type="json" name="string | null" /></td>
+          <td><code>automatic</code></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Description
-
 AlphaTab will generate some dynamic CSS that is needed for displaying the music symbols correctly. For this it needs to know
-where the Web Font files of [Bravura](https://github.com/steinbergmedia/bravura) are. Normally alphaTab expects 
-them to be in a `Font` subfolder beside the script file. If this is not the case, this setting must be used to configure the path. 
-Alternatively also a global variable `ALPHATAB_FONT` can be set on the page before initializing alphaTab. 
-
-<PropertyDescription metadata={metadata} showJson={true} />
-
-## Types
-
-<TypeTable>
-    <TypeRow name="string" />
-</TypeTable>
-
-## Default Value
-
-`${AlphaTabScriptFolder}/font/`
+where the Web Font files of [Bravura](https://github.com/steinbergmedia/bravura) are. Normally alphaTab expects
+them to be in a `font` subfolder beside the script file. If this is not the case, this setting must be used to configure the path.
+Alternatively also a global variable `ALPHATAB_FONT` can be set on the page before initializing alphaTab.

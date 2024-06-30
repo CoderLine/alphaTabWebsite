@@ -7,35 +7,47 @@ sidebar_custom_props:
   category: Core - JavaScript Specific
   since: 0.9.6
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 
 <SinceBadge since="0.9.6" />
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<table className="table table-striped table-condensed type-table">
+    <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><CodeBadge type="js" name="core.tracks" /></td>
+          <td><CodeBadge type="js" name="number | number[] | 'all' | null" /></td>
+          <td><code>null</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="js" name="tracks" /></td>
+          <td><CodeBadge type="js" name="number | number[] | 'all' | null" /></td>
+          <td><code>null</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="core.tracks" /></td>
+          <td><CodeBadge type="json" name="number | number[] | 'all' | null" /></td>
+          <td><code>null</code></td>
+        </tr>
+        <tr>
+          <td><CodeBadge type="json" name="tracks" /></td>
+          <td><CodeBadge type="json" name="number | number[] | 'all' | null" /></td>
+          <td><code>null</code></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Description
-
 This setting can be used in combinition with the `file` or `tex` option. It controls which of the tracks
 of the initially loaded file should be displayed.
-
-<PropertyDescription metadata={metadata} showJson={true} />
-
-## Types
-
-<TypeTable>
-    <TypeRow type="all" name="'all'">
-        If the `all` string is provided, all tracks of the song will be displayed. 
-    </TypeRow>
-    <TypeRow type="all" name="int">
-        If a single number is provided, the value represents the 0-based index of the track to display. 
-    </TypeRow>
-    <TypeRow type="all" name="int[]">
-        If a number array is provided, the values represent the 0-based indexes of the tracks to display.
-    </TypeRow>
-</TypeTable>
-
-
-## Default Value
-
-`null`
