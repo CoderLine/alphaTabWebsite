@@ -17,7 +17,7 @@ function buildPropertyUrl(property: Page) {
 
 class ReferenceRow extends React.Component<{ property: Page, showJson: boolean }> {
     public render() {
-        const { jsNames, csNames, jQueryNames, domNames, androidNames } = buildNames(this.props.property);
+        const { jsNames, csNames, jQueryNames, androidNames } = buildNames(this.props.property);
         const jsonNames = this.props.showJson ? jsNames : [];
         return (
             <tr>
@@ -30,9 +30,6 @@ class ReferenceRow extends React.Component<{ property: Page, showJson: boolean }
 
                         {(jsonNames.length > 0 || jsonNames.length > 0) && jQueryNames.length > 0 && <br />}
                         {jQueryNames.map(n => (<CodeBadge key={n} type="jquery" name={n} />))}
-
-                        {domNames.length > 0 && <br />}
-                        {domNames.map(n => (<CodeBadge key={n} type="html" name={n} />))}
 
                         {csNames.length > 0 && <br />}
                         {csNames.map(n => (<CodeBadge key={n} type="net" name={n} />))}

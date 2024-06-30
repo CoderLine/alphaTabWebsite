@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "jsdoc": "tsx scripts/jsdoc-to-reference.ts",
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
     "build": "docusaurus build",
@@ -39,6 +40,7 @@
     "copy-webpack-plugin": "^12.0.2",
     "docusaurus-plugin-sass": "^0.2.5",
     "sass": "^1.77.1",
+    "tsx": "^4.16.0",
     "typescript": "^5.4.5"
   },
   "browserslist": {

@@ -18,7 +18,7 @@ export class EventDescription extends React.Component<EventDescriptionProps> {
 
     public render() {
         const page = new Page(this.props.metadata, this.props.doc);
-        const { jsNames, csNames, jQueryNames, domNames, androidNames } = buildNames(page);
+        const { jsNames, csNames, jQueryNames, androidNames } = buildNames(page);
 
         return (
             <table className="table table-striped table-condensed type-table">
@@ -31,11 +31,6 @@ export class EventDescription extends React.Component<EventDescriptionProps> {
                     {jQueryNames.map((name, index) => (
                         <tr key={index}>
                             <td><CodeBadge type="jquery" name={name} /></td>
-                        </tr>
-                    ))}
-                    {domNames.map((name, index) => (
-                        <tr key={index}>
-                            <td><CodeBadge type="html" name={name} /></td>
                         </tr>
                     ))}
                     {csNames.map((name, index) => (

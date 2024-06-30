@@ -16,7 +16,7 @@ export class PropertyDescription extends React.Component<PropertyDescriptionProp
 {
     public render() {
         const page = new Page(this.props.metadata, this.props.doc);
-        const { jsNames, csNames, jQueryNames, domNames, androidNames } = buildNames(page);
+        const { jsNames, csNames, jQueryNames, androidNames } = buildNames(page);
         const jsonNames = this.props.showJson ? jsNames : [];
         return (
             <table className="table table-striped table-condensed type-table">
@@ -34,11 +34,6 @@ export class PropertyDescription extends React.Component<PropertyDescriptionProp
                     {jQueryNames.map(n => (
                         <tr>
                             <td><CodeBadge type="jquery" name={n} /></td>
-                        </tr>
-                    ))}
-                    {domNames.map(n => (
-                        <tr>
-                            <td><CodeBadge type="html" name={n} /></td>
                         </tr>
                     ))}
                     {csNames.map(n => (
