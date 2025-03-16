@@ -28,7 +28,7 @@ export type TypeWithNullableInfo = {
 
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
-function findModule(type: ts.Type, options: ts.CompilerOptions) {
+function findModule(type: ts.Type) {
   if (type.symbol && type.symbol.declarations) {
     for (const decl of type.symbol.declarations) {
       const file = decl.getSourceFile();
@@ -48,13 +48,12 @@ function findModule(type: ts.Type, options: ts.CompilerOptions) {
 }
 
 export function getTypeWithNullableInfo(
-  program: ts.Program,
+  checker: ts.TypeChecker,
   node: ts.TypeNode | ts.Type,
   allowUnion: boolean,
   isOptionalFromDeclaration: boolean,
   typeArgumentMapping: Map<string, ts.Type> | undefined
 ): TypeWithNullableInfo {
-  const checker = program.getTypeChecker();
 
   let typeInfo: Writeable<TypeWithNullableInfo> = {
     isNullable: false,
@@ -80,7 +79,7 @@ export function getTypeWithNullableInfo(
     mainType = tsType;
 
     typeInfo.typeAsString = checker.typeToString(tsType, undefined, undefined);
-    typeInfo.modulePath = findModule(tsType, program.getCompilerOptions());
+    typeInfo.modulePath = findModule(tsType);
     typeInfo.isOwnType =
       !!typeInfo.modulePath &&
       typeInfo.modulePath.includes("@coderline") &&
@@ -110,7 +109,7 @@ export function getTypeWithNullableInfo(
           tsType as ts.TypeReference
         ).typeArguments?.map((p) =>
           getTypeWithNullableInfo(
-            program,
+            checker,
             p,
             allowUnion,
             false,
@@ -121,7 +120,7 @@ export function getTypeWithNullableInfo(
     } else if (checker.isArrayType(tsType)) {
       typeInfo.isArray = true;
       typeInfo.arrayItemType = getTypeWithNullableInfo(
-        program,
+        checker,
         (tsType as ts.TypeReference).typeArguments![0],
         allowUnion,
         false,
@@ -163,7 +162,7 @@ export function getTypeWithNullableInfo(
             tsType as ts.TypeReference
           ).typeArguments!.map((p) =>
             getTypeWithNullableInfo(
-              program,
+              checker,
               p,
               allowUnion,
               false,
@@ -177,7 +176,7 @@ export function getTypeWithNullableInfo(
             tsType as ts.TypeReference
           ).typeArguments!.map((p) =>
             getTypeWithNullableInfo(
-              program,
+              checker,
               p,
               allowUnion,
               false,
@@ -189,7 +188,7 @@ export function getTypeWithNullableInfo(
           if (tsType.isTypeParameter()) {
             if (typeArgumentMapping?.has(typeInfo.typeAsString)) {
               typeInfo = getTypeWithNullableInfo(
-                program,
+                checker,
                 typeArgumentMapping.get(typeInfo.typeAsString)!,
                 allowUnion,
                 false,
@@ -205,7 +204,7 @@ export function getTypeWithNullableInfo(
               tsType as ts.TypeReference
             ).typeArguments?.map((p) =>
               getTypeWithNullableInfo(
-                program,
+                checker,
                 p,
                 allowUnion,
                 false,
@@ -241,7 +240,7 @@ export function getTypeWithNullableInfo(
           if (!typeInfo.unionTypes) {
             typeInfo.unionTypes = [
               getTypeWithNullableInfo(
-                program,
+                checker,
                 mainType,
                 false,
                 false,
@@ -252,7 +251,7 @@ export function getTypeWithNullableInfo(
 
           (typeInfo.unionTypes as TypeWithNullableInfo[]).push(
             getTypeWithNullableInfo(
-              program,
+              checker,
               t,
               false,
               false,
@@ -291,7 +290,7 @@ export function getTypeWithNullableInfo(
           typeInfo.unionTypes ??= [];
           (typeInfo.unionTypes as TypeWithNullableInfo[]).push(
             getTypeWithNullableInfo(
-              program,
+              checker,
               t,
               false,
               false,
