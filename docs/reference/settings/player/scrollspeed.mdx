@@ -13,22 +13,18 @@ import { PropertyDescription } from '@site/src/components/PropertyDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 
 ## Description
-
 If possible from the platform, alphaTab will try to do a smooth scrolling to the played bar.
 This setting defines the speed of scrolling in milliseconds.
-Note that `player.nativeBrowserSmoothScroll` must be set to `false` for this to have an effect.
+Note that [`nativeBrowserSmoothScroll`](/docs/reference/settings/player/nativebrowsersmoothscroll) must be set to `false` for this to have an effect.
 
 <PropertyDescription showJson={true} />
 
 ## Types
 
 <TypeTable>
-    <TypeRow type="all" name="int">
-        `200`<br />
-        `300`<br />
-        `100`
-    </TypeRow>
+    <TypeRow name={"number"} />
 </TypeTable>
 
 ## Default Value
+
 `300`

@@ -14,7 +14,6 @@ import { PropertyDescription } from '@site/src/components/PropertyDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 
 ## Description
-
 Controls how alphaTab will play the audio samples in the browser.
 
 <PropertyDescription showJson={true} />
@@ -22,20 +21,33 @@ Controls how alphaTab will play the audio samples in the browser.
 ## Types
 
 <TypeTable>
-    <TypeRow type="js" name="alphaTab.PlayerOutputMode">
-        `WebAudioAudioWorklets` - If [audio worklets](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Using_AudioWorklet) are available, they are used. If not fallback to the ScriptProcessorNode<br />
-        `WebAudioScriptProcessor` - Using the [ScriptProcessorNode](https://developer.mozilla.org/en-US/docs/Web/API/ScriptProcessorNode) for playback<br />
-    </TypeRow>
-    <TypeRow type="json-js-html" name="string">
-        `webaudioaudioworklets`<br />
-        `webaudioscriptprocessor`
-    </TypeRow>
-    <TypeRow type="json-js-html" name="int">
-        `0` - WebAudioAudioWorklets<br />
-        `1` - WebAudioScriptProcessor<br />
-    </TypeRow>
+    <TypeRow name={"alphaTab.PlayerOutputMode"} url={"/docs/reference/plain/playeroutputmode.mdx"}/>
+</TypeTable>
+
+### alphaTab.PlayerOutputMode
+<TypeTable>
+  <TypeRow type="js" name="alphaTab.PlayerOutputMode">
+    `WebAudioAudioWorklets` - If audio worklets are available in the browser, they will be used for playing the audio.<br />
+    `WebAudioScriptProcessor` - Uses the legacy ScriptProcessor output which might perform worse.
+  </TypeRow>
+  <TypeRow type="json-js-html" name="string">
+    `webaudioaudioworklets`<br />
+    `webaudioscriptprocessor`
+  </TypeRow>
+  <TypeRow type="json-js-html" name="int">
+    `0` - WebAudioAudioWorklets <br />
+    `1` - WebAudioScriptProcessor 
+  </TypeRow>
+  <TypeRow type="net" name="AlphaTab.PlayerOutputMode">
+    `WebAudioAudioWorklets`<br />
+    `WebAudioScriptProcessor`
+  </TypeRow>
+  <TypeRow type="android" name="alphaTab.PlayerOutputMode">
+    `WebAudioAudioWorklets`<br />
+    `WebAudioScriptProcessor`
+  </TypeRow>
 </TypeTable>
 
 ## Default Value
 
-`WebAudioAudioWorklets`
+`PlayerOutputMode.WebAudioAudioWorklets`

@@ -13,18 +13,17 @@ import { PropertyDescription } from '@site/src/components/PropertyDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 
 ## Description
-
-This setting allows transposing of tracks for display and playback. 
-The `TranspositionPitches` setting allows defining an additional pitch offset per track, that is then considered when displaying the music sheet. 
+This setting allows transposing of tracks for display and playback.
+The `transpositionPitches` setting allows defining an additional pitch offset per track, that is then considered when displaying the music sheet.
 
 <PropertyDescription showJson={true} />
 
 ## Types
 
 <TypeTable>
-    <TypeRow name="int[]" type="all" />
+    <TypeRow name={"number[]"} />
 </TypeTable>
 
 ## Default Value
 
-`(empty)`
+`[]`

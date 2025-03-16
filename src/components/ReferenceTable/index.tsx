@@ -130,6 +130,10 @@ export const ReferenceTable: React.FC<ReferenceTableProps> = ({
   const existingKeys = new Map<string, Page[]>();
   const pages: { key: string; items: Page[] }[] = [];
   for (const page of allPages) {
+    if(page.type === "link"  && page.docId?.startsWith('_') === true) {
+      continue;
+    }
+
     const category = (page.customProps?.category as string) ?? "";
     let items = existingKeys.get(category);
     if (!items) {

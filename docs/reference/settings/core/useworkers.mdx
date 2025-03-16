@@ -6,6 +6,9 @@ sidebar_custom_props:
   category: Core
   since: 0.9.6
 ---
+import { SinceBadge } from '@site/src/components/SinceBadge';
+
+<SinceBadge since="0.9.6" />
 
 import { PropertyDescription } from '@site/src/components/PropertyDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
@@ -19,7 +22,7 @@ a synchronous rendering behavior. This setting can be set to false to synchronou
 ## Types
 
 <TypeTable>
-    <TypeRow name="bool" />
+    <TypeRow name={"boolean"} />
 </TypeTable>
 
 ## Default Value

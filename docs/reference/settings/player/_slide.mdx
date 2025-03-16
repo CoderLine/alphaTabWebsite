@@ -1,0 +1,64 @@
+
+
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import SlidePlaybackSettings from '@site/src/alphatabdoc/SlidePlaybackSettings'
+import { MarkdownString } from '@site/src/components/MarkdownString'
+
+export var SlideSettings = SlidePlaybackSettings.members.map(m => {
+    return {
+        name: m.name,
+        defaultValue: m.tsdoc.tags.defaultValue,
+        type: m.type,
+        description: m.tsdoc.doc
+    }
+});
+
+export function toPascalCase(v) {
+    return v.substr(0, 1).toUpperCase() + v.substr(1);
+}
+
+export function SlideRow({ setting }) {
+    return (
+        <tr>
+            <td>
+                <CodeBadge type="js" name={setting.name} /><br />
+                <CodeBadge type="json" name={setting.name} /><br />
+                <CodeBadge type="html" name={'data-player-' + setting.name.toLowerCase()} /> <br />
+                <CodeBadge type="net" name={toPascalCase(setting.name)} />
+                <CodeBadge type="android" name={setting.name} />
+            </td>
+            <td>
+                <CodeBadge type="all" name={setting.type} />
+            </td>
+            <td><MarkdownString content={setting.defaultValue} /></td>
+            <td>
+                {setting.description}
+            </td>
+        </tr>
+    );
+}
+
+export function SlideTable() {
+    const settings = SlideSettings.map(c => <SlideRow setting={c} />);
+    return (
+        <table className="table table-striped table-condensed type-table">
+            <thead>
+                <tr>
+                    <th>Setting</th>
+                    <th>Type</th>
+                    <th>Default</th>
+                    <th>Summary</th>
+                </tr>
+            </thead>
+            <tbody>
+                {settings}
+            </tbody>
+        </table>
+    );
+}
+
+## Slide Settings
+
+<SlideTable />

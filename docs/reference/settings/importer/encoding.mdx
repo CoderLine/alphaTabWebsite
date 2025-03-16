@@ -13,7 +13,6 @@ import { PropertyDescription } from '@site/src/components/PropertyDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 
 ## Description
-
 By default strings are interpreted as UTF-8 from the input files. This is sometimes not the case and leads to strong display
 of strings in the rendered notation. Via this setting the text encoding for decoding the strings can be changed. The supported
 encodings depend on the browser or operating system. This setting is considered for the importers
@@ -28,10 +27,7 @@ encodings depend on the browser or operating system. This setting is considered 
 ## Types
 
 <TypeTable>
-    <TypeRow name="string" type="all">
-        `utf-8` <br /> 
-        `Windows-1252`
-    </TypeRow>
+    <TypeRow name={"string"} />
 </TypeTable>
 
 ## Default Value

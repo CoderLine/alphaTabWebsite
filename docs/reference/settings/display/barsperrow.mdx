@@ -1,6 +1,6 @@
 ---
 title: display.barsPerRow
-description: Limit the displayed bars per row.
+description: Limit the displayed bars per system (row).
 sidebar_custom_props:
   jsOnParent: true
   category: Display
@@ -14,18 +14,17 @@ import { PropertyDescription } from '@site/src/components/PropertyDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 
 ## Description
-
 This setting sets the number of bars that should be put into one row during layouting. This setting is only respected
-when using the layoutMode `page` where bars are aligned in rows. [Demo](/docs/showcase/layouts#page-layout-5-bars-per-row)
+when using the [`LayoutMode.Page`](/docs/reference/plain/layoutmode.mdx#page) where bars are aligned in systems. [Demo](/docs/showcase/layouts#page-layout-5-bars-per-row).
 
 <PropertyDescription showJson={true} />
 
 ## Types
 
 <TypeTable>
-    <TypeRow name="int" />
+    <TypeRow name={"number"} />
 </TypeTable>
 
 ## Default Value
 
-`-1` - automatic 
+`-1` (automatic)

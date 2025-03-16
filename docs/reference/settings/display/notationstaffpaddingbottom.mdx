@@ -1,6 +1,6 @@
 ---
 title: display.notationStaffPaddingBottom
-description: The bottom padding applied to main notation staffs.
+description: The bottom padding applied to main notation staves (standard, tabs, numbered, slash).
 sidebar_custom_props:
   jsOnParent: true
   category: Display
@@ -14,16 +14,14 @@ import { PropertyDescription } from '@site/src/components/PropertyDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 
 ## Description
-
-The bottom padding applied to main notation staffs (standard, tabs, numbered, slash).
+The bottom padding applied to main notation staves (standard, tabs, numbered, slash).
 
 <PropertyDescription showJson={true} />
 
 ## Types
 
 <TypeTable>
-    <TypeRow name="double" type="all">
-    </TypeRow>
+    <TypeRow name={"number"} />
 </TypeTable>
 
 ## Default Value

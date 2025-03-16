@@ -1,11 +1,21 @@
 import React from "react";
 import styles from "./styles.module.scss";
+import { useDoc } from "@docusaurus/plugin-content-docs/lib/client/doc.js";
 
 export type SinceBadgeProps = {
   since?: string;
   inline?: boolean;
 };
 export const SinceBadge: React.FC<SinceBadgeProps> = ({ since, inline }) => {
+  const doc = useDoc();
+  if (
+    inline &&
+    doc.frontMatter.sidebar_custom_props?.since &&
+    doc.frontMatter.sidebar_custom_props?.since == since
+  ) {
+    return <></>;
+  }
+
   if (since) {
     return (
       <span

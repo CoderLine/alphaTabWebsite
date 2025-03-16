@@ -13,10 +13,9 @@ import { PropertyDescription } from '@site/src/components/PropertyDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 
 ## Description
-
 Gets or sets how many milliseconds of audio samples should be buffered in total.
 
-* Larger buffers cause a delay from when audio settings like volumes will be applied. 
+* Larger buffers cause a delay from when audio settings like volumes will be applied.
 * Smaller buffers can cause audio crackling due to constant buffering that is happening.
 
 This buffer size can be changed whenever needed.
@@ -26,10 +25,7 @@ This buffer size can be changed whenever needed.
 ## Types
 
 <TypeTable>
-    <TypeRow type="all" name="int">
-        `5000`<br />
-        `1000`
-    </TypeRow>
+    <TypeRow name={"number"} />
 </TypeTable>
 
 ## Default Value

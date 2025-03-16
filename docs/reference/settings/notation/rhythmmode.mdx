@@ -1,6 +1,6 @@
 ---
 title: notation.rhythmMode
-description: Controls how the rhythm notation is rendered for tab staves. 
+description: Controls how the rhythm notation is rendered for tab staves.
 sidebar_custom_props:
   category: Notation
   since: 0.9.6
@@ -13,41 +13,51 @@ import { PropertyDescription } from '@site/src/components/PropertyDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 
 ## Description
-
 This setting enables the display of rhythm notation on tab staffs. [Demo](/docs/showcase/guitar-tabs)
+<SinceBadge inline={true} since={"1.4.0"} /> its automatically detected whether rhythm notation should be shown on tabs (based on the visibility of other staves).
 
 <PropertyDescription showJson={true} />
 
 ## Types
 
 <TypeTable>
-    <TypeRow name="alphaTab.TabRhythmMode" type="js">
-        `Hidden` -  No rhythm notation is shown<br />
-        `ShowWithBeams` - Rhythm notation is rendered with all beats having individual beams<br />
-        `ShowWithBars` - Rhythm notation is rendered with normal bars like on standard notation
-    </TypeRow>
-    <TypeRow name="string" type="json-js-html">
-        `hidden`<br />
-        `showwithbeams`<br />
-        `showwithbars`
-    </TypeRow>
-    <TypeRow name="int" type="json-js-html">
-        `0` - Hidden<br />
-        `1` - ShowWithBeams<br />
-        `2` - ShowWithBars
-    </TypeRow>
-    <TypeRow name="AlphaTab.TabRhythmMode" type="net">
-        `Hidden`<br />
-        `ShowWithBeams`<br />
-        `ShowWithBars`
-    </TypeRow>
-    <TypeRow name="alphaTab.TabRhythmMode" type="android">
-        `Hidden`<br />
-        `ShowWithBeams`<br />
-        `ShowWithBars`
-    </TypeRow>
+    <TypeRow name={"alphaTab.TabRhythmMode"} url={"/docs/reference/plain/tabrhythmmode.mdx"}/>
+</TypeTable>
+
+### alphaTab.TabRhythmMode
+<TypeTable>
+  <TypeRow type="js" name="alphaTab.TabRhythmMode">
+    `Hidden` - Rhythm notation is hidden.<br />
+    `ShowWithBeams` - Rhythm notation is shown with individual beams per beat.<br />
+    `ShowWithBars` - Rhythm notation is shown and behaves like normal score notation with connected bars.<br />
+    `Automatic` - Automatic detection whether the tabs should show rhythm based on hidden standard notation.
+  </TypeRow>
+  <TypeRow type="json-js-html" name="string">
+    `hidden`<br />
+    `showwithbeams`<br />
+    `showwithbars`<br />
+    `automatic`
+  </TypeRow>
+  <TypeRow type="json-js-html" name="int">
+    `0` - Hidden <br />
+    `1` - ShowWithBeams <br />
+    `2` - ShowWithBars <br />
+    `3` - Automatic 
+  </TypeRow>
+  <TypeRow type="net" name="AlphaTab.TabRhythmMode">
+    `Hidden`<br />
+    `ShowWithBeams`<br />
+    `ShowWithBars`<br />
+    `Automatic`
+  </TypeRow>
+  <TypeRow type="android" name="alphaTab.TabRhythmMode">
+    `Hidden`<br />
+    `ShowWithBeams`<br />
+    `ShowWithBars`<br />
+    `Automatic`
+  </TypeRow>
 </TypeTable>
 
 ## Default Value
 
-`hidden`
+`TabRhythmMode.Automatic`

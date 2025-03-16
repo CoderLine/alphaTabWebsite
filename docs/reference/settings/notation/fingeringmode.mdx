@@ -13,41 +13,55 @@ import { PropertyDescription } from '@site/src/components/PropertyDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 
 ## Description
-
-AlphaTab supports multiple modes on how to display fingering information in the music sheet. This setting controls how they should be displayed. The default behavior is to show the finger information 
+AlphaTab supports multiple modes on how to display fingering information in the music sheet. This setting controls how they should be displayed. The default behavior is to show the finger information
 directly in the score along the notes. For some use cases of training courses and for beginners this notation might be hard to read. The effect band mode allows to show a single finger information above the staff.
-
-<PropertyDescription showJson={true} />
 
 | Score                                                       | Effect Band                                                       |
 |-------------------------------------------------------------|-------------------------------------------------------------------|
 | ![Enabled](/img/reference/property/fingeringmode-score.png) | ![Disabled](/img/reference/property/fingeringmode-effectband.png) |
 
+<PropertyDescription showJson={true} />
+
 ## Types
 
 <TypeTable>
-    <TypeRow name="alphaTab.FingeringMode" type="js">
-        `Score`<br />
-        `SingleNoteEffectBand`
-    </TypeRow>
-    <TypeRow name="string" type="json-js-html">
-        `score`<br />
-        `effectband`
-    </TypeRow>
-    <TypeRow name="int" type="json-js-html">
-        `0` - Score <br />
-        `1` - SingleNoteEffectBand
-    </TypeRow>
-    <TypeRow name="AlphaTab.FingeringMode" type="net">
-        `Score`<br />
-        `SingleNoteEffectBand`
-    </TypeRow>
-    <TypeRow name="alphaTab.FingeringMode" type="android">
-        `Score`<br />
-        `SingleNoteEffectBand`
-    </TypeRow>
+    <TypeRow name={"alphaTab.FingeringMode"} url={"/docs/reference/plain/fingeringmode.mdx"}/>
+</TypeTable>
+
+### alphaTab.FingeringMode
+<TypeTable>
+  <TypeRow type="js" name="alphaTab.FingeringMode">
+    `ScoreDefault` - Fingerings will be shown in the standard notation staff.<br />
+    `ScoreForcePiano` - Fingerings will be shown in the standard notation staff. Piano finger style is enforced, where<br />
+    `SingleNoteEffectBand` - Fingerings will be shown in a effect band above the tabs in case<br />
+    `SingleNoteEffectBandForcePiano` - Fingerings will be shown in a effect band above the tabs in case
+  </TypeRow>
+  <TypeRow type="json-js-html" name="string">
+    `scoredefault`<br />
+    `scoreforcepiano`<br />
+    `singlenoteeffectband`<br />
+    `singlenoteeffectbandforcepiano`
+  </TypeRow>
+  <TypeRow type="json-js-html" name="int">
+    `0` - ScoreDefault <br />
+    `1` - ScoreForcePiano <br />
+    `2` - SingleNoteEffectBand <br />
+    `3` - SingleNoteEffectBandForcePiano 
+  </TypeRow>
+  <TypeRow type="net" name="AlphaTab.FingeringMode">
+    `ScoreDefault`<br />
+    `ScoreForcePiano`<br />
+    `SingleNoteEffectBand`<br />
+    `SingleNoteEffectBandForcePiano`
+  </TypeRow>
+  <TypeRow type="android" name="alphaTab.FingeringMode">
+    `ScoreDefault`<br />
+    `ScoreForcePiano`<br />
+    `SingleNoteEffectBand`<br />
+    `SingleNoteEffectBandForcePiano`
+  </TypeRow>
 </TypeTable>
 
 ## Default Value
 
-`Score`
+`FingeringMode.ScoreDefault`

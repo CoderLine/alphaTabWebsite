@@ -1,6 +1,6 @@
 ---
 title: display.barCount
-description: The total number of bars that should be rendered from the song. 
+description: The total number of bars that should be rendered from the song.
 sidebar_custom_props:
   jsOnParent: true
   category: Display
@@ -14,8 +14,7 @@ import { PropertyDescription } from '@site/src/components/PropertyDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 
 ## Description
-
-This setting sets the number of bars that should be rendered from the overall song. This setting can be used to 
+This setting sets the number of bars that should be rendered from the overall song. This setting can be used to
 achieve a paging system or to only show partial bars of the same file. By this a tutorial alike display can be achieved
 that explains various parts of the song. [Demo](/docs/showcase/layouts)
 
@@ -24,9 +23,9 @@ that explains various parts of the song. [Demo](/docs/showcase/layouts)
 ## Types
 
 <TypeTable>
-    <TypeRow name="int" />
+    <TypeRow name={"number"} />
 </TypeTable>
 
 ## Default Value
 
-`-1` - All bars from start
+`-1` (All bars)

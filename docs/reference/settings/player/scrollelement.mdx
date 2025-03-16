@@ -14,20 +14,16 @@ import { PropertyDescription } from '@site/src/components/PropertyDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 
 ## Description
-
-When the player is active, it by default automatically scrolls the browser window to the currently played bar. This setting 
+When the player is active, it by default automatically scrolls the browser window to the currently played bar. This setting
 defines which elements should be scrolled to bring the played bar into the view port. By default scrolling happens on the `html,body`
-selector. 
+selector.
 
 <PropertyDescription showJson={true} />
 
 ## Types
 
 <TypeTable>
-    <TypeRow name="string" type="json-js-html">
-        A selector for `document.querySelector`
-    </TypeRow>
-    <TypeRow name="DOM Element" type="js" />
+    <TypeRow name={"string | HTMLElement"} />
 </TypeTable>
 
 ## Default Value

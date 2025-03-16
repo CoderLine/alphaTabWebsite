@@ -13,25 +13,24 @@ import { PropertyDescription } from '@site/src/components/PropertyDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 
 ## Description
-
-AlphaTab provides 2 main music notation display modes `GuitarPro` and `SongBook`. 
+AlphaTab provides 2 main music notation display modes `GuitarPro` and `SongBook`.
 As the names indicate they adjust the overall music notation rendering either to be more in line how [Arobas Guitar Pro](https://www.guitar-pro.com) displays it,
 or more like the common practice in paper song books practices the display.
 
-The main differences in the Songbook display mode are: 
+The main differences in the Songbook display mode are:
 
 1. **Bends**
 For bends additional grace beats are introduced. Bends are categorized into gradual and fast bends.
     * Gradual bends are indicated by beat text "grad" or "grad.". Bend will sound along the beat duration.
     * Fast bends are done right before the next note. If the next note is tied even on-beat of the next note.
 2.  **Whammy Bars**
-Dips are shown as simple annotation over the beats. Whammy Bars are categorized into gradual and fast. 
+Dips are shown as simple annotation over the beats. Whammy Bars are categorized into gradual and fast.
     * Gradual whammys are indicated by beat text "grad" or "grad.". Whammys will sound along the beat duration.
-    * Fast whammys are done right the beat. 
+    * Fast whammys are done right the beat.
 
 3. **Let Ring**
-Tied notes with let ring are not shown in standard notation. Let ring does not cause a longer playback, duration is defined via tied notes. 
-            
+Tied notes with let ring are not shown in standard notation. Let ring does not cause a longer playback, duration is defined via tied notes.
+
 4. **Settings**
 Following default setting values are applied:
 ```js
@@ -54,28 +53,33 @@ Following default setting values are applied:
 ## Types
 
 <TypeTable>
-    <TypeRow name="alphaTab.DisplayMode" type="js">
-        `SongBook`<br />
-        `GuitarPro`
-    </TypeRow>
-    <TypeRow name="string" type="json-js-html">
-        `SongBook`<br />
-        `GuitarPro`
-    </TypeRow>
-    <TypeRow name="int" type="json-js-html">
-        `0` - SongBook<br />
-        `1` - GuitarPro
-    </TypeRow>
-    <TypeRow name="AlphaTab.DisplayMode" type="net">
-        `SongBook`<br />
-        `GuitarPro`
-    </TypeRow>
-    <TypeRow name="alphaTab.DisplayMode" type="android">
-        `SongBook`<br />
-        `GuitarPro`
-    </TypeRow>
+    <TypeRow name={"alphaTab.NotationMode"} url={"/docs/reference/plain/notationmode.mdx"}/>
+</TypeTable>
+
+### alphaTab.NotationMode
+<TypeTable>
+  <TypeRow type="js" name="alphaTab.NotationMode">
+    `GuitarPro` - Music elements will be displayed and played as in Guitar Pro.<br />
+    `SongBook` - Music elements will be displayed and played as in traditional songbooks.
+  </TypeRow>
+  <TypeRow type="json-js-html" name="string">
+    `guitarpro`<br />
+    `songbook`
+  </TypeRow>
+  <TypeRow type="json-js-html" name="int">
+    `0` - GuitarPro <br />
+    `1` - SongBook 
+  </TypeRow>
+  <TypeRow type="net" name="AlphaTab.NotationMode">
+    `GuitarPro`<br />
+    `SongBook`
+  </TypeRow>
+  <TypeRow type="android" name="alphaTab.NotationMode">
+    `GuitarPro`<br />
+    `SongBook`
+  </TypeRow>
 </TypeTable>
 
 ## Default Value
 
-`GuitarPro`
+`NotationMode.GuitarPro`

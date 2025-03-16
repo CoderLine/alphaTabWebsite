@@ -1,6 +1,6 @@
 ---
 title: display.stretchForce
-description: The default stretch force to use for layouting. 
+description: The default stretch force to use for layouting.
 sidebar_custom_props:
   jsOnParent: true
   category: Display
@@ -14,9 +14,8 @@ import { PropertyDescription } from '@site/src/components/PropertyDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 
 ## Description
-
-The stretch force is a setting that controls the spacing of the music notation. AlphaTab uses a varaint of the Gourlay algorithm for spacing which has springs and rods for 
-aligning elements. This setting controls the "strength" of the springs. The stronger the springs, the wider the spacing. 
+The stretch force is a setting that controls the spacing of the music notation. AlphaTab uses a varaint of the Gourlay algorithm for spacing which has springs and rods for
+aligning elements. This setting controls the "strength" of the springs. The stronger the springs, the wider the spacing.
 
 | Force 1                                                      | Force 0.5                                             |
 |--------------------------------------------------------------|-------------------------------------------------------|
@@ -27,13 +26,9 @@ aligning elements. This setting controls the "strength" of the springs. The stro
 ## Types
 
 <TypeTable>
-    <TypeRow name="double" type="all">
-        `1.0`<br />
-        `1.5`<br />
-        `0.5`<br />
-    </TypeRow>
+    <TypeRow name={"number"} />
 </TypeTable>
 
 ## Default Value
 
-`1.0`
+`1`

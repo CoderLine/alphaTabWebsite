@@ -1,0 +1,76 @@
+import ResourcesType from '@site/src/alphatabdoc/RenderingResources'
+import { CodeBadge } from '@site/src/components/CodeBadge'
+import { SinceBadge }  from '@site/src/components/SinceBadge'
+import { MarkdownString } from '@site/src/components/MarkdownString'
+
+export var Resources = {
+    colors: ResourcesType.members.filter(m => m.type === 'Color').map(c => {
+        return {
+            name: c.name,
+            defaultValue: c.tsdoc?.tags?.defaultValue ?? '',
+            description: c.tsdoc?.doc,
+            since:  c.tsdoc?.tags?.since ?? "",
+        }
+    }),
+    fonts: ResourcesType.members.filter(m => m.type === 'Font').map(c => {
+        return {
+            name: c.name,
+            defaultValue: c.tsdoc?.tags?.defaultValue ?? '',
+            description: c.tsdoc?.doc,
+            since:  c.tsdoc?.tags?.since ?? "",
+        }
+    })
+};
+
+
+export function toPascalCase(v) {
+    return v.substr(0, 1).toUpperCase() + v.substr(1);
+}
+
+export function ResourceRow({ resource, type }) {
+    return (
+        <tr>
+            <td>
+                <CodeBadge type="js" name={resource.name} /><br />
+                <CodeBadge type="json" name={resource.name} /><br />
+                <CodeBadge type="html" name={resource.name.toLowerCase()} /><br />
+                <CodeBadge type="net" name={toPascalCase(resource.name)} />
+                <CodeBadge type="android" name={resource.name} />
+            </td>
+            <td>
+                <CodeBadge type="all" name={type} />
+            </td>
+            <td><MarkdownString content={resource.defaultValue} /></td>
+            <td>
+                {resource.description}
+                {resource.since && <SinceBadge since={resource.since} inline="true" />}
+            </td>
+        </tr>
+    );
+}
+
+export function ResourceTable() {
+    const colors = Resources.colors.map(c => <ResourceRow type="color" resource={c} />);
+    const fonts = Resources.fonts.map(f => <ResourceRow type="font" resource={f} />);
+    return (
+        <table className="table table-striped table-condensed type-table">
+            <thead>
+                <tr>
+                    <th>Resource</th>
+                    <th>Type</th>
+                    <th>Default</th>
+                    <th>Summary</th>
+                </tr>
+            </thead>
+            <tbody>
+                {colors}
+                {fonts}
+            </tbody>
+        </table>
+    );
+}
+
+## Resources
+Following resources exist for adjusting the style. 
+
+<ResourceTable />

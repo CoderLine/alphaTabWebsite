@@ -13,21 +13,20 @@ import { PropertyDescription } from '@site/src/components/PropertyDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 
 ## Description
-
-By default effect annotations that render a line above the staff, stop on the beat. This is the typical display of Guitar Pro. In songbooks and some other tools 
-these effects are drawn to the end of this beat.     
-
-<PropertyDescription showJson={true} />
-
+By default effect annotations that render a line above the staff, stop on the beat. This is the typical display of Guitar Pro. In songbooks and some other tools
+these effects are drawn to the end of this beat.
 | Enabled                                                                     | Disabled                                                                      |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------|
 | ![Enabled](/img/reference/property/extendlineeffectstobeatend-enabled.png) | ![Disabled](/img/reference/property/extendlineeffectstobeatend-disabled.png) |
 
+<PropertyDescription showJson={true} />
+
 ## Types
 
 <TypeTable>
-    <TypeRow name="bool" />
+    <TypeRow name={"boolean"} />
 </TypeTable>
 
 ## Default Value
+
 `false`

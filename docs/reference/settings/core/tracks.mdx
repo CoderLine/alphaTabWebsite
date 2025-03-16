@@ -15,8 +15,7 @@ import { PropertyDescription } from '@site/src/components/PropertyDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 
 ## Description
-
-This setting can be used in combinition with the `file` or `tex` option. It controls which of the tracks
+This setting can be used in combinition with the [`file`](/docs/reference/settings/core/file) or [`tex`](/docs/reference/settings/core/tex) option. It controls which of the tracks
 of the initially loaded file should be displayed.
 
 <PropertyDescription showJson={true} />
@@ -24,17 +23,8 @@ of the initially loaded file should be displayed.
 ## Types
 
 <TypeTable>
-    <TypeRow type="all" name="'all'">
-        If the `all` string is provided, all tracks of the song will be displayed. 
-    </TypeRow>
-    <TypeRow type="all" name="int">
-        If a single number is provided, the value represents the 0-based index of the track to display. 
-    </TypeRow>
-    <TypeRow type="all" name="int[]">
-        If a number array is provided, the values represent the 0-based indexes of the tracks to display.
-    </TypeRow>
+    <TypeRow name={"number | number[] | \"all\""} />
 </TypeTable>
-
 
 ## Default Value
 

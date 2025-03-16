@@ -1,11 +1,11 @@
 import React from "react";
 import { CodeBadge, Platform } from "../CodeBadge";
 import { SinceBadge } from "../SinceBadge";
-import { MDXProvider } from "@mdx-js/react";
+import { MarkdownString } from "../MarkdownString";
 
 function renderChild(child: React.ReactNode): React.ReactNode {
   if (typeof child === "string") {
-    return <MDXProvider children={child} />;
+    return <MarkdownString content={child} />;
   } else {
     return child;
   }
