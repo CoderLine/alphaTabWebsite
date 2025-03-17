@@ -21,42 +21,14 @@ function buildPropertyUrl(property: Page) {
 type ReferenceRowProps = { property: Page; showJson: boolean };
 
 const ReferenceRow: React.FC<ReferenceRowProps> = ({ property, showJson }) => {
-  const { jsNames, csNames, jQueryNames, domNames, androidNames } =
+  const { mainName, javaScriptOnly } =
     buildNames(property);
-  const jsonNames = showJson ? jsNames : [];
+    
   return (
     <tr>
       <td>
         <a href={buildPropertyUrl(property)}>
-          {jsNames.map((n) => (
-            <CodeBadge key={n} type="js" name={n} />
-          ))}
-
-          {jsonNames.length > 0 && <br />}
-          {jsonNames.map((n) => (
-            <CodeBadge key={n} type="json" name={n} />
-          ))}
-
-          {(jsonNames.length > 0 || jsonNames.length > 0) &&
-            jQueryNames.length > 0 && <br />}
-          {jQueryNames.map((n) => (
-            <CodeBadge key={n} type="jquery" name={n} />
-          ))}
-
-          {domNames.length > 0 && <br />}
-          {domNames.map((n) => (
-            <CodeBadge key={n} type="html" name={n} />
-          ))}
-
-          {csNames.length > 0 && <br />}
-          {csNames.map((n) => (
-            <CodeBadge key={n} type="net" name={n} />
-          ))}
-
-          {androidNames.length > 0 && <br />}
-          {androidNames.map((n) => (
-            <CodeBadge key={n} type="android" name={n} />
-          ))}
+          <CodeBadge name={mainName} type={javaScriptOnly ? 'js' : 'all' }  />
         </a>
       </td>
       <td>{property.prop("description", "")}</td>

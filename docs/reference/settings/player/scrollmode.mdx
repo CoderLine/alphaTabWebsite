@@ -1,57 +1,28 @@
 ---
 title: player.scrollMode
-description: The mode how to scroll.
+description: "The mode how to scroll."
 sidebar_custom_props:
   category: Player
   since: 0.9.6
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
-This setting controls how alphaTab behaves for scrolling.
+### Description
+The mode how to scroll. This setting controls how alphaTab behaves for scrolling.
 
-<PropertyDescription showJson={true} />
 
-## Types
-
-<TypeTable>
-    <TypeRow name={"alphaTab.ScrollMode"} url={"/docs/reference/plain/scrollmode.mdx"}/>
-</TypeTable>
-
-### [alphaTab.ScrollMode](/docs/reference/plain/scrollmode.mdx)
-<TypeTable>
-  <TypeRow type="js" name="alphaTab.ScrollMode">
-    `Off` - Do not scroll automatically<br />
-    `Continuous` - Scrolling happens as soon the offsets of the cursors change.<br />
-    `OffScreen` - Scrolling happens as soon the cursors exceed the displayed range.
-  </TypeRow>
-  <TypeRow type="json-js-html" name="string">
-    `off`<br />
-    `continuous`<br />
-    `offscreen`
-  </TypeRow>
-  <TypeRow type="json-js-html" name="int">
-    `0` - Off <br />
-    `1` - Continuous <br />
-    `2` - OffScreen 
-  </TypeRow>
-  <TypeRow type="net" name="AlphaTab.ScrollMode">
-    `Off`<br />
-    `Continuous`<br />
-    `OffScreen`
-  </TypeRow>
-  <TypeRow type="android" name="alphaTab.ScrollMode">
-    `Off`<br />
-    `Continuous`<br />
-    `OffScreen`
-  </TypeRow>
-</TypeTable>
-
-## Default Value
+### Default Value
 
 `ScrollMode.Continuous`
+
+## Type: [`alphaTab.ScrollMode`](/docs/reference/types/scrollmode.mdx)
+
+import ScrollModeDocs from '@site/docs/reference/types/scrollmode.mdx';
+
+<ScrollModeDocs />

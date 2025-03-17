@@ -1,93 +1,34 @@
 ---
 title: notation.elements
-description: Whether music notation elements are visible or not.
+description: "Whether music notation elements are visible or not."
 sidebar_custom_props:
   category: Notation
   since: 0.9.8
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.8" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
-AlphaTab has quite a set of notation elements that are usually shown by default or only shown when using
+### Description
+Whether music notation elements are visible or not. AlphaTab has quite a set of notation elements that are usually shown by default or only shown when using
 the `SongBook` notation mode. This setting allows showing/hiding individual notation elements like the
 song information or the track names.
 
 For each element you can configure whether it is visible or not. The setting is a Map/Dictionary where
 the key is the element to configure and the value is a boolean value whether it should be visible or not.
 
-<PropertyDescription showJson={true} />
 
-## Types
-
-<TypeTable>
-    <TypeRow name={"Map<NotationElement, boolean>"} />
-</TypeTable>
-
-### [alphaTab.NotationElement](/docs/reference/plain/notationelement.mdx)
-<TypeTable>
-  <TypeRow type="all" name="alphaTab.NotationElement">
-    `ScoreTitle` - The score title shown at the start of the music sheet.<br />
-    `ScoreSubTitle` - The score subtitle shown at the start of the music sheet.<br />
-    `ScoreArtist` - The score artist shown at the start of the music sheet.<br />
-    `ScoreAlbum` - The score album shown at the start of the music sheet.<br />
-    `ScoreWords` - The score words author shown at the start of the music sheet.<br />
-    `ScoreMusic` - The score music author shown at the start of the music sheet.<br />
-    `ScoreWordsAndMusic` - The score words&music author shown at the start of the music sheet.<br />
-    `ScoreCopyright` - The score copyright owner shown at the start of the music sheet.<br />
-    `GuitarTuning` - The tuning information of the guitar shown<br />
-    `TrackNames` - The track names which are shown in the accolade.<br />
-    `ChordDiagrams` - The chord diagrams for guitars. Usually shown<br />
-    `ParenthesisOnTiedBends` - Parenthesis that are shown for tied bends<br />
-    `TabNotesOnTiedBends` - The tab number for tied notes if the<br />
-    `ZerosOnDiveWhammys` - Zero tab numbers on "dive whammys".<br />
-    `EffectAlternateEndings` - The alternate endings information on repeats shown above the staff.<br />
-    `EffectCapo` - The information about the fret on which the capo is placed shown above the staff.<br />
-    `EffectChordNames` - The chord names shown above beats shown above the staff.<br />
-    `EffectCrescendo` - The crescendo/decrescendo angle  shown above the staff.<br />
-    `EffectDynamics` - The beat dynamics  shown above the staff.<br />
-    `EffectFadeIn` - The curved angle for fade in/out effects  shown above the staff.<br />
-    `EffectFermata` - The fermata symbol shown above the staff.<br />
-    `EffectFingering` - The fingering information.<br />
-    `EffectHarmonics` - The harmonics names shown above the staff.<br />
-    `EffectLetRing` - The let ring name and line above the staff.<br />
-    `EffectLyrics` - The lyrics of the track shown above the staff.<br />
-    `EffectMarker` - The section markers shown above the staff.<br />
-    `EffectOttavia` - The ottava symbol and lines shown above the staff.<br />
-    `EffectPalmMute` - The palm mute name and line shown above the staff.<br />
-    `EffectPickSlide` - The pick slide information shown above the staff.<br />
-    `EffectPickStroke` - The pick stroke symbols shown above the staff.<br />
-    `EffectSlightBeatVibrato` - The slight beat vibrato waves shown above the staff.<br />
-    `EffectSlightNoteVibrato` - The slight note vibrato waves shown above the staff.<br />
-    `EffectTap` - The tap/slap/pop effect names shown above the staff.<br />
-    `EffectTempo` - The tempo information shown above the staff.<br />
-    `EffectText` - The additional beat text shown above the staff.<br />
-    `EffectTrill` - The trill name and waves shown above the staff.<br />
-    `EffectTripletFeel` - The triplet feel symbol shown above the staff.<br />
-    `EffectWhammyBar` - The whammy bar information shown above the staff.<br />
-    `EffectWideBeatVibrato` - The wide beat vibrato waves shown above the staff.<br />
-    `EffectWideNoteVibrato` - The wide note vibrato waves shown above the staff.<br />
-    `EffectLeftHandTap` - The left hand tap symbol shown above the staff.<br />
-    `EffectFreeTime` - The "Free time" text shown above the staff.<br />
-    `EffectSustainPedal` - The Sustain pedal effect shown above the staff "Ped.____*"<br />
-    `EffectGolpe` - The Golpe effect signs above and below the staff.<br />
-    `EffectWahPedal` - The Wah effect signs above and below the staff.<br />
-    `EffectBeatBarre` - The Beat barre effect signs above and below the staff "1/2B IV ─────┐"<br />
-    `EffectNoteOrnament` - The note ornaments like turns and mordents.<br />
-    `EffectRasgueado` - The Rasgueado indicator above the staff Rasg. ----|"<br />
-    `EffectDirections` - The directions indicators like coda and segno.<br />
-    `EffectBeatTimer` - The absolute playback time of beats.
-  </TypeRow>
-</TypeTable>
-
-## Default Value
+### Default Value
 
 `[[NotationElement.ZerosOnDiveWhammys, false]]`
 
+### Type
+
+<CodeBadge type="js" name="Map" /><CodeBadge type="net" name="Map<AlphaTab.NotationElement, bool>" /><CodeBadge type="android" name="Map<alphaTab.NotationElement, Boolean>" />
 ## Examples
 
 import ExampleTabs from "@theme/Tabs";
@@ -103,7 +44,7 @@ import ExampleTabItem from "@theme/TabItem";
     ]}
 >
 <ExampleTabItem value="javascript">
-Internally the setting is a [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) where the key must be a [`NotationElement`](/docs/reference/plain/notationelement.mdx) enumeration value.
+Internally the setting is a [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) where the key must be a [`NotationElement`](/docs/reference/types/notationelement.mdx) enumeration value.
 For JSON input the usual enumeration serialization applies where also the names can be used. The names
 are case insensitive.
 

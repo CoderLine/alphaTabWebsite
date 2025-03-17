@@ -1,34 +1,32 @@
 ---
 title: display.stretchForce
-description: The default stretch force to use for layouting.
+description: "The default stretch force to use for layouting."
 sidebar_custom_props:
   jsOnParent: true
   category: Display
   since: 0.9.6
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
-The stretch force is a setting that controls the spacing of the music notation. AlphaTab uses a varaint of the Gourlay algorithm for spacing which has springs and rods for
+### Description
+The default stretch force to use for layouting. The stretch force is a setting that controls the spacing of the music notation. AlphaTab uses a varaint of the Gourlay algorithm for spacing which has springs and rods for
 aligning elements. This setting controls the "strength" of the springs. The stronger the springs, the wider the spacing.
 
 | Force 1                                                      | Force 0.5                                             |
 |--------------------------------------------------------------|-------------------------------------------------------|
 | ![Default](/img/reference/property/stretchforce-default.png) | ![0.5](/img/reference/property/stretchforce-half.png) |
 
-<PropertyDescription showJson={true} />
 
-## Types
-
-<TypeTable>
-    <TypeRow name={"number"} />
-</TypeTable>
-
-## Default Value
+### Default Value
 
 `1`
+
+### Type
+
+<CodeBadge type="js" name="number" /><CodeBadge type="net" name="double" /><CodeBadge type="android" name="Double" />

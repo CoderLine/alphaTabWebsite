@@ -1,53 +1,29 @@
 ---
 title: display.layoutMode
-description: The layouting mode used to arrange the the notation.
+description: "The layouting mode used to arrange the the notation."
 sidebar_custom_props:
   jsOnParent: true
   category: Display
   since: 0.9.6
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
-AlphaTab has various layout engines that arrange the rendered bars differently. This setting controls which layout mode is used.
+### Description
+The layouting mode used to arrange the the notation. AlphaTab has various layout engines that arrange the rendered bars differently. This setting controls which layout mode is used.
 
-<PropertyDescription showJson={true} />
 
-## Types
+### Default Value
 
-<TypeTable>
-    <TypeRow name={"alphaTab.LayoutMode"} url={"/docs/reference/plain/layoutmode.mdx"}/>
-</TypeTable>
+[`LayoutMode.Page`](/docs/reference/types/layoutmode.mdx#page)
 
-### [alphaTab.LayoutMode](/docs/reference/plain/layoutmode.mdx)
-<TypeTable>
-  <TypeRow type="js" name="alphaTab.LayoutMode">
-    `Page` - The bars are aligned in an [vertically endless page-style fashion](/docs/showcase/layouts#page-layout)<br />
-    `Horizontal` - Bars are aligned horizontally in [one horizontally endless system (row)](/docs/showcase/layouts#horizontal-layout)
-  </TypeRow>
-  <TypeRow type="json-js-html" name="string">
-    `page`<br />
-    `horizontal`
-  </TypeRow>
-  <TypeRow type="json-js-html" name="int">
-    `0` - Page <br />
-    `1` - Horizontal 
-  </TypeRow>
-  <TypeRow type="net" name="AlphaTab.LayoutMode">
-    `Page`<br />
-    `Horizontal`
-  </TypeRow>
-  <TypeRow type="android" name="alphaTab.LayoutMode">
-    `Page`<br />
-    `Horizontal`
-  </TypeRow>
-</TypeTable>
+## Type: [`alphaTab.LayoutMode`](/docs/reference/types/layoutmode.mdx)
 
-## Default Value
+import LayoutModeDocs from '@site/docs/reference/types/layoutmode.mdx';
 
-[`LayoutMode.Page`](/docs/reference/plain/layoutmode.mdx#page)
+<LayoutModeDocs />

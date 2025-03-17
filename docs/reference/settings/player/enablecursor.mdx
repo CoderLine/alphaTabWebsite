@@ -1,28 +1,26 @@
 ---
 title: player.enableCursor
-description: Whether playback cursors should be displayed.
+description: "Whether playback cursors should be displayed."
 sidebar_custom_props:
   category: Player
   since: 0.9.6
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
-This setting configures whether the playback cursors are shown or not. In case a developer decides to built an own cursor system the default one can be disabled with this setting. Enabling the cursor also requires the player to be active.
+### Description
+Whether playback cursors should be displayed. This setting configures whether the playback cursors are shown or not. In case a developer decides to built an own cursor system the default one can be disabled with this setting. Enabling the cursor also requires the player to be active.
 
-<PropertyDescription showJson={true} />
 
-## Types
-
-<TypeTable>
-    <TypeRow name={"boolean"} />
-</TypeTable>
-
-## Default Value
+### Default Value
 
 `true`
+
+### Type
+
+<CodeBadge type="js" name="boolean" /><CodeBadge type="net" name="bool" /><CodeBadge type="android" name="Boolean" />

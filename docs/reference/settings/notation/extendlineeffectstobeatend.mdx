@@ -1,32 +1,30 @@
 ---
 title: notation.extendLineEffectsToBeatEnd
-description: If set to true, line effects like w/bar and let-ring are drawn until the end of the beat instead of the start
+description: "If set to true, line effects like w/bar and let-ring are drawn until the end of the beat instead of the start"
 sidebar_custom_props:
   category: Notation
   since: 0.9.6
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
-By default effect annotations that render a line above the staff, stop on the beat. This is the typical display of Guitar Pro. In songbooks and some other tools
+### Description
+If set to true, line effects like w/bar and let-ring are drawn until the end of the beat instead of the start By default effect annotations that render a line above the staff, stop on the beat. This is the typical display of Guitar Pro. In songbooks and some other tools
 these effects are drawn to the end of this beat.
 | Enabled                                                                     | Disabled                                                                      |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------|
 | ![Enabled](/img/reference/property/extendlineeffectstobeatend-enabled.png) | ![Disabled](/img/reference/property/extendlineeffectstobeatend-disabled.png) |
 
-<PropertyDescription showJson={true} />
 
-## Types
-
-<TypeTable>
-    <TypeRow name={"boolean"} />
-</TypeTable>
-
-## Default Value
+### Default Value
 
 `false`
+
+### Type
+
+<CodeBadge type="js" name="boolean" /><CodeBadge type="net" name="bool" /><CodeBadge type="android" name="Boolean" />

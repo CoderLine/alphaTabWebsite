@@ -2,12 +2,17 @@ import path from "path";
 import fs from "fs";
 import ts from "typescript";
 import {
+  getFullDescription,
   getJsDocTagText,
   getSummary,
   isDomWildcard,
   isJsonOnParent,
   isTargetWeb,
   repositoryRoot,
+  toDotNetTypeName,
+  toJsTypeName,
+  toKotlinTypeName,
+  typeNameAndUrl,
   typeToMarkdown,
   writeExamples,
 } from "./generate-common.mjs";
@@ -60,11 +65,14 @@ export async function generateSettings(context: GenerateContext) {
               );
 
               fileStream.write(
-                `description: ${getSummary(context, subSettingProp, false)}\n`
+                `description: ${JSON.stringify(
+                  getSummary(context, subSettingProp, false)
+                )}\n`
               );
               fileStream.write(`sidebar_custom_props:\n`);
 
-              if (isTargetWeb(subSettingProp)) {
+              const isWebOnly = isTargetWeb(subSettingProp);
+              if (isWebOnly) {
                 fileStream.write(`  javaScriptOnly: true\n`);
               }
 
@@ -90,45 +98,27 @@ export async function generateSettings(context: GenerateContext) {
               fileStream.write("---\n");
 
               fileStream.write(
-                "import { SinceBadge } from '@site/src/components/SinceBadge';\n"
-              );
-              fileStream.write("\n");
-              fileStream.write(
-                `<SinceBadge since=${JSON.stringify(since)} />\n`
-              );
-              fileStream.write(`\n`);
-              fileStream.write(
-                `import { PropertyDescription } from '@site/src/components/PropertyDescription';\n`
+                "import { CodeBadge } from '@site/src/components/CodeBadge';\n\n"
               );
               fileStream.write(
-                `import {TypeTable, TypeRow} from '@site/src/components/TypeTable';\n`
+                "import { SinceBadge } from '@site/src/components/SinceBadge';\n\n"
               );
 
-              // fileStream.write(`## Summary\n`);
-              // fileStream.write(`${summary}\n\n`);
-
-              const remarks = getJsDocTagText(
-                context,
-                subSettingProp,
-                "remarks"
+              fileStream.write(
+                "import { SettingsHeader } from '@site/src/components/SettingsHeader';\n\n"
               );
-              fileStream.write(`\n## Description\n`);
-              if (remarks) {
-                fileStream.write(`${remarks}\n\n`);
-              } else {
-                fileStream.write(
-                  `${getSummary(context, subSettingProp, true)}\n\n`
-                );
-              }
+              fileStream.write(`<SettingsHeader />\n`);
 
-              fileStream.write(`<PropertyDescription showJson={true} />\n`);
-
-              const importFile = path.join(
-                basePath,
-                "_" + subSettingProp.name.getText().toLowerCase() + ".mdx"
+              fileStream.write(`\n### Description\n`);
+              fileStream.write(
+                `${getFullDescription(context, subSettingProp)}\n\n`
               );
 
               try {
+                const importFile = path.join(
+                  basePath,
+                  "_" + subSettingProp.name.getText().toLowerCase() + ".mdx"
+                );
                 await fs.promises.access(importFile, fs.constants.R_OK);
 
                 fileStream.write(
@@ -142,24 +132,69 @@ export async function generateSettings(context: GenerateContext) {
                 // ignore
               }
 
-              fileStream.write(`\n## Types\n\n`);
-              fileStream.write(
-                `${typeToMarkdown(
-                  context,
-                  context.checker.getTypeAtLocation(subSettingProp),
-                  subSettingProp,
-                  !!subSettingProp.questionToken
-                )}\n`
-              );
-
               const defaultValue = getJsDocTagText(
                 context,
                 subSettingProp,
                 "defaultValue"
               );
               if (defaultValue) {
-                fileStream.write(`\n## Default Value\n\n`);
+                fileStream.write(`\n### Default Value\n\n`);
                 fileStream.write(`${defaultValue}\n`);
+              }
+
+              const typeInfo = typeNameAndUrl(
+                context,
+                context.checker.getTypeAtLocation(subSettingProp),
+                subSettingProp
+              );
+
+              if (!typeInfo.referenceUrl) {
+                if (isWebOnly) {
+                  fileStream.write(
+                    `\n### Type: \`${toJsTypeName(
+                      context,
+                      typeInfo.typeInfo,
+                      !!subSettingProp.questionToken,
+                      subSettingProp
+                    )}\`\n\n`
+                  );
+                } else {
+                  fileStream.write(`\n### Type\n\n`);
+
+                  // TODO: link to known types of arrays, maps, sets etc.
+                  fileStream.write(
+                    `<CodeBadge type="js" name="${toJsTypeName(
+                      context,
+                      typeInfo.typeInfo,
+                      !!subSettingProp.questionToken,
+                      subSettingProp
+                    )}" />`
+                  );
+                  fileStream.write(
+                    `<CodeBadge type="net" name="${toDotNetTypeName(
+                      context,
+                      typeInfo.typeInfo,
+                      !!subSettingProp.questionToken,
+                      subSettingProp
+                    )}" />`
+                  );
+                  fileStream.write(
+                    `<CodeBadge type="android" name="${toKotlinTypeName(
+                      context,
+                      typeInfo.typeInfo,
+                      !!subSettingProp.questionToken,
+                      subSettingProp
+                    )}" />`
+                  );
+                }
+              } else {
+                fileStream.write(
+                  `\n## Type: [\`${typeInfo.fullName}\`](${typeInfo.referenceUrl})\n\n`
+                );
+
+                fileStream.write(
+                  `import ${typeInfo.simpleName}Docs from '@site${typeInfo.referenceUrl}';\n\n<${typeInfo.simpleName}Docs />`
+                );
               }
 
               writeExamples(fileStream, context, subSettingProp);

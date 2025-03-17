@@ -1,33 +1,30 @@
 ---
 title: core.enableLazyLoading
-description: Enables lazy loading of the rendered music sheet chunks.
+description: "Enables lazy loading of the rendered music sheet chunks."
 sidebar_custom_props:
   javaScriptOnly: true
   jsOnParent: true
   category: Core - JavaScript Specific
   since: 0.9.6
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
-AlphaTab renders the music sheet in smaller sub-chunks to have fast UI feedback. Not all of those sub-chunks are immediately
+### Description
+Enables lazy loading of the rendered music sheet chunks. AlphaTab renders the music sheet in smaller sub-chunks to have fast UI feedback. Not all of those sub-chunks are immediately
 appended to the DOM due to performance reasons. AlphaTab tries to detect which elements are visible on the screen, and only
 appends those elements to the DOM. This reduces the load of the browser heavily but is not working for all layouts and use cases.
 This setting set to false, ensures that all rendered items are instantly appended to the DOM.
 
-<PropertyDescription showJson={true} />
 
-## Types
-
-<TypeTable>
-    <TypeRow name={"boolean"} />
-</TypeTable>
-
-## Default Value
+### Default Value
 
 `true`
+
+### Type: `boolean`
+

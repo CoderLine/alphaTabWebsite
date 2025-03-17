@@ -1,30 +1,28 @@
 ---
 title: display.barsPerRow
-description: Limit the displayed bars per system (row).
+description: "Limit the displayed bars per system (row)."
 sidebar_custom_props:
   jsOnParent: true
   category: Display
   since: 0.9.6
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
-This setting sets the number of bars that should be put into one row during layouting. This setting is only respected
-when using the [`LayoutMode.Page`](/docs/reference/plain/layoutmode.mdx#page) where bars are aligned in systems. [Demo](/docs/showcase/layouts#page-layout-5-bars-per-row).
+### Description
+Limit the displayed bars per system (row). This setting sets the number of bars that should be put into one row during layouting. This setting is only respected
+when using the [`LayoutMode.Page`](/docs/reference/types/layoutmode.mdx#page) where bars are aligned in systems. [Demo](/docs/showcase/layouts#page-layout-5-bars-per-row).
 
-<PropertyDescription showJson={true} />
 
-## Types
-
-<TypeTable>
-    <TypeRow name={"number"} />
-</TypeTable>
-
-## Default Value
+### Default Value
 
 `-1` (automatic)
+
+### Type
+
+<CodeBadge type="js" name="number" /><CodeBadge type="net" name="double" /><CodeBadge type="android" name="Double" />

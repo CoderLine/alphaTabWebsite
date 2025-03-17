@@ -1,34 +1,31 @@
 ---
 title: core.includeNoteBounds
-description: Whether in the `BoundsLookup` also the position and area of each individual note is provided.
+description: "Whether in the `BoundsLookup` also the position and area of each individual note is provided."
 sidebar_custom_props:
   jsOnParent: true
   category: Core
   since: 0.9.6
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
-AlphaTab collects the position of the rendered music notation elements during the rendering process. This way some level of interactivity can be provided like the feature that seeks to the corresponding position when clicking on a beat.
+### Description
+Whether in the [`BoundsLookup`](/docs/reference/types/boundslookup.mdx) also the position and area of each individual note is provided. AlphaTab collects the position of the rendered music notation elements during the rendering process. This way some level of interactivity can be provided like the feature that seeks to the corresponding position when clicking on a beat.
 By default the position of the individual notes is not collected due to performance reasons. If access to note position information is needed, this setting can enable it.
 
-<PropertyDescription showJson={true} />
 
-## Types
-
-<TypeTable>
-    <TypeRow name={"boolean"} />
-</TypeTable>
-
-## Default Value
+### Default Value
 
 `false`
 
+### Type
+
+<CodeBadge type="js" name="boolean" /><CodeBadge type="net" name="bool" /><CodeBadge type="android" name="Boolean" />
 ## Example - JavaScript
 
 ```js

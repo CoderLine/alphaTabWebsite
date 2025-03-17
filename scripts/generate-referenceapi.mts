@@ -151,11 +151,7 @@ async function generateMember(
         `import { EventDescription } from '@site/src/components/EventDescription';\n`
       );
       descriptionTag = "EventDescription";
-    } else if (
-      ts.isPropertySignature(m) ||
-      ts.isPropertyDeclaration(m) ||
-      ts.isGetAccessor(m)
-    ) {
+    } else if (isProperty) {
       fileStream.write(
         `import { PropertyDescription } from '@site/src/components/PropertyDescription';\n`
       );
@@ -169,13 +165,14 @@ async function generateMember(
       `import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';\n`
     );
 
+    if (descriptionTag) {
+      fileStream.write(`\n<${descriptionTag} />\n`);
+    }
+
     const remarks = getJsDocTagText(context, m, "remarks");
     fileStream.write(`\n## Description\n`);
     fileStream.write(`${getSummary(context, m, true)} ${remarks}\n\n`);
 
-    if (descriptionTag) {
-      fileStream.write(`<${descriptionTag} />\n`);
-    }
 
     const importFile = path.join(
       basePath,

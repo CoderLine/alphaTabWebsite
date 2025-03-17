@@ -1,29 +1,27 @@
 ---
 title: notation.transpositionPitches
-description: The transposition pitch offsets for the individual tracks used for rendering and playback.
+description: "The transposition pitch offsets for the individual tracks used for rendering and playback."
 sidebar_custom_props:
   category: Notation
   since: 0.9.6
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
-This setting allows transposing of tracks for display and playback.
+### Description
+The transposition pitch offsets for the individual tracks used for rendering and playback. This setting allows transposing of tracks for display and playback.
 The `transpositionPitches` setting allows defining an additional pitch offset per track, that is then considered when displaying the music sheet.
 
-<PropertyDescription showJson={true} />
 
-## Types
-
-<TypeTable>
-    <TypeRow name={"number[]"} />
-</TypeTable>
-
-## Default Value
+### Default Value
 
 `[]`
+
+### Type
+
+<CodeBadge type="js" name="number[]" /><CodeBadge type="net" name="IList<double>" /><CodeBadge type="android" name="alphaTab.collections.List<Double>" />

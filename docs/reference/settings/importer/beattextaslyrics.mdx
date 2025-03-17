@@ -1,19 +1,20 @@
 ---
 title: importer.beatTextAsLyrics
-description: Enables detecting lyrics from beat texts
+description: "Enables detecting lyrics from beat texts"
 sidebar_custom_props:
   category: Importer
   since: 1.2.0
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="1.2.0" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
-On various old Guitar Pro 3-5 files tab authors often used the "beat text" feature to add lyrics to the individual tracks.
+### Description
+Enables detecting lyrics from beat texts On various old Guitar Pro 3-5 files tab authors often used the "beat text" feature to add lyrics to the individual tracks.
 This was easier and quicker than using the lyrics feature.
 
 These texts were optimized to align correctly when viewed in Guitar Pro with the default layout but can lead to
@@ -36,14 +37,11 @@ Enable this option for input files which suffer from this practice.
 
 ![Disabled](/img/reference/property/beattextaslyrics-disabled.png)
 
-<PropertyDescription showJson={true} />
 
-## Types
-
-<TypeTable>
-    <TypeRow name={"boolean"} />
-</TypeTable>
-
-## Default Value
+### Default Value
 
 `false`
+
+### Type
+
+<CodeBadge type="js" name="boolean" /><CodeBadge type="net" name="bool" /><CodeBadge type="android" name="Boolean" />

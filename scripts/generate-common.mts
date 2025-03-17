@@ -108,14 +108,15 @@ export function getSummary(
 }
 
 export function getFullDescription(context: GenerateContext, node: ts.Node) {
-  const description = `${getSummary(context, node, true, false)} ${getJsDocTagText(
+  const description = `${getSummary(
     context,
     node,
-    "remarks"
-  )}`.trim();
+    true,
+    false
+  )} ${getJsDocTagText(context, node, "remarks")}`.trim();
 
-  if(!description) {
-    return '(no description)';
+  if (!description) {
+    return "(no description)";
   }
 
   return description;
@@ -181,7 +182,7 @@ export function jsDocCommentToMarkdown(
 
               if (symbol) {
                 linkUrl =
-                  tryGetSettingsLink(context, symbol, comment.name) ??
+                  tryGetSettingsLink(context, symbol) ??
                   tryGetReferenceLink(context, symbol, comment.name);
               } else {
                 console.error(
@@ -215,9 +216,12 @@ export function jsDocCommentToMarkdown(
 
 function tryGetSettingsLink(
   context: GenerateContext,
-  symbol: ts.Symbol,
-  node: ts.Node
+  symbol: ts.Symbol
 ): string | undefined {
+  if (!symbol) {
+    return undefined;
+  }
+
   if ("parent" in symbol && symbol.parent) {
     const parentSymbol = symbol.parent as ts.Symbol;
     if (parentSymbol.name.endsWith("Settings")) {
@@ -254,9 +258,13 @@ function tryGetSettingsLink(
 
 export function tryGetReferenceLink(
   context: GenerateContext,
-  symbolOrNode: ts.Symbol | ts.Node,
+  symbolOrNode: ts.Symbol | ts.Node | undefined,
   referenceNode: ts.Node
 ): string {
+  if (!symbolOrNode) {
+    return "";
+  }
+
   if ("kind" in symbolOrNode) {
     if (
       path.basename(symbolOrNode.getSourceFile().fileName) !==
@@ -269,10 +277,15 @@ export function tryGetReferenceLink(
       case ts.SyntaxKind.ClassDeclaration:
       case ts.SyntaxKind.EnumDeclaration:
       case ts.SyntaxKind.InterfaceDeclaration:
-        return `/docs/reference/plain/${(
-          symbolOrNode as ts.DeclarationStatement
-        )
+        let name = (symbolOrNode as ts.DeclarationStatement)
           .name!.getText()
+          .toLowerCase();
+        if (context.nameToExportName.has(name)) {
+          name = context.nameToExportName.get(name)!;
+        }
+
+        return `/docs/reference/types/${name
+          .replaceAll(".", "/")
           .toLowerCase()}.mdx`;
 
       case ts.SyntaxKind.MethodDeclaration:
@@ -409,6 +422,55 @@ function enumTypeToInlineMarkdown(
   return lines;
 }
 
+export function typeNameAndUrl(
+  context: GenerateContext,
+  type: ts.Type,
+  referenceNode: ts.Node
+): {
+  fullName: string;
+  simpleName: string;
+  referenceUrl: string;
+  settingsUrl: string | undefined;
+  typeInfo: TypeWithNullableInfo;
+} {
+  const typeInfo = getTypeWithNullableInfo(
+    context,
+    type,
+    true,
+    false,
+    undefined,
+    referenceNode
+  );
+
+  const simpleName = typeInfo.isArray
+    ? typeInfo.arrayItemType!.typeAsString
+    : typeInfo.typeAsString;
+  let typeString = simpleName;
+  if(typeInfo.isOwnType) {
+    if (context.nameToExportName.has(typeString)) {
+      typeString = context.nameToExportName.get(typeString)!;
+    } else {
+      debugger;
+    }
+  }
+  
+
+  const settingsUrl = tryGetSettingsLink(context, type.symbol);
+  const referenceUrl = tryGetReferenceLink(context, type.symbol, referenceNode);
+
+  if (context.nameToExportName.has(typeString)) {
+    typeString = context.nameToExportName.get(typeString)!;
+  }
+
+  return {
+    fullName: typeString,
+    simpleName,
+    settingsUrl,
+    referenceUrl,
+    typeInfo,
+  };
+}
+
 export function typeToMarkdown(
   context: GenerateContext,
   type: ts.Type,
@@ -429,7 +491,7 @@ export function typeToMarkdown(
 
   if (typeInfo.isOwnType) {
     const linkUrl =
-      tryGetSettingsLink(context, type.symbol, node) ??
+      tryGetSettingsLink(context, type.symbol) ??
       tryGetReferenceLink(context, type.symbol, node);
     if (context.nameToExportName.has(typeString)) {
       typeString = context.nameToExportName.get(typeString)!;

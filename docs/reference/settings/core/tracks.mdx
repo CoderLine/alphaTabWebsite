@@ -1,31 +1,28 @@
 ---
 title: core.tracks
-description: The tracks to display for the initally loaded file.
+description: "The tracks to display for the initally loaded file."
 sidebar_custom_props:
   javaScriptOnly: true
   jsOnParent: true
   category: Core - JavaScript Specific
   since: 0.9.6
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
-This setting can be used in combinition with the [`file`](/docs/reference/settings/core/file) or [`tex`](/docs/reference/settings/core/tex) option. It controls which of the tracks
+### Description
+The tracks to display for the initally loaded file. This setting can be used in combinition with the [`file`](/docs/reference/settings/core/file) or [`tex`](/docs/reference/settings/core/tex) option. It controls which of the tracks
 of the initially loaded file should be displayed.
 
-<PropertyDescription showJson={true} />
 
-## Types
-
-<TypeTable>
-    <TypeRow name={"number | number[] | \"all\""} />
-</TypeTable>
-
-## Default Value
+### Default Value
 
 `null`
+
+### Type: `number`
+

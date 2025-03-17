@@ -1,31 +1,29 @@
 ---
 title: display.barCount
-description: The total number of bars that should be rendered from the song.
+description: "The total number of bars that should be rendered from the song."
 sidebar_custom_props:
   jsOnParent: true
   category: Display
   since: 0.9.6
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
-This setting sets the number of bars that should be rendered from the overall song. This setting can be used to
+### Description
+The total number of bars that should be rendered from the song. This setting sets the number of bars that should be rendered from the overall song. This setting can be used to
 achieve a paging system or to only show partial bars of the same file. By this a tutorial alike display can be achieved
 that explains various parts of the song. [Demo](/docs/showcase/layouts)
 
-<PropertyDescription showJson={true} />
 
-## Types
-
-<TypeTable>
-    <TypeRow name={"number"} />
-</TypeTable>
-
-## Default Value
+### Default Value
 
 `-1` (All bars)
+
+### Type
+
+<CodeBadge type="js" name="number" /><CodeBadge type="net" name="double" /><CodeBadge type="android" name="Double" />

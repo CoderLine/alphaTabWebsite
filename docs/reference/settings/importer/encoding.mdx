@@ -1,19 +1,20 @@
 ---
 title: importer.encoding
-description: The text encoding to use when decoding strings.
+description: "The text encoding to use when decoding strings."
 sidebar_custom_props:
   category: Importer
   since: 0.9.6
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
-By default strings are interpreted as UTF-8 from the input files. This is sometimes not the case and leads to strong display
+### Description
+The text encoding to use when decoding strings. By default strings are interpreted as UTF-8 from the input files. This is sometimes not the case and leads to strong display
 of strings in the rendered notation. Via this setting the text encoding for decoding the strings can be changed. The supported
 encodings depend on the browser or operating system. This setting is considered for the importers
 
@@ -22,14 +23,11 @@ encodings depend on the browser or operating system. This setting is considered 
 * Guitar Pro 3-5
 * MusicXML
 
-<PropertyDescription showJson={true} />
 
-## Types
-
-<TypeTable>
-    <TypeRow name={"string"} />
-</TypeTable>
-
-## Default Value
+### Default Value
 
 `utf-8`
+
+### Type
+
+<CodeBadge type="js" name="string" /><CodeBadge type="net" name="string" /><CodeBadge type="android" name="String" />

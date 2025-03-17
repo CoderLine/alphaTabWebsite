@@ -1,31 +1,29 @@
 ---
 title: display.barCountPerPartial
-description: The number of bars that should be placed within one partial render.
+description: "The number of bars that should be placed within one partial render."
 sidebar_custom_props:
   jsOnParent: true
   category: Display
   since: 0.9.6
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
-AlphaTab renders the whole music sheet in smaller chunks named "partials". This is to reduce the risk of
+### Description
+The number of bars that should be placed within one partial render. AlphaTab renders the whole music sheet in smaller chunks named "partials". This is to reduce the risk of
 encountering browser performance restrictions and it gives faster visual feedback to the user. This
 setting controls how many bars are placed within such a partial.
 
-<PropertyDescription showJson={true} />
 
-## Types
-
-<TypeTable>
-    <TypeRow name={"number"} />
-</TypeTable>
-
-## Default Value
+### Default Value
 
 `10`
+
+### Type
+
+<CodeBadge type="js" name="number" /><CodeBadge type="net" name="double" /><CodeBadge type="android" name="Double" />

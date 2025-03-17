@@ -1,63 +1,29 @@
 ---
 title: notation.rhythmMode
-description: Controls how the rhythm notation is rendered for tab staves.
+description: "Controls how the rhythm notation is rendered for tab staves."
 sidebar_custom_props:
   category: Notation
   since: 0.9.6
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
-This setting enables the display of rhythm notation on tab staffs. [Demo](/docs/showcase/guitar-tabs)
+### Description
+Controls how the rhythm notation is rendered for tab staves. This setting enables the display of rhythm notation on tab staffs. [Demo](/docs/showcase/guitar-tabs)
 <SinceBadge inline={true} since={"1.4.0"} /> its automatically detected whether rhythm notation should be shown on tabs (based on the visibility of other staves).
 
-<PropertyDescription showJson={true} />
 
-## Types
-
-<TypeTable>
-    <TypeRow name={"alphaTab.TabRhythmMode"} url={"/docs/reference/plain/tabrhythmmode.mdx"}/>
-</TypeTable>
-
-### [alphaTab.TabRhythmMode](/docs/reference/plain/tabrhythmmode.mdx)
-<TypeTable>
-  <TypeRow type="js" name="alphaTab.TabRhythmMode">
-    `Hidden` - Rhythm notation is hidden.<br />
-    `ShowWithBeams` - Rhythm notation is shown with individual beams per beat.<br />
-    `ShowWithBars` - Rhythm notation is shown and behaves like normal score notation with connected bars.<br />
-    `Automatic` - Automatic detection whether the tabs should show rhythm based on hidden standard notation.
-  </TypeRow>
-  <TypeRow type="json-js-html" name="string">
-    `hidden`<br />
-    `showwithbeams`<br />
-    `showwithbars`<br />
-    `automatic`
-  </TypeRow>
-  <TypeRow type="json-js-html" name="int">
-    `0` - Hidden <br />
-    `1` - ShowWithBeams <br />
-    `2` - ShowWithBars <br />
-    `3` - Automatic 
-  </TypeRow>
-  <TypeRow type="net" name="AlphaTab.TabRhythmMode">
-    `Hidden`<br />
-    `ShowWithBeams`<br />
-    `ShowWithBars`<br />
-    `Automatic`
-  </TypeRow>
-  <TypeRow type="android" name="alphaTab.TabRhythmMode">
-    `Hidden`<br />
-    `ShowWithBeams`<br />
-    `ShowWithBars`<br />
-    `Automatic`
-  </TypeRow>
-</TypeTable>
-
-## Default Value
+### Default Value
 
 `TabRhythmMode.Automatic`
+
+## Type: [`alphaTab.TabRhythmMode`](/docs/reference/types/tabrhythmmode.mdx)
+
+import TabRhythmModeDocs from '@site/docs/reference/types/tabrhythmmode.mdx';
+
+<TabRhythmModeDocs />

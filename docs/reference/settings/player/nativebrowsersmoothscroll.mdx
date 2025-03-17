@@ -1,31 +1,28 @@
 ---
 title: player.nativeBrowserSmoothScroll
-description: Whether the native browser smooth scroll mechanism should be used over a custom animation.
+description: "Whether the native browser smooth scroll mechanism should be used over a custom animation."
 sidebar_custom_props:
   javaScriptOnly: true
   category: Player
   since: 1.2.3
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="1.2.3" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
-This setting configures whether the [native browser feature](https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollTo)
+### Description
+Whether the native browser smooth scroll mechanism should be used over a custom animation. This setting configures whether the [native browser feature](https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollTo)
 for smooth scrolling should be used over a custom animation.
 If this setting is enabled, options like [`scrollSpeed`](/docs/reference/settings/player/scrollspeed) will not have an effect anymore.
 
-<PropertyDescription showJson={true} />
 
-## Types
-
-<TypeTable>
-    <TypeRow name={"boolean"} />
-</TypeTable>
-
-## Default Value
+### Default Value
 
 `true`
+
+### Type: `boolean`
+

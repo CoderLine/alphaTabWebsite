@@ -5,6 +5,7 @@ import { generateSettings } from "./generate-settings.mjs";
 import { generateTypeScript } from "./generate-typescript.mjs";
 import { generateReferenceApi } from "./generate-referenceapi.mjs";
 import { GenerateContext } from "./typeschema";
+import { generateTypeDocs } from "./generate-typedocs.mjs";
 
 const alphaTabEntryFile = url.fileURLToPath(
   import.meta.resolve("@coderline/alphatab")
@@ -150,13 +151,16 @@ context.settings = context.flatExports.get(
 ) as ts.ClassDeclaration;
 await generateTypeScript(context);
 await generateSettings(context);
-await generateReferenceApi(context, "api", [
-  "alphaTab.AlphaTabApiBase",
-  "alphaTab.AlphaTabApi",
-]);
-await generateReferenceApi(context, "alphasynth", [
-  "alphaTab.synth.IAlphaSynth",
-]);
-await generateReferenceApi(context, "scorerenderer", [
-  "alphaTab.rendering.IScoreRenderer",
-]);
+await generateTypeDocs(context);
+
+
+// await generateReferenceApi(context, "api", [
+//   "alphaTab.AlphaTabApiBase",
+//   "alphaTab.AlphaTabApi",
+// ]);
+// await generateReferenceApi(context, "alphasynth", [
+//   "alphaTab.synth.IAlphaSynth",
+// ]);
+// await generateReferenceApi(context, "scorerenderer", [
+//   "alphaTab.rendering.IScoreRenderer",
+// ]);

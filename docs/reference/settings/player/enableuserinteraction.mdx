@@ -1,29 +1,27 @@
 ---
 title: player.enableUserInteraction
-description: Whether the default user interaction behavior should be active or not.
+description: "Whether the default user interaction behavior should be active or not."
 sidebar_custom_props:
   category: Player
   since: 0.9.7
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.7" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
-This setting configures whether alphaTab provides the default user interaction features like selection of the playback range and "seek on click".
+### Description
+Whether the default user interaction behavior should be active or not. This setting configures whether alphaTab provides the default user interaction features like selection of the playback range and "seek on click".
 By default users can select the desired playback range with the mouse and also jump to individual beats by click. This behavior can be contolled with this setting.
 
-<PropertyDescription showJson={true} />
 
-## Types
-
-<TypeTable>
-    <TypeRow name={"boolean"} />
-</TypeTable>
-
-## Default Value
+### Default Value
 
 `true`
+
+### Type
+
+<CodeBadge type="js" name="boolean" /><CodeBadge type="net" name="bool" /><CodeBadge type="android" name="Boolean" />

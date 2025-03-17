@@ -1,29 +1,27 @@
 ---
 title: display.lastSystemPaddingBottom
-description: The bottom padding applied to the last system.
+description: "The bottom padding applied to the last system."
 sidebar_custom_props:
   jsOnParent: true
   category: Display
   since: 1.4.0
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="1.4.0" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
+### Description
 The bottom padding applied to the last system.
 
-<PropertyDescription showJson={true} />
 
-## Types
-
-<TypeTable>
-    <TypeRow name={"number"} />
-</TypeTable>
-
-## Default Value
+### Default Value
 
 `0`
+
+### Type
+
+<CodeBadge type="js" name="number" /><CodeBadge type="net" name="double" /><CodeBadge type="android" name="Double" />

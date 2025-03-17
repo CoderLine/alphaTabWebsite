@@ -1,30 +1,28 @@
 ---
 title: player.scrollOffsetX
-description: The X-offset to add when scrolling.
+description: "The X-offset to add when scrolling."
 sidebar_custom_props:
   category: Player
   since: 0.9.6
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
-When alphaTab does an auto-scrolling to the displayed bar, it will try to align the view port to the displayed bar. If due to
+### Description
+The X-offset to add when scrolling. When alphaTab does an auto-scrolling to the displayed bar, it will try to align the view port to the displayed bar. If due to
 some layout specifics or for aesthetics a small padding is needed, this setting allows an additional X-offset that is added to the
 scroll position.
 
-<PropertyDescription showJson={true} />
 
-## Types
-
-<TypeTable>
-    <TypeRow name={"number"} />
-</TypeTable>
-
-## Default Value
+### Default Value
 
 `0`
+
+### Type
+
+<CodeBadge type="js" name="number" /><CodeBadge type="net" name="double" /><CodeBadge type="android" name="Double" />

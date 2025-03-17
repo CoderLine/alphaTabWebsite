@@ -1,19 +1,20 @@
 ---
 title: notation.displayTranspositionPitches
-description: The transposition pitch offsets for the individual tracks used for rendering only.
+description: "The transposition pitch offsets for the individual tracks used for rendering only."
 sidebar_custom_props:
   category: Notation
   since: 0.9.6
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
-For some instruments the pitch shown on the standard notation has an additional transposition. One example is the Guitar.
+### Description
+The transposition pitch offsets for the individual tracks used for rendering only. For some instruments the pitch shown on the standard notation has an additional transposition. One example is the Guitar.
 Notes are shown 1 octave higher than they are on the piano. The following image shows a C4 for a piano and a guitar, and a C5 for the piano as comparison:
 
 ![Display Transposition Pitches example](/img/reference/property/displaytranspositionpitches.png)
@@ -22,14 +23,11 @@ The `DisplayTranspositionPitch` setting allows defining an additional pitch offs
 This setting does not affect the playback of the instrument in any way. Despite the 2 different standard notations in the above example, they both play the same note height.
 The transposition is defined as number of semitones and one value per track of the song can be defined.
 
-<PropertyDescription showJson={true} />
 
-## Types
-
-<TypeTable>
-    <TypeRow name={"number[]"} />
-</TypeTable>
-
-## Default Value
+### Default Value
 
 `[]`
+
+### Type
+
+<CodeBadge type="js" name="number[]" /><CodeBadge type="net" name="IList<double>" /><CodeBadge type="android" name="alphaTab.collections.List<Double>" />

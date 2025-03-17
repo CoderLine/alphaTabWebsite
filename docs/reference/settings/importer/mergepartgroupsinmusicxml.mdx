@@ -1,28 +1,26 @@
 ---
 title: importer.mergePartGroupsInMusicXml
-description: If part-groups should be merged into a single track (MusicXML).
+description: "If part-groups should be merged into a single track (MusicXML)."
 sidebar_custom_props:
   category: Importer
   since: 0.9.6
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
-This setting controls whether multiple `part-group` tags will result into a single track with multiple staves.
+### Description
+If part-groups should be merged into a single track (MusicXML). This setting controls whether multiple `part-group` tags will result into a single track with multiple staves.
 
-<PropertyDescription showJson={true} />
 
-## Types
-
-<TypeTable>
-    <TypeRow name={"boolean"} />
-</TypeTable>
-
-## Default Value
+### Default Value
 
 `false`
+
+### Type
+
+<CodeBadge type="js" name="boolean" /><CodeBadge type="net" name="bool" /><CodeBadge type="android" name="Boolean" />

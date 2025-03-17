@@ -1,19 +1,20 @@
 ---
 title: notation.notationMode
-description: The mode to use for display and play music notation elements.
+description: "The mode to use for display and play music notation elements."
 sidebar_custom_props:
   category: Notation
   since: 0.9.6
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
-AlphaTab provides 2 main music notation display modes `GuitarPro` and `SongBook`.
+### Description
+The mode to use for display and play music notation elements. AlphaTab provides 2 main music notation display modes `GuitarPro` and `SongBook`.
 As the names indicate they adjust the overall music notation rendering either to be more in line how [Arobas Guitar Pro](https://www.guitar-pro.com) displays it,
 or more like the common practice in paper song books practices the display.
 
@@ -48,38 +49,13 @@ Following default setting values are applied:
 }
 ```
 
-<PropertyDescription showJson={true} />
 
-## Types
-
-<TypeTable>
-    <TypeRow name={"alphaTab.NotationMode"} url={"/docs/reference/plain/notationmode.mdx"}/>
-</TypeTable>
-
-### [alphaTab.NotationMode](/docs/reference/plain/notationmode.mdx)
-<TypeTable>
-  <TypeRow type="js" name="alphaTab.NotationMode">
-    `GuitarPro` - Music elements will be displayed and played as in Guitar Pro.<br />
-    `SongBook` - Music elements will be displayed and played as in traditional songbooks.
-  </TypeRow>
-  <TypeRow type="json-js-html" name="string">
-    `guitarpro`<br />
-    `songbook`
-  </TypeRow>
-  <TypeRow type="json-js-html" name="int">
-    `0` - GuitarPro <br />
-    `1` - SongBook 
-  </TypeRow>
-  <TypeRow type="net" name="AlphaTab.NotationMode">
-    `GuitarPro`<br />
-    `SongBook`
-  </TypeRow>
-  <TypeRow type="android" name="alphaTab.NotationMode">
-    `GuitarPro`<br />
-    `SongBook`
-  </TypeRow>
-</TypeTable>
-
-## Default Value
+### Default Value
 
 `NotationMode.GuitarPro`
+
+## Type: [`alphaTab.NotationMode`](/docs/reference/types/notationmode.mdx)
+
+import NotationModeDocs from '@site/docs/reference/types/notationmode.mdx';
+
+<NotationModeDocs />

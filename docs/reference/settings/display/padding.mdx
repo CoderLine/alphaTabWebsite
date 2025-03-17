@@ -1,32 +1,30 @@
 ---
 title: display.padding
-description: Adjusts the padding between the music notation and the border.
+description: "Adjusts the padding between the music notation and the border."
 sidebar_custom_props:
   jsOnParent: true
   category: Display
   since: 0.9.6
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
-Adjusts the padding between the music notation and the outer border of the container element.
+### Description
+Adjusts the padding between the music notation and the border. Adjusts the padding between the music notation and the outer border of the container element.
 The array is either:
 * 2 elements: `[left-right, top-bottom]`
 * 4 elements: ``[left, top, right, bottom]``
 
-<PropertyDescription showJson={true} />
 
-## Types
-
-<TypeTable>
-    <TypeRow name={"number[]"} />
-</TypeTable>
-
-## Default Value
+### Default Value
 
 `[35, 35]`
+
+### Type
+
+<CodeBadge type="js" name="number[]" /><CodeBadge type="net" name="IList<double>" /><CodeBadge type="android" name="alphaTab.collections.List<Double>" />

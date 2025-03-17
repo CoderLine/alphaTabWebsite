@@ -31,11 +31,7 @@ export function ResourceRow({ resource, type }) {
     return (
         <tr>
             <td>
-                <CodeBadge type="js" name={resource.name} /><br />
-                <CodeBadge type="json" name={resource.name} /><br />
-                <CodeBadge type="html" name={resource.name.toLowerCase()} /><br />
-                <CodeBadge type="net" name={toPascalCase(resource.name)} />
-                <CodeBadge type="android" name={resource.name} />
+                <CodeBadge type="all" name={resource.name} /><br />
             </td>
             <td>
                 <CodeBadge type="all" name={type} />

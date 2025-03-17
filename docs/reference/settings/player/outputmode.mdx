@@ -1,53 +1,29 @@
 ---
 title: player.outputMode
-description: The mode used for playing audio samples
+description: "The mode used for playing audio samples"
 sidebar_custom_props:
   javaScriptOnly: true
   category: Player - JavaScript Specific
   since: 1.3.0
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="1.3.0" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
-Controls how alphaTab will play the audio samples in the browser.
+### Description
+The mode used for playing audio samples Controls how alphaTab will play the audio samples in the browser.
 
-<PropertyDescription showJson={true} />
 
-## Types
-
-<TypeTable>
-    <TypeRow name={"alphaTab.PlayerOutputMode"} url={"/docs/reference/plain/playeroutputmode.mdx"}/>
-</TypeTable>
-
-### [alphaTab.PlayerOutputMode](/docs/reference/plain/playeroutputmode.mdx)
-<TypeTable>
-  <TypeRow type="js" name="alphaTab.PlayerOutputMode">
-    `WebAudioAudioWorklets` - If audio worklets are available in the browser, they will be used for playing the audio.<br />
-    `WebAudioScriptProcessor` - Uses the legacy ScriptProcessor output which might perform worse.
-  </TypeRow>
-  <TypeRow type="json-js-html" name="string">
-    `webaudioaudioworklets`<br />
-    `webaudioscriptprocessor`
-  </TypeRow>
-  <TypeRow type="json-js-html" name="int">
-    `0` - WebAudioAudioWorklets <br />
-    `1` - WebAudioScriptProcessor 
-  </TypeRow>
-  <TypeRow type="net" name="AlphaTab.PlayerOutputMode">
-    `WebAudioAudioWorklets`<br />
-    `WebAudioScriptProcessor`
-  </TypeRow>
-  <TypeRow type="android" name="alphaTab.PlayerOutputMode">
-    `WebAudioAudioWorklets`<br />
-    `WebAudioScriptProcessor`
-  </TypeRow>
-</TypeTable>
-
-## Default Value
+### Default Value
 
 `PlayerOutputMode.WebAudioAudioWorklets`
+
+## Type: [`alphaTab.PlayerOutputMode`](/docs/reference/types/playeroutputmode.mdx)
+
+import PlayerOutputModeDocs from '@site/docs/reference/types/playeroutputmode.mdx';
+
+<PlayerOutputModeDocs />

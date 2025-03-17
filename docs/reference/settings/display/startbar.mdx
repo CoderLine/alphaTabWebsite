@@ -1,32 +1,30 @@
 ---
 title: display.startBar
-description: The bar start index to start layouting with.
+description: "The bar start index to start layouting with."
 sidebar_custom_props:
   jsOnParent: true
   category: Display
   since: 0.9.6
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
-This setting sets the index of the first bar that should be rendered from the overall song. This setting can be used to
+### Description
+The bar start index to start layouting with. This setting sets the index of the first bar that should be rendered from the overall song. This setting can be used to
 achieve a paging system or to only show partial bars of the same file. By this a tutorial alike display can be achieved
 that explains various parts of the song. Please note that this is the bar number as shown in the music sheet (1-based) not the array index (0-based).
 [Demo](/docs/showcase/layouts#page-layout-bar-5-to-8)
 
-<PropertyDescription showJson={true} />
 
-## Types
-
-<TypeTable>
-    <TypeRow name={"number"} />
-</TypeTable>
-
-## Default Value
+### Default Value
 
 `1`
+
+### Type
+
+<CodeBadge type="js" name="number" /><CodeBadge type="net" name="double" /><CodeBadge type="android" name="Double" />

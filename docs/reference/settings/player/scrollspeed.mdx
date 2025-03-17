@@ -1,30 +1,28 @@
 ---
 title: player.scrollSpeed
-description: How fast the scrolling to the new position should happen.
+description: "How fast the scrolling to the new position should happen."
 sidebar_custom_props:
   category: Player
   since: 0.9.6
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
-If possible from the platform, alphaTab will try to do a smooth scrolling to the played bar.
+### Description
+How fast the scrolling to the new position should happen. If possible from the platform, alphaTab will try to do a smooth scrolling to the played bar.
 This setting defines the speed of scrolling in milliseconds.
 Note that [`nativeBrowserSmoothScroll`](/docs/reference/settings/player/nativebrowsersmoothscroll) must be set to `false` for this to have an effect.
 
-<PropertyDescription showJson={true} />
 
-## Types
-
-<TypeTable>
-    <TypeRow name={"number"} />
-</TypeTable>
-
-## Default Value
+### Default Value
 
 `300`
+
+### Type
+
+<CodeBadge type="js" name="number" /><CodeBadge type="net" name="double" /><CodeBadge type="android" name="Double" />

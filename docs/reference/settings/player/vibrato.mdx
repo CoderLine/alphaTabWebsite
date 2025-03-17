@@ -1,19 +1,20 @@
 ---
 title: player.vibrato
-description: The Vibrato settings allow control how the different vibrato types are generated for audio.
+description: "The Vibrato settings allow control how the different vibrato types are generated for audio."
 sidebar_custom_props:
   category: Player
   since: 0.9.6
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
-AlphaTab supports 4 types of vibratos, for each vibrato the amplitude and the wavelength can be configured. The amplitude controls how many semitones
+### Description
+The Vibrato settings allow control how the different vibrato types are generated for audio. AlphaTab supports 4 types of vibratos, for each vibrato the amplitude and the wavelength can be configured. The amplitude controls how many semitones
 the vibrato changes the pitch up and down while playback. The wavelength controls how many midi ticks it will take to complete one up and down vibrato.
 The 4 vibrato types are:
 
@@ -22,14 +23,13 @@ The 4 vibrato types are:
 3. Note Slight - A fast vibrato on a single note. This vibrato is usually done with the finger on the fretboard.
 4. Note Wide - A slow vibrato on a single note. This vibrato is usually done with the finger on the fretboard.
 
-<PropertyDescription showJson={true} />
 
 import ManualDocs from './_vibrato.mdx';
 
 <ManualDocs />
 
-## Types
+## Type: [`alphaTab.VibratoPlaybackSettings`](/docs/reference/types/vibratoplaybacksettings.mdx)
 
-<TypeTable>
-    <TypeRow name={"alphaTab.VibratoPlaybackSettings"} url={"/docs/reference/plain/vibratoplaybacksettings.mdx"}/>
-</TypeTable>
+import VibratoPlaybackSettingsDocs from '@site/docs/reference/types/vibratoplaybacksettings.mdx';
+
+<VibratoPlaybackSettingsDocs />

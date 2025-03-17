@@ -1,20 +1,21 @@
 ---
 title: player.slide
-description: The slide settings allow control how the different slide types are generated for audio.
+description: "The slide settings allow control how the different slide types are generated for audio."
 sidebar_custom_props:
   domWildcard: true
   category: Player
   since: 0.9.6
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
-AlphaTab supports various types of slides which can be grouped into 3 types:
+### Description
+The slide settings allow control how the different slide types are generated for audio. AlphaTab supports various types of slides which can be grouped into 3 types:
 
 * Shift Slides
 * Legato Slides
@@ -35,14 +36,13 @@ as there is no mechanism yet in alphaTab to play pick slides to make them sound 
 For the first group only the duration or start point of the slide can be configured while for the second group
 the duration/start-point and the pitch offset can be configured.
 
-<PropertyDescription showJson={true} />
 
 import ManualDocs from './_slide.mdx';
 
 <ManualDocs />
 
-## Types
+## Type: [`alphaTab.SlidePlaybackSettings`](/docs/reference/types/slideplaybacksettings.mdx)
 
-<TypeTable>
-    <TypeRow name={"alphaTab.SlidePlaybackSettings"} url={"/docs/reference/plain/slideplaybacksettings.mdx"}/>
-</TypeTable>
+import SlidePlaybackSettingsDocs from '@site/docs/reference/types/slideplaybacksettings.mdx';
+
+<SlidePlaybackSettingsDocs />

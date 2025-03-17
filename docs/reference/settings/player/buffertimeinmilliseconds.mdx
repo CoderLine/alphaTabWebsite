@@ -1,33 +1,31 @@
 ---
 title: player.bufferTimeInMilliseconds
-description: The number of milliseconds the player should buffer.
+description: "The number of milliseconds the player should buffer."
 sidebar_custom_props:
   category: Player
   since: 1.2.3
 ---
+import { CodeBadge } from '@site/src/components/CodeBadge';
+
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="1.2.3" />
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+<SettingsHeader />
 
-## Description
-Gets or sets how many milliseconds of audio samples should be buffered in total.
+### Description
+The number of milliseconds the player should buffer. Gets or sets how many milliseconds of audio samples should be buffered in total.
 
 * Larger buffers cause a delay from when audio settings like volumes will be applied.
 * Smaller buffers can cause audio crackling due to constant buffering that is happening.
 
 This buffer size can be changed whenever needed.
 
-<PropertyDescription showJson={true} />
 
-## Types
-
-<TypeTable>
-    <TypeRow name={"number"} />
-</TypeTable>
-
-## Default Value
+### Default Value
 
 `500`
+
+### Type
+
+<CodeBadge type="js" name="number" /><CodeBadge type="net" name="double" /><CodeBadge type="android" name="Double" />
