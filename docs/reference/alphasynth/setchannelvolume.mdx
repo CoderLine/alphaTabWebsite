@@ -1,40 +1,48 @@
 ---
 title: setChannelVolume
-description: Sets the current and initial volume of the given channel.
+description: Gets or sets the current and initial volume of the given channel.
 sidebar_custom_props:
-  jQuery: false
-  dom: false
   category: Methods
-  since: 0.9.6
 ---
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
 
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
 
 ## Description
-Sets the current and initial volume of the given channel. 
+Gets or sets the current and initial volume of the given channel. 
 
 ## Signatures
 
 <TypeTable>
-    <TypeRow type="js" name="function setChannelVolume(channel, volume)">
-    </TypeRow>
-    <TypeRow type="net" name="void SetChannelVolume(int channel, double volume)">
-    </TypeRow>
-    <TypeRow type="android" name="fun setChannelVolume(channel: Double, volume: Double): Unit">
-    </TypeRow>
+    <TypeRow type="js" name="setChannelVolume(channel: number, volume: number): void;" />
+    <TypeRow type="net" name="void SetChannelVolume(double channel, double volume)" />
+    <TypeRow type="android" name="fun setChannelVolume(channel: Double, volume: Double): Unit" />
 </TypeTable>
 
-## Parameters
+### Parameters 
 
 <ParameterTable>
-    <ParameterRow platform="all" name="channel" type="int">
-        The midi channel to set the volume for. 
+    <ParameterRow platform="js" name="channel" type="number">
+        The channel number.
     </ParameterRow>
-    <ParameterRow platform="all" name="Volume" type="double">
-        The volume as percentage. 
+    <ParameterRow platform="net" name="channel" type="double">
+        The channel number.
+    </ParameterRow>
+    <ParameterRow platform="android" name="channel" type="Double">
+        The channel number.
+    </ParameterRow>
+    <ParameterRow platform="js" name="volume" type="number">
+        The volume of of the channel (0.0-1.0)
+    </ParameterRow>
+    <ParameterRow platform="net" name="volume" type="double">
+        The volume of of the channel (0.0-1.0)
+    </ParameterRow>
+    <ParameterRow platform="android" name="volume" type="Double">
+        The volume of of the channel (0.0-1.0)
     </ParameterRow>
 </ParameterTable>
+
+### Returns 
+Nothing 

@@ -1,15 +1,18 @@
-import path from "path";
+import path, { basename } from "path";
+import fs from "fs";
 import ts from "typescript";
-import { getTypeWithNullableInfo, TypeWithNullableInfo } from "./typeschema";
+import {
+  GenerateContext,
+  getTypeWithNullableInfo,
+  hasFlag,
+  isNumberType,
+  isPrimitiveType,
+  TypeWithNullableInfo,
+  valueOrFirstDeclarationInDts,
+} from "./typeschema";
 import { toPascalCase } from "@site/src/names";
 
-export type GenerateContext = {
-  checker: ts.TypeChecker;
-  settings: ts.ClassDeclaration;
-  dts: string;
-  nameToExportName: Map<string, string>;
-  flatExports: Map<string, ts.DeclarationStatement>;
-};
+export { toPascalCase } from "@site/src/names";
 
 function toExampleKey(title: string) {
   return title
@@ -17,6 +20,8 @@ function toExampleKey(title: string) {
     .replaceAll("#", "sharp")
     .replaceAll(/[^a-z0-9]/g, "-");
 }
+
+export { repositoryRoot } from "./typeschema";
 
 export function collectExamples(
   context: GenerateContext,
@@ -47,6 +52,12 @@ export function isJsonOnParent(node: ts.Node): boolean {
     .find((t) => t.tagName.text === "json_on_parent");
 }
 
+export function isEvent(node: ts.Node): boolean {
+  return !!ts
+    .getJSDocTags(node)
+    .find((t) => t.tagName.text === "eventProperty");
+}
+
 export function isTargetWeb(node: ts.Node): boolean {
   return !!ts
     .getJSDocTags(node)
@@ -71,19 +82,43 @@ export function getJsDocTagText(
 export function getSummary(
   context: GenerateContext,
   node: ts.Node,
-  resolveLinks: boolean
+  resolveLinks: boolean,
+  shorten: boolean = true
 ): string {
   const jsDoc = ts.getJSDocCommentsAndTags(node);
-  if (jsDoc.length > 0 && ts.isJSDoc(jsDoc[0])) {
-    return (
-      jsDocCommentToMarkdown(context, jsDoc[0].comment, resolveLinks)
-        .split("\n")
-        .find((l) => l.trim().length > 0)
-        ?.trim() ?? ""
+  if ((jsDoc.length > 1 && ts.isJSDoc(jsDoc[0])) || jsDoc.length === 1) {
+    const text = jsDocCommentToMarkdown(
+      context,
+      jsDoc[0].comment,
+      resolveLinks
     );
+    if (shorten) {
+      return (
+        text
+          .split("\n")
+          .find((l) => l.trim().length > 0)
+          ?.trim() ?? ""
+      );
+    } else {
+      return text;
+    }
   }
 
   return "";
+}
+
+export function getFullDescription(context: GenerateContext, node: ts.Node) {
+  const description = `${getSummary(context, node, true, false)} ${getJsDocTagText(
+    context,
+    node,
+    "remarks"
+  )}`.trim();
+
+  if(!description) {
+    return '(no description)';
+  }
+
+  return description;
 }
 
 function rewriteJsDocText(s: string): string {
@@ -92,6 +127,9 @@ function rewriteJsDocText(s: string): string {
     .replaceAll("https://www.alphatab.net/", "/")
     .replaceAll(/\{@since ([^}]+)\}/g, (_, since) => {
       return `<SinceBadge inline={true} since={${JSON.stringify(since)}} />`;
+    })
+    .replaceAll(/\{@([^}]+)\}/g, (match) => {
+      return `\`${match}\``;
     });
 }
 
@@ -214,41 +252,7 @@ function tryGetSettingsLink(
   }
 }
 
-function valueOrFirstDeclarationInDts(
-  context: GenerateContext,
-  s: ts.Symbol,
-  referenceNode: ts.Node,
-  throwError: boolean
-) {
-  if (s.valueDeclaration) {
-    return s.valueDeclaration;
-  }
-
-  const d = s.declarations?.find(
-    (d) =>
-      path.basename(d.getSourceFile().fileName) == path.basename(context.dts)
-  );
-  if (d) {
-    return d;
-  }
-
-  if (throwError) {
-    throw new Error(
-      "Could not resolve declarataion of symbol " +
-        s.name +
-        " at " +
-        referenceNode.getSourceFile().fileName +
-        ":" +
-        referenceNode
-          .getSourceFile()
-          .getLineAndCharacterOfPosition(referenceNode.pos)
-    );
-  }
-
-  return undefined;
-}
-
-function tryGetReferenceLink(
+export function tryGetReferenceLink(
   context: GenerateContext,
   symbolOrNode: ts.Symbol | ts.Node,
   referenceNode: ts.Node
@@ -277,6 +281,7 @@ function tryGetReferenceLink(
       case ts.SyntaxKind.GetAccessor:
       case ts.SyntaxKind.SetAccessor:
       case ts.SyntaxKind.PropertyDeclaration:
+      case ts.SyntaxKind.PropertySignature:
       case ts.SyntaxKind.EnumMember:
         return (
           tryGetReferenceLink(context, symbolOrNode.parent, referenceNode) +
@@ -291,7 +296,8 @@ function tryGetReferenceLink(
           symbolOrNode.getSourceFile().fileName,
           symbolOrNode
             .getSourceFile()
-            .getLineAndCharacterOfPosition(symbolOrNode.pos)
+            .getLineAndCharacterOfPosition(symbolOrNode.pos),
+          symbolOrNode.getText()
         );
     }
   } else {
@@ -369,9 +375,10 @@ function enumTypeToInlineMarkdown(
         `  <TypeRow type="json-js-html" name="int">`,
         ...enumDeclaration.members.map(
           (member, i, a) =>
-            `    \`${getEnumValue(context, member)}\` - ${member.name.getText()} ${
-              i < a.length - 1 ? "<br />" : ""
-            }`
+            `    \`${getEnumValue(
+              context,
+              member
+            )}\` - ${member.name.getText()} ${i < a.length - 1 ? "<br />" : ""}`
         ),
         `  </TypeRow>`,
 
@@ -409,11 +416,12 @@ export function typeToMarkdown(
   isOptionalFromDeclaration: boolean
 ): string {
   const typeInfo = getTypeWithNullableInfo(
-    context.checker,
+    context,
     type,
     true,
     isOptionalFromDeclaration,
-    undefined
+    undefined,
+    node
   );
   let typeString = context.checker.typeToString(type);
 
@@ -468,4 +476,322 @@ function getEnumValue(context: GenerateContext, m: ts.EnumMember) {
     return m.initializer.getText();
   }
   return context.checker.getConstantValue(m);
+}
+
+export function writeExamples(
+  fileStream: fs.WriteStream,
+  context: GenerateContext,
+  element: ts.Node
+) {
+  const examples = collectExamples(context, element);
+  if (examples.length === 1) {
+    fileStream.write(`\n## Example - ${examples[0].title}\n\n`);
+    fileStream.write(`${examples[0].markdown}\n`);
+  } else if (examples.length > 1) {
+    fileStream.write(`\n## Examples\n\n`);
+    fileStream.write('import ExampleTabs from "@theme/Tabs";\n');
+    fileStream.write('import ExampleTabItem from "@theme/TabItem";\n\n');
+    fileStream.write("<ExampleTabs\n");
+    fileStream.write(`    defaultValue=${JSON.stringify(examples[0].key)}\n`);
+    fileStream.write(`    values={[\n`);
+
+    for (let i = 0; i < examples.length; i++) {
+      fileStream.write(
+        `      { label: ${JSON.stringify(
+          examples[i].title
+        )}, value: ${JSON.stringify(examples[i].key)}}`
+      );
+      if (i < examples.length - 1) {
+        fileStream.write(`,\n`);
+      } else {
+        fileStream.write(`\n`);
+      }
+    }
+
+    fileStream.write(`    ]}\n`);
+    fileStream.write(`>\n`);
+
+    for (const example of examples) {
+      fileStream.write(
+        `<ExampleTabItem value=${JSON.stringify(example.key)}>\n`
+      );
+
+      fileStream.write(`${example.markdown}\n`);
+
+      fileStream.write(`</ExampleTabItem>\n`);
+    }
+
+    fileStream.write(`</ExampleTabs>\n`);
+  }
+}
+
+export function toJsTypeName(
+  context: GenerateContext,
+  type: ts.Type | TypeWithNullableInfo,
+  isOptional: boolean,
+  referenceNode: ts.Node
+): string {
+  if (!("isOwnType" in type)) {
+    return toJsTypeName(
+      context,
+      getTypeWithNullableInfo(
+        context,
+        type,
+        true,
+        isOptional,
+        undefined,
+        referenceNode
+      ),
+      false,
+      referenceNode
+    );
+  }
+
+  if (isOptional) {
+    return toJsTypeName(context, type, false, referenceNode) + "?";
+  } else if (type.isNullable || type.isOptional) {
+    return (
+      toJsTypeName(
+        context,
+        {
+          ...type,
+          isNullable: false,
+          isOptional: false,
+        },
+        false,
+        referenceNode
+      ) + "?"
+    );
+  }
+
+  if (type.isPrimitiveType) {
+    return type.typeAsString;
+  }
+
+  if (type.isArray) {
+    return (
+      toJsTypeName(context, type.arrayItemType!, false, referenceNode) + "[]"
+    );
+  }
+
+  if (context.nameToExportName.has(type.typeAsString)) {
+    return context.nameToExportName.get(type.typeAsString)!;
+  }
+
+  return type.typeAsString;
+}
+
+export function toDotNetTypeName(
+  context: GenerateContext,
+  type: ts.Type | TypeWithNullableInfo,
+  isOptional: boolean,
+  referenceNode: ts.Node
+): string {
+  if (!("isOwnType" in type)) {
+    return toDotNetTypeName(
+      context,
+      getTypeWithNullableInfo(
+        context,
+        type,
+        false,
+        isOptional,
+        undefined,
+        referenceNode
+      ),
+      false,
+      referenceNode
+    );
+  }
+
+  if (isOptional) {
+    return toDotNetTypeName(context, type, false, referenceNode) + "?";
+  } else if (type.isNullable || type.isOptional) {
+    return (
+      toDotNetTypeName(
+        context,
+        {
+          ...type,
+          isNullable: false,
+          isOptional: false,
+        },
+        false,
+        referenceNode
+      ) + "?"
+    );
+  }
+
+  if (type.isPrimitiveType) {
+    switch (type.typeAsString) {
+      case "number":
+        return "double";
+      case "string":
+        return "string";
+      case "boolean":
+        return "bool";
+      case "BigInt":
+        return "long";
+      case "unknown":
+        return "object";
+    }
+  }
+
+  if (type.isArray) {
+    return (
+      "IList<" +
+      toDotNetTypeName(context, type.arrayItemType!, false, referenceNode) +
+      ">"
+    );
+  }
+
+  let baseName: string = type.typeAsString;
+
+  switch (type.typeAsString) {
+    case "void":
+      return "void";
+    case "Error":
+      return "System.Exception";
+    case "Promise":
+      baseName = "Task";
+      break;
+  }
+
+  if (context.nameToExportName.has(baseName)) {
+    baseName = toPascalCase(context.nameToExportName.get(baseName)!);
+  } else {
+    baseName = toPascalCase(baseName);
+  }
+
+  if (type.typeArguments && type.typeArguments.length > 0) {
+    baseName += "<";
+    baseName += type.typeArguments
+      .map((a) => toDotNetTypeName(context, a, false, referenceNode))
+      .join(", ");
+    baseName += ">";
+  }
+
+  return baseName;
+}
+
+export function toKotlinTypeName(
+  context: GenerateContext,
+  type: ts.Type | TypeWithNullableInfo,
+  isOptional: boolean,
+  referenceNode: ts.Node
+): string {
+  if (!("isOwnType" in type)) {
+    return toKotlinTypeName(
+      context,
+      getTypeWithNullableInfo(
+        context,
+        type,
+        false,
+        isOptional,
+        undefined,
+        referenceNode
+      ),
+      false,
+      referenceNode
+    );
+  }
+
+  if (isOptional) {
+    return toKotlinTypeName(context, type, false, referenceNode) + "?";
+  } else if (type.isNullable || type.isOptional) {
+    return (
+      toKotlinTypeName(
+        context,
+        {
+          ...type,
+          isNullable: false,
+          isOptional: false,
+        },
+        false,
+        referenceNode
+      ) + "?"
+    );
+  }
+
+  if (type.isPrimitiveType) {
+    switch (type.typeAsString) {
+      case "number":
+        return "Double";
+      case "string":
+        return "String";
+      case "boolean":
+        return "Boolean";
+      case "BigInt":
+        return "Long";
+      case "unknown":
+        return "Any";
+    }
+  }
+
+  if (type.isArray) {
+    // TODO: strong typed arrays
+    return (
+      "alphaTab.collections.List<" +
+      toKotlinTypeName(context, type.arrayItemType!, false, referenceNode) +
+      ">"
+    );
+  }
+
+  if (type.typeAsString === "Error") {
+    return "kotlin.Throwable";
+  }
+
+  switch (type.typeAsString) {
+    case "void":
+      return "Unit";
+    case "Error":
+      return "kotlin.Throwable";
+  }
+
+  let baseName: string;
+
+  if (context.nameToExportName.has(type.typeAsString)) {
+    baseName = context.nameToExportName.get(type.typeAsString)!;
+  } else {
+    baseName = type.typeAsString;
+  }
+
+  if (type.typeArguments && type.typeArguments.length > 0) {
+    if (type.typeAsString === "Promise") {
+      return toKotlinTypeName(
+        context,
+        type.typeArguments[0],
+        false,
+        referenceNode
+      );
+    } else {
+      baseName += "<";
+      baseName += type.typeArguments
+        .map((a) => toKotlinTypeName(context, a, false, referenceNode))
+        .join(", ");
+      baseName += ">";
+    }
+  } else if (type.typeAsString === "Promise") {
+    baseName = "Unit";
+  }
+
+  return baseName;
+}
+
+export function isOverride(node: ts.Node) {
+  const tags = ts.getJSDocTags(node);
+
+  if (tags.find((t) => t.tagName.text === "inheritdoc")) {
+    return true;
+  }
+
+  return false;
+}
+
+export function isInternal(node: ts.Node) {
+  const tags = ts.getJSDocTags(node);
+
+  if (tags.find((t) => t.tagName.text === "internal")) {
+    return true;
+  }
+
+  return false;
 }

@@ -1,19 +1,17 @@
 import path from "path";
-import url from "url";
-import fs, { link } from "fs";
-import ts, { JSDocParsingMode } from "typescript";
-import { getTypeWithNullableInfo, TypeWithNullableInfo } from "./typeschema";
-import { toPascalCase } from "@site/src/names";
+import fs from "fs";
+import ts from "typescript";
 import {
-  collectExamples,
-  GenerateContext,
   getJsDocTagText,
   getSummary,
   isDomWildcard,
   isJsonOnParent,
   isTargetWeb,
+  repositoryRoot,
   typeToMarkdown,
+  writeExamples,
 } from "./generate-common.mjs";
+import { GenerateContext } from "./typeschema";
 
 export async function generateSettings(context: GenerateContext) {
   // Write settings  mdx
@@ -24,8 +22,7 @@ export async function generateSettings(context: GenerateContext) {
 
     if (ts.isPropertyDeclaration(m) && !isStatic) {
       const basePath = path.join(
-        __dirname,
-        "..",
+        repositoryRoot,
         "docs",
         "reference",
         "settings",
@@ -165,50 +162,7 @@ export async function generateSettings(context: GenerateContext) {
                 fileStream.write(`${defaultValue}\n`);
               }
 
-              const examples = collectExamples(context, subSettingProp);
-              if (examples.length === 1) {
-                fileStream.write(`\n## Example - ${examples[0].title}\n\n`);
-                fileStream.write(`${examples[0].markdown}\n`);
-              } else if (examples.length > 1) {
-                fileStream.write(`\n## Examples\n\n`);
-                fileStream.write('import ExampleTabs from "@theme/Tabs";\n');
-                fileStream.write(
-                  'import ExampleTabItem from "@theme/TabItem";\n\n'
-                );
-                fileStream.write("<ExampleTabs");
-                fileStream.write(
-                  `    defaultValue=${JSON.stringify(examples[0].key)}\n`
-                );
-                fileStream.write(`    values={[\n`);
-
-                for (let i = 0; i < examples.length; i++) {
-                  fileStream.write(
-                    `      { label: ${JSON.stringify(
-                      examples[i].title
-                    )}, value: ${JSON.stringify(examples[i].key)}}`
-                  );
-                  if (i < examples.length - 1) {
-                    fileStream.write(`,\n`);
-                  } else {
-                    fileStream.write(`\n`);
-                  }
-                }
-
-                fileStream.write(`    ]}\n`);
-                fileStream.write(`>\n`);
-
-                for (const example of examples) {
-                  fileStream.write(
-                    `<ExampleTabItem value=${JSON.stringify(example.key)}>\n`
-                  );
-
-                  fileStream.write(`${example.markdown}\n`);
-
-                  fileStream.write(`</ExampleTabItem>\n`);
-                }
-
-                fileStream.write(`</ExampleTabs>\n`);
-              }
+              writeExamples(fileStream, context, subSettingProp);
             } finally {
               fileStream.end();
             }

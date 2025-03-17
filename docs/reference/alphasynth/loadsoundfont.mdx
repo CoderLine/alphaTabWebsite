@@ -1,36 +1,48 @@
 ---
 title: loadSoundFont
-description: Triggers a load of the soundfont from the given data.
+description: Loads a soundfont from the given data
 sidebar_custom_props:
-  jQuery: false
-  dom: false
   category: Methods
-  since: 0.9.6
 ---
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
 
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
 
 ## Description
-
-Same behavior as [`Api.LoadSoundFont`](/docs/reference/api/loadsoundfont) but only raw byte arrays are accepted
-as parameter.
+Loads a soundfont from the given data 
 
 ## Signatures
 
 <TypeTable>
-    <TypeRow type="js" name="function loadSoundFont(uint8array, append)">
-        Load the soundfont from the given raw bytes.
-        Append since <span class="badge badge--info">1.1.0-alpha.34</span>
-    </TypeRow>
-    <TypeRow type="net" name="void LoadSoundFont(byte[] raw, bool append)">
-        Load the soundfont from the given raw bytes.
-        Append since <span class="badge badge--info">1.1.0-alpha.34</span>
-    </TypeRow>
-    <TypeRow type="android" name="fun loadSoundFont(`data`: alphaTab.core.ecmaScript.Uint8Array, append: Boolean): Unit">
-        Load the soundfont from the given raw bytes.
-        Append since <span class="badge badge--info">1.1.0-alpha.34</span>
-    </TypeRow>
+    <TypeRow type="js" name="loadSoundFont(data: Uint8Array, append: boolean): void;" />
+    <TypeRow type="net" name="void LoadSoundFont(Uint8Array data, bool append)" />
+    <TypeRow type="android" name="fun loadSoundFont(data: Uint8Array, append: Boolean): Unit" />
 </TypeTable>
+
+### Parameters 
+
+<ParameterTable>
+    <ParameterRow platform="js" name="data" type="Uint8Array">
+        a byte array to load the data from
+    </ParameterRow>
+    <ParameterRow platform="net" name="data" type="Uint8Array">
+        a byte array to load the data from
+    </ParameterRow>
+    <ParameterRow platform="android" name="data" type="Uint8Array">
+        a byte array to load the data from
+    </ParameterRow>
+    <ParameterRow platform="js" name="append" type="boolean">
+        Whether to fully replace or append the data from the given soundfont.
+    </ParameterRow>
+    <ParameterRow platform="net" name="append" type="bool">
+        Whether to fully replace or append the data from the given soundfont.
+    </ParameterRow>
+    <ParameterRow platform="android" name="append" type="Boolean">
+        Whether to fully replace or append the data from the given soundfont.
+    </ParameterRow>
+</ParameterTable>
+
+### Returns 
+Nothing 

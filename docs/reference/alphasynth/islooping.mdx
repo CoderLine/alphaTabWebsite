@@ -1,14 +1,25 @@
 ---
 title: isLooping
-description: Whether the playback should automatically restart after it finished
+description: Gets or sets whether the playback should automatically restart after it finished.
 sidebar_custom_props:
-  jQuery: false
-  dom: false
   category: Properties
-  since: 0.9.6
 ---
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
 
-Same value as [`api.isLooping`](/docs/reference/api/islooping)
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
+
+## Description
+Gets or sets whether the playback should automatically restart after it finished. 
+
+<PropertyDescription />
+
+## Types
+
+<TypeTable>
+    <TypeRow type="js" name="boolean" />
+    <TypeRow type="net" name="bool" />
+    <TypeRow type="android" name="Boolean" />
+</TypeTable>

@@ -2,8 +2,6 @@
 title: renderScore
 description: Initiates the rendering of the specified tracks of the given score.
 sidebar_custom_props:
-  jQuery: false
-  dom: false
   category: Methods
   since: 0.9.6
 ---
@@ -15,27 +13,38 @@ import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
 
 ## Description
-This method initiates the rendering of the specified tracks of the given score. 
+Initiates the rendering of the specified tracks of the given score. 
 
 ## Signatures
 
 <TypeTable>
-    <TypeRow type="js" name="function resizeRender(score, trackIndexes)" />
-    <TypeRow type="net" name="void RenderScore(Score score, IList<double> trackIndexes)" />
-    <TypeRow type="android" name="fun renderScore(score: alphaTab.model.Score?, trackIndexes: alphaTab.collections.DoubleList?): Unit" />
+    <TypeRow type="js" name="renderScore(score: Score | null, trackIndexes: number[] | null): void;" />
+    <TypeRow type="net" name="void RenderScore(AlphaTab.Model.Score? score, IList<double>? trackIndexes)" />
+    <TypeRow type="android" name="fun renderScore(score: alphaTab.model.Score?, trackIndexes: alphaTab.collections.List<Double>?): Unit" />
 </TypeTable>
 
-### Parameters
+### Parameters 
 
 <ParameterTable>
-    <ParameterRow platform="all" name="score" type="AlphaTab.Model.Score">
-        The score of which the tracks should be taken for rendering.
+    <ParameterRow platform="js" name="score" type="alphaTab.model.Score?">
+        The score defining the tracks.
     </ParameterRow>
-    <ParameterRow platform="all" name="trackIndexes" type="int[]">
-        The indexes to the tracks which should be layed out and rendered. 
+    <ParameterRow platform="net" name="score" type="AlphaTab.Model.Score?">
+        The score defining the tracks.
+    </ParameterRow>
+    <ParameterRow platform="android" name="score" type="alphaTab.model.Score?">
+        The score defining the tracks.
+    </ParameterRow>
+    <ParameterRow platform="js" name="trackIndexes" type="number[]?">
+        The indexes of the tracks to draw.
+    </ParameterRow>
+    <ParameterRow platform="net" name="trackIndexes" type="IList<double>?">
+        The indexes of the tracks to draw.
+    </ParameterRow>
+    <ParameterRow platform="android" name="trackIndexes" type="alphaTab.collections.List<Double>?">
+        The indexes of the tracks to draw.
     </ParameterRow>
 </ParameterTable>
 
-
-### Returns
-Nothing. The render result is computed asynchronously and can be obtained via events like `partialRenderFinished`.
+### Returns 
+Nothing 

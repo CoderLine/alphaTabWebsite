@@ -1,14 +1,29 @@
 ---
 title: state
-description: The current player state.
+description: Gets the current player state.
 sidebar_custom_props:
-  jQuery: false
-  dom: false
   category: Properties
-  since: 0.9.6
 ---
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
 
-Same value as [`api.playerState`](/docs/reference/api/playerstate)
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
+
+## Description
+Gets the current player state. 
+
+<PropertyDescription />
+
+## Types
+
+<TypeTable>
+    <TypeRow type="js" name="alphaTab.synth.PlayerState" />
+    <TypeRow type="net" name="AlphaTab.Synth.PlayerState" />
+    <TypeRow type="android" name="alphaTab.synth.PlayerState" />
+</TypeTable>
+### [alphaTab.synth.PlayerState](/docs/reference/plain/playerstate.mdx) Properties
+
+Lists the different states of the player
+

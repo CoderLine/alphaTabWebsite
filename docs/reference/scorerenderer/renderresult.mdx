@@ -2,8 +2,6 @@
 title: renderResult
 description: Requests the rendering of a chunk which was layed out before.
 sidebar_custom_props:
-  jQuery: false
-  dom: false
   category: Methods
   since: 1.2.3
 ---
@@ -15,24 +13,29 @@ import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
 
 ## Description
-This method initiates the rendering of a layed out chunk advertised through [`partialLayoutFinished`](/docs/reference/scorerenderer/partiallayoutfinished). 
+Requests the rendering of a chunk which was layed out before. This method initiates the rendering of a layed out chunk advertised through [`partialLayoutFinished`](/docs/reference/plain/iscorerenderer.mdx#partiallayoutfinished)
 
 ## Signatures
 
 <TypeTable>
-    <TypeRow type="js" name="function renderResult(resultId)" />
+    <TypeRow type="js" name="renderResult(resultId: string): void;" />
     <TypeRow type="net" name="void RenderResult(string resultId)" />
     <TypeRow type="android" name="fun renderResult(resultId: String): Unit" />
 </TypeTable>
 
-### Parameters
+### Parameters 
 
 <ParameterTable>
-    <ParameterRow platform="all" name="resultId" type="string">
-        The ID of the result to be rendered.
+    <ParameterRow platform="js" name="resultId" type="string">
+        the result ID as provided by the [`partialLayoutFinished`](/docs/reference/plain/iscorerenderer.mdx#partiallayoutfinished) event.
+    </ParameterRow>
+    <ParameterRow platform="net" name="resultId" type="string">
+        the result ID as provided by the [`partialLayoutFinished`](/docs/reference/plain/iscorerenderer.mdx#partiallayoutfinished) event.
+    </ParameterRow>
+    <ParameterRow platform="android" name="resultId" type="String">
+        the result ID as provided by the [`partialLayoutFinished`](/docs/reference/plain/iscorerenderer.mdx#partiallayoutfinished) event.
     </ParameterRow>
 </ParameterTable>
 
-
-### Returns
-Nothing. The render result is computed asynchronously and can be obtained via events like `partialRenderFinished`.
+### Returns 
+Nothing 

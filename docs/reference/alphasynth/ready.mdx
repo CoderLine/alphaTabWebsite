@@ -1,31 +1,29 @@
 ---
 title: ready
-description: Fired when the player is ready to be interacted with.
+description: This event is fired when the player is ready to be interacted with.
 sidebar_custom_props:
-  jQuery: false
-  dom: false
-  category: Events
-  since: 0.9.6
+  category: Properties
 ---
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
 
-import { EventDescription } from '@site/src/components/EventDescription';
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
 
 ## Description
-This event is when the player is ready to be interacted with.
+This event is fired when the player is ready to be interacted with. 
 
-<EventDescription />
+<PropertyDescription />
 
 ## Types
 
 <TypeTable>
-    <TypeRow type="js" name="function()" />    
-    <TypeRow type="net" name="Action" />    
-    <TypeRow type="android" name="() -> Unit" />    
+    <TypeRow type="js" name="alphaTab.IEventEmitter" />
+    <TypeRow type="net" name="AlphaTab.IEventEmitter" />
+    <TypeRow type="android" name="alphaTab.IEventEmitter" />
 </TypeTable>
+### [alphaTab.IEventEmitter](/docs/reference/plain/ieventemitter.mdx) Properties
 
-## Parameters
-none
+(no description)
+

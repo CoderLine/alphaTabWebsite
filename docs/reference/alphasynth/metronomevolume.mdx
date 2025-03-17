@@ -1,14 +1,25 @@
 ---
 title: metronomeVolume
-description: The metronome volume as percentage
+description: Gets or sets the metronome volume. (range: 0.0-3.0, default 0.0)
 sidebar_custom_props:
-  jQuery: false
-  dom: false
   category: Properties
-  since: 0.9.6
 ---
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
 
-Same value as [`api.metronomeVolume`](/docs/reference/api/metronomevolume)
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
+
+## Description
+Gets or sets the metronome volume. (range: 0.0-3.0, default 0.0) 
+
+<PropertyDescription />
+
+## Types
+
+<TypeTable>
+    <TypeRow type="js" name="number" />
+    <TypeRow type="net" name="double" />
+    <TypeRow type="android" name="Double" />
+</TypeTable>

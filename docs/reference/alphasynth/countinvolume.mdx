@@ -1,15 +1,25 @@
 ---
 title: countInVolume
-description: The volume of the count-in metronome ticks
+description: Gets or sets volume of the metronome during count-in. (range: 0.0-3.0, default 0.0 - no count in)
 sidebar_custom_props:
-  jQuery: false
-  dom: false
   category: Properties
-  since: 1.1.0
 ---
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="1.1.0" />
 
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
 
-Same value as [`api.countInVolume`](/docs/reference/api/countinvolume)
+## Description
+Gets or sets volume of the metronome during count-in. (range: 0.0-3.0, default 0.0 - no count in) 
+
+<PropertyDescription />
+
+## Types
+
+<TypeTable>
+    <TypeRow type="js" name="number" />
+    <TypeRow type="net" name="double" />
+    <TypeRow type="android" name="Double" />
+</TypeTable>

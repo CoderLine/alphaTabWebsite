@@ -1,14 +1,25 @@
 ---
 title: midiEventsPlayed
-description: The midi events which will trigger the `midiEventsPlayed` event
+description: The event is fired when certain midi events were sent to the audio output device for playback.
 sidebar_custom_props:
-  jQuery: false
-  dom: false
-  category: Events
-  since: 1.2.0
+  category: Properties
 ---
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="1.2.0" />
 
-Same value as [`api.midiEventsPlayed`](/docs/reference/api/midieventsplayed)
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
+
+## Description
+The event is fired when certain midi events were sent to the audio output device for playback. 
+
+<PropertyDescription />
+
+## Types
+
+<TypeTable>
+    <TypeRow type="js" name="IEventEmitterOfT<MidiEventsPlayedEventArgs>" />
+    <TypeRow type="net" name="IEventEmitterOfT<MidiEventsPlayedEventArgs><AlphaTab.Synth.MidiEventsPlayedEventArgs>" />
+    <TypeRow type="android" name="IEventEmitterOfT<MidiEventsPlayedEventArgs><alphaTab.synth.MidiEventsPlayedEventArgs>" />
+</TypeTable>

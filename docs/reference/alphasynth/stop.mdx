@@ -1,14 +1,28 @@
 ---
 title: stop
-description: Stops the playback of the current song, and moves the playback position back to the start.
+description: Stopps the playback
 sidebar_custom_props:
-  jQuery: false
-  dom: false
   category: Methods
-  since: 0.9.6
 ---
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
 
-Same behavior and signature as [`api.stop`](/docs/reference/api/stop)
+import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
+
+## Description
+Stopps the playback 
+
+## Signatures
+
+<TypeTable>
+    <TypeRow type="js" name="stop(): void;" />
+    <TypeRow type="net" name="void Stop()" />
+    <TypeRow type="android" name="fun stop(): Unit" />
+</TypeTable>
+
+### Parameters 
+None 
+
+### Returns 
+Nothing 

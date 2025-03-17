@@ -1,54 +1,49 @@
 ---
 title: boundsLookup
-description: The lookup which allows fast access to beats at a given position
+description: Gets or sets the lookup which allows fast access to beats at a given position.
 sidebar_custom_props:
-  jQuery: false
-  dom: false
   category: Properties
-  since: 0.9.6
 ---
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
 
 import { PropertyDescription } from '@site/src/components/PropertyDescription';
-import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
-import { BoundsLookupViewer } from '@site/src/components/BoundsLookupViewer';
+import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
 
 ## Description
-After the rendering completed alphaTab exposes via this lookup the location of the individual
-notation elements. The lookup provides fast access to the bars and beats at a given location.
-If the [`IncludeNoteBounds`](/docs/reference/settings/core/includenotebounds) option was activated
-also the location of the individual notes can be obtained. 
+Gets or sets the lookup which allows fast access to beats at a given position. 
 
 <PropertyDescription />
 
-The property contains a `BoundsLookup` instance which follows a hierarchical structure that represents
-the tree of rendered elements. 
+## Types
 
-The hierarchy is: `staffSystems > bars(1) > bars(2) > beats > notes`
+<TypeTable>
+    <TypeRow type="js" name="alphaTab.rendering.BoundsLookup?" />
+    <TypeRow type="net" name="AlphaTab.Rendering.BoundsLookup?" />
+    <TypeRow type="android" name="alphaTab.rendering.BoundsLookup?" />
+</TypeTable>
+### [alphaTab.rendering.BoundsLookup](/docs/reference/plain/boundslookup.mdx) Properties
 
-* `staffSystems` - Represent the bounds of the individual systems ("rows") where staves are contained. 
-* `bars(1)` - Represent the bounds of all bars for a particular master bar across all tracks.
-* `bars(2)` - Represent the bounds of an individual bar of a track. The bounds on y-axis span the region of the staff and notes might exceed this bounds. 
-* `beats` - Represent the bounds of the individual beats within a track. The bounds on y-axis are equal to the bar bounds.
-* `notes` - Represent the bounds of the individual note heads/numbers within a track. 
+(no description)
 
-Each bounds hierarchy have a `visualBounds` and `realBounds`. 
-
-* `visualBounds` - Represent the area covering all visually visible elements
-* `realBounds` - Represents the actual bounds of the elements in this beat including whitespace areas. 
-* `noteHeadBounds` (only on `notes` level) - Represents the area of the note heads or number based on the staff 
-
-You can check out the individual sizes and regions 
-
-<BoundsLookupViewer tex="true" tracks="all">{`
-\\track "Guitar 1"
-12.2{v f} 14.2{v f}.4 :8 15.2 17.2 |
-14.1.2 :8 17.2 15.1 14.1{h} 17.2 |
-15.2{v d}.4 :16 17.2{h} 15.2 :8 14.2 14.1 17.1{b(0 4 4 0)}.4 |
-15.1.8 :16 14.1{tu 3} 15.1{tu 3} 14.1{tu 3} :8 17.2 15.1 14.1 :16 12.1{tu 3} 14.1{tu 3} 12.1{tu 3} :8 15.2 14.2 |
-12.2 14.3 12.3 15.2 :32 14.2{h} 15.2{h} 14.2{h} 15.2{h}14.2{h} 15.2{h}14.2{h} 15.2{h}14.2{h} 15.2{h}14.2{h} 15.2{h}14.2{h} 15.2{h}14.2{h} 15.2{h}
-\\track "Guitar 2"
-3.3 
-`}</BoundsLookupViewer>
+<ParameterTable>
+    <ParameterRow platform="js" name="staffSystems" type="alphaTab.rendering.StaffSystemBounds[]">
+        Gets a list of all individual staff systems contained in the rendered music notation.
+    </ParameterRow>
+    <ParameterRow platform="net" name="StaffSystems" type="IList<AlphaTab.Rendering.StaffSystemBounds>">
+        Gets a list of all individual staff systems contained in the rendered music notation.
+    </ParameterRow>
+    <ParameterRow platform="android" name="staffSystems" type="alphaTab.collections.List<alphaTab.rendering.StaffSystemBounds>">
+        Gets a list of all individual staff systems contained in the rendered music notation.
+    </ParameterRow>
+    <ParameterRow platform="js" name="isFinished" type="boolean">
+        Gets or sets a value indicating whether this lookup was finished already.
+    </ParameterRow>
+    <ParameterRow platform="net" name="IsFinished" type="bool">
+        Gets or sets a value indicating whether this lookup was finished already.
+    </ParameterRow>
+    <ParameterRow platform="android" name="isFinished" type="Boolean">
+        Gets or sets a value indicating whether this lookup was finished already.
+    </ParameterRow>
+</ParameterTable>

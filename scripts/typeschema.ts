@@ -1,8 +1,19 @@
 import ts from "typescript";
 import path from "node:path";
-import url from "node:url";
+import url from "url";
 
-const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
+export const repositoryRoot = path.resolve(
+  url.fileURLToPath(new URL(".", import.meta.url)),
+  ".."
+);
+
+export type GenerateContext = {
+  checker: ts.TypeChecker;
+  settings: ts.ClassDeclaration;
+  dts: string;
+  nameToExportName: Map<string, string>;
+  flatExports: Map<string, ts.DeclarationStatement>;
+};
 
 export type TypeWithNullableInfo = {
   readonly isNullable: boolean;
@@ -34,7 +45,7 @@ function findModule(type: ts.Type) {
       const file = decl.getSourceFile();
       if (file) {
         const relative = path.relative(
-          path.resolve(__dirname, '..'),
+          repositoryRoot,
           path.resolve(file.fileName)
         );
         return relative;
@@ -48,13 +59,13 @@ function findModule(type: ts.Type) {
 }
 
 export function getTypeWithNullableInfo(
-  checker: ts.TypeChecker,
+  context: GenerateContext,
   node: ts.TypeNode | ts.Type,
   allowUnion: boolean,
   isOptionalFromDeclaration: boolean,
-  typeArgumentMapping: Map<string, ts.Type> | undefined
+  typeArgumentMapping: Map<string, ts.Type> | undefined,
+  referenceNode: ts.Node
 ): TypeWithNullableInfo {
-
   let typeInfo: Writeable<TypeWithNullableInfo> = {
     isNullable: false,
     isOptional: isOptionalFromDeclaration,
@@ -73,12 +84,25 @@ export function getTypeWithNullableInfo(
     isCloneable: false,
   };
   let mainType: ts.Type | undefined;
+  let mainTypeNode: ts.TypeNode | undefined;
 
-  const fillBaseInfoFrom = (tsType: ts.Type) => {
-    const valueDeclaration = tsType.symbol?.valueDeclaration;
+  const fillBaseInfoFrom = (
+    tsType: ts.Type,
+    tsTypeNode: ts.TypeNode | null
+  ) => {
+    const valueDeclaration = valueOrFirstDeclarationInDts(
+      context,
+      tsType.symbol,
+      referenceNode,
+      false
+    );
     mainType = tsType;
 
-    typeInfo.typeAsString = checker.typeToString(tsType, undefined, undefined);
+    typeInfo.typeAsString = context.checker.typeToString(
+      tsType,
+      undefined,
+      undefined
+    );
     typeInfo.modulePath = findModule(tsType);
     typeInfo.isOwnType =
       !!typeInfo.modulePath &&
@@ -104,27 +128,29 @@ export function getTypeWithNullableInfo(
         );
       }
 
-      if (tsType.flags & ts.ObjectFlags.Reference) {
+      if ("typeArguments" in tsType) {
         typeInfo.typeArguments = (
           tsType as ts.TypeReference
         ).typeArguments?.map((p) =>
           getTypeWithNullableInfo(
-            checker,
+            context,
             p,
             allowUnion,
             false,
-            typeArgumentMapping
+            typeArgumentMapping,
+            referenceNode
           )
         );
       }
-    } else if (checker.isArrayType(tsType)) {
+    } else if (context.checker.isArrayType(tsType)) {
       typeInfo.isArray = true;
       typeInfo.arrayItemType = getTypeWithNullableInfo(
-        checker,
+        context,
         (tsType as ts.TypeReference).typeArguments![0],
         allowUnion,
         false,
-        typeArgumentMapping
+        typeArgumentMapping,
+        referenceNode
       );
     } else if (tsType.symbol) {
       typeInfo.typeAsString = tsType.symbol.name;
@@ -158,59 +184,102 @@ export function getTypeWithNullableInfo(
           break;
         case "Map":
           typeInfo.isMap = true;
-          typeInfo.typeArguments = (
-            tsType as ts.TypeReference
-          ).typeArguments!.map((p) =>
-            getTypeWithNullableInfo(
-              checker,
-              p,
-              allowUnion,
-              false,
-              typeArgumentMapping
-            )
-          );
+          typeInfo.typeArguments =
+            tsTypeNode &&
+            ts.isTypeReferenceNode(tsTypeNode) &&
+            tsTypeNode.typeArguments
+              ? tsTypeNode.typeArguments.map((p) =>
+                  getTypeWithNullableInfo(
+                    context,
+                    p,
+                    allowUnion,
+                    false,
+                    typeArgumentMapping,
+                    referenceNode
+                  )
+                )
+              : (tsType as ts.TypeReference).typeArguments!.map((p) =>
+                  getTypeWithNullableInfo(
+                    context,
+                    p,
+                    allowUnion,
+                    false,
+                    typeArgumentMapping,
+                    referenceNode
+                  )
+                );
           break;
         case "Set":
           typeInfo.isSet = true;
-          typeInfo.typeArguments = (
-            tsType as ts.TypeReference
-          ).typeArguments!.map((p) =>
-            getTypeWithNullableInfo(
-              checker,
-              p,
-              allowUnion,
-              false,
-              typeArgumentMapping
-            )
-          );
+          typeInfo.typeArguments =
+            tsTypeNode &&
+            ts.isTypeReferenceNode(tsTypeNode) &&
+            tsTypeNode.typeArguments
+              ? tsTypeNode.typeArguments.map((p) =>
+                  getTypeWithNullableInfo(
+                    context,
+                    p,
+                    allowUnion,
+                    false,
+                    typeArgumentMapping,
+                    referenceNode
+                  )
+                )
+              : (tsType as ts.TypeReference).typeArguments!.map((p) =>
+                  getTypeWithNullableInfo(
+                    context,
+                    p,
+                    allowUnion,
+                    false,
+                    typeArgumentMapping,
+                    referenceNode
+                  )
+                );
           break;
         default:
           if (tsType.isTypeParameter()) {
             if (typeArgumentMapping?.has(typeInfo.typeAsString)) {
               typeInfo = getTypeWithNullableInfo(
-                checker,
+                context,
                 typeArgumentMapping.get(typeInfo.typeAsString)!,
                 allowUnion,
                 false,
-                typeArgumentMapping
+                typeArgumentMapping,
+                referenceNode
               );
             } else {
               throw new Error(
                 "Unresolved type parameters " + typeInfo.typeAsString
               );
             }
-          } else if ((tsType as ts.Type).flags & ts.ObjectFlags.Reference) {
-            typeInfo.typeArguments = (
-              tsType as ts.TypeReference
-            ).typeArguments?.map((p) =>
-              getTypeWithNullableInfo(
-                checker,
-                p,
-                allowUnion,
-                false,
-                typeArgumentMapping
-              )
-            );
+          } else if (
+            "typeArguments" in tsType &&
+            (tsType as any).typeArguments
+          ) {
+            typeInfo.typeArguments =
+              tsTypeNode &&
+              ts.isTypeReferenceNode(tsTypeNode) &&
+              tsTypeNode.typeArguments
+                ? tsTypeNode.typeArguments.map((p) =>
+                    getTypeWithNullableInfo(
+                      context,
+                      p,
+                      allowUnion,
+                      false,
+                      typeArgumentMapping,
+                      referenceNode
+                    )
+                  )
+                : (tsType as ts.TypeReference).typeArguments!.map((p) =>
+                    getTypeWithNullableInfo(
+                      context,
+                      p,
+                      allowUnion,
+                      false,
+                      typeArgumentMapping,
+                      referenceNode
+                    )
+                  );
           }
           break;
       }
@@ -235,27 +304,30 @@ export function getTypeWithNullableInfo(
         ) {
           typeInfo.isOptional = true;
         } else if (!mainType) {
-          mainType = checker.getTypeFromTypeNode(t);
+          mainType = context.checker.getTypeFromTypeNode(t);
+          mainTypeNode = t;
         } else if (allowUnion) {
           if (!typeInfo.unionTypes) {
             typeInfo.unionTypes = [
               getTypeWithNullableInfo(
-                checker,
+                context,
                 mainType,
                 false,
                 false,
-                typeArgumentMapping
+                typeArgumentMapping,
+                referenceNode
               ),
             ];
           }
 
           (typeInfo.unionTypes as TypeWithNullableInfo[]).push(
             getTypeWithNullableInfo(
-              checker,
+              context,
               t,
               false,
               false,
-              typeArgumentMapping
+              typeArgumentMapping,
+              referenceNode
             )
           );
         } else {
@@ -269,15 +341,15 @@ export function getTypeWithNullableInfo(
       }
 
       if (!typeInfo.unionTypes && mainType) {
-        fillBaseInfoFrom(mainType);
+        fillBaseInfoFrom(mainType, mainTypeNode!);
       }
     } else {
-      fillBaseInfoFrom(checker.getTypeFromTypeNode(node));
+      fillBaseInfoFrom(context.checker.getTypeFromTypeNode(node), node);
     }
   } else {
     // use typeArgumentMapping
     if (isPrimitiveType(node) || isEnumType(node)) {
-      fillBaseInfoFrom(node);
+      fillBaseInfoFrom(node, null);
     } else if (node.isUnion()) {
       for (const t of node.types) {
         if ((t.flags & ts.TypeFlags.Null) !== 0) {
@@ -285,16 +357,17 @@ export function getTypeWithNullableInfo(
         } else if ((t.flags & ts.TypeFlags.Undefined) !== 0) {
           typeInfo.isOptional = true;
         } else if (!mainType) {
-          fillBaseInfoFrom(t);
+          fillBaseInfoFrom(t, null);
         } else if (allowUnion) {
           typeInfo.unionTypes ??= [];
           (typeInfo.unionTypes as TypeWithNullableInfo[]).push(
             getTypeWithNullableInfo(
-              checker,
+              context,
               t,
               false,
               false,
-              typeArgumentMapping
+              typeArgumentMapping,
+              referenceNode
             )
           );
         } else {
@@ -305,7 +378,7 @@ export function getTypeWithNullableInfo(
         }
       }
     } else {
-      fillBaseInfoFrom(node);
+      fillBaseInfoFrom(node, null);
     }
   }
 
@@ -365,4 +438,42 @@ export function isNumberType(type: ts.Type | null) {
   }
 
   return false;
+}
+
+export function valueOrFirstDeclarationInDts(
+  context: GenerateContext,
+  s: ts.Symbol | undefined,
+  referenceNode: ts.Node,
+  throwError: boolean
+) {
+  if (!s) {
+    return undefined;
+  }
+
+  if (s.valueDeclaration) {
+    return s.valueDeclaration;
+  }
+
+  const d = s.declarations?.find(
+    (d) =>
+      path.basename(d.getSourceFile().fileName) == path.basename(context.dts)
+  );
+  if (d) {
+    return d;
+  }
+
+  if (throwError) {
+    throw new Error(
+      "Could not resolve declarataion of symbol " +
+        s.name +
+        " at " +
+        referenceNode.getSourceFile().fileName +
+        ":" +
+        referenceNode
+          .getSourceFile()
+          .getLineAndCharacterOfPosition(referenceNode.pos)
+    );
+  }
+
+  return undefined;
 }

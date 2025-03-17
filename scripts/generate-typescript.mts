@@ -1,23 +1,10 @@
 import path from "path";
-import url from "url";
-import fs, { link } from "fs";
-import ts, { JSDocParsingMode } from "typescript";
-import { getTypeWithNullableInfo, TypeWithNullableInfo } from "./typeschema";
-import { toPascalCase } from "@site/src/names";
-import {
-  collectExamples,
-  GenerateContext,
-  getJsDocTagText,
-  getSummary,
-  isDomWildcard,
-  isJsonOnParent,
-  isTargetWeb,
-  jsDocCommentToMarkdown,
-  typeToMarkdown,
-} from "./generate-common.mjs";
-import { generateSettings } from "./generate-settings.mjs";
+import fs from "fs";
+import ts from "typescript";
+import { jsDocCommentToMarkdown, repositoryRoot } from "./generate-common.mjs";
+import { GenerateContext } from "./typeschema";
 
-const outDir = path.resolve(__dirname, "..", "src", "alphatabdoc");
+const outDir = path.resolve(repositoryRoot, "src", "alphatabdoc");
 
 export async function generateTypeScript(context: GenerateContext) {
   // create typescript modules with metadata exported

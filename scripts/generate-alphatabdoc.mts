@@ -1,24 +1,10 @@
 import path from "path";
 import url from "url";
-import fs, { link } from "fs";
 import ts, { JSDocParsingMode } from "typescript";
-import { getTypeWithNullableInfo, TypeWithNullableInfo } from "./typeschema";
-import { toPascalCase } from "@site/src/names";
-import {
-  collectExamples,
-  GenerateContext,
-  getJsDocTagText,
-  getSummary,
-  isDomWildcard,
-  isJsonOnParent,
-  isTargetWeb,
-  jsDocCommentToMarkdown,
-  typeToMarkdown,
-} from "./generate-common.mjs";
 import { generateSettings } from "./generate-settings.mjs";
 import { generateTypeScript } from "./generate-typescript.mjs";
-
-const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
+import { generateReferenceApi } from "./generate-referenceapi.mjs";
+import { GenerateContext } from "./typeschema";
 
 const alphaTabEntryFile = url.fileURLToPath(
   import.meta.resolve("@coderline/alphatab")
@@ -146,8 +132,6 @@ for (const d of ast!.statements) {
   }
 }
 
-const nameToExportName = new Map<string, string>();
-const flatExports = new Map<string, ts.DeclarationStatement>();
 for (const { d, identifier } of exports) {
   walkExports(d, "alphaTab." + identifier, identifier, async (e, i, d) => {
     if (
@@ -155,12 +139,24 @@ for (const { d, identifier } of exports) {
       ts.isClassDeclaration(d) ||
       ts.isInterfaceDeclaration(d)
     ) {
-      flatExports.set(e, d);
-      nameToExportName.set(i, e);
+      context.flatExports.set(e, d);
+      context.nameToExportName.set(i, e);
     }
   });
 }
 
-context.settings = flatExports.get("alphaTab.Settings") as ts.ClassDeclaration;
+context.settings = context.flatExports.get(
+  "alphaTab.Settings"
+) as ts.ClassDeclaration;
 await generateTypeScript(context);
 await generateSettings(context);
+await generateReferenceApi(context, "api", [
+  "alphaTab.AlphaTabApiBase",
+  "alphaTab.AlphaTabApi",
+]);
+await generateReferenceApi(context, "alphasynth", [
+  "alphaTab.synth.IAlphaSynth",
+]);
+await generateReferenceApi(context, "scorerenderer", [
+  "alphaTab.rendering.IScoreRenderer",
+]);

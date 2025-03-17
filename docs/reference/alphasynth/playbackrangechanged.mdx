@@ -1,16 +1,25 @@
 ---
 title: playbackRangeChanged
-description: This event is fired when the playback range changed.
+description: The event is fired when the playback range within the player was updated.
 sidebar_custom_props:
-  jQuery: false
-  dom: false
-  category: Events
-  since: 1.2.3
+  category: Properties
 ---
-
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="1.2.3" />
 
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
 
-Same value as [`api.playbackRangeChanged`](/docs/reference/api/playbackrangechanged)
+## Description
+The event is fired when the playback range within the player was updated. 
+
+<PropertyDescription />
+
+## Types
+
+<TypeTable>
+    <TypeRow type="js" name="IEventEmitterOfT<PlaybackRangeChangedEventArgs>" />
+    <TypeRow type="net" name="IEventEmitterOfT<PlaybackRangeChangedEventArgs><AlphaTab.Synth.PlaybackRangeChangedEventArgs>" />
+    <TypeRow type="android" name="IEventEmitterOfT<PlaybackRangeChangedEventArgs><alphaTab.synth.PlaybackRangeChangedEventArgs>" />
+</TypeTable>

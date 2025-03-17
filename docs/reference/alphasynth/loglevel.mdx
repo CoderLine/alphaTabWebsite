@@ -1,14 +1,29 @@
 ---
 title: logLevel
-description: The log level to use within alphaSynth.
+description: Gets or sets the loging level.
 sidebar_custom_props:
-  jQuery: false
-  dom: false
   category: Properties
-  since: 0.9.6
 ---
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
 
-Same value as [`settings.core.logLevel`](/docs/reference/settings/core/loglevel)
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
+
+## Description
+Gets or sets the loging level. 
+
+<PropertyDescription />
+
+## Types
+
+<TypeTable>
+    <TypeRow type="js" name="alphaTab.LogLevel" />
+    <TypeRow type="net" name="AlphaTab.LogLevel" />
+    <TypeRow type="android" name="alphaTab.LogLevel" />
+</TypeTable>
+### [alphaTab.LogLevel](/docs/reference/plain/loglevel.mdx) Properties
+
+Defines all loglevels.
+

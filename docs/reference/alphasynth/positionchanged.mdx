@@ -1,14 +1,25 @@
 ---
 title: positionChanged
-description: This event is fired when the playback state changed.
+description: This event is fired when the current playback position of/ the song changed.
 sidebar_custom_props:
-  jQuery: false
-  dom: false
-  category: Events
-  since: 0.9.6
+  category: Properties
 ---
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
 
-Same value as [`api.playerPositionChanged`](/docs/reference/api/playerpositionchanged)
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
+
+## Description
+This event is fired when the current playback position of/ the song changed. 
+
+<PropertyDescription />
+
+## Types
+
+<TypeTable>
+    <TypeRow type="js" name="IEventEmitterOfT<PositionChangedEventArgs>" />
+    <TypeRow type="net" name="IEventEmitterOfT<PositionChangedEventArgs><AlphaTab.Synth.PositionChangedEventArgs>" />
+    <TypeRow type="android" name="IEventEmitterOfT<PositionChangedEventArgs><alphaTab.synth.PositionChangedEventArgs>" />
+</TypeTable>

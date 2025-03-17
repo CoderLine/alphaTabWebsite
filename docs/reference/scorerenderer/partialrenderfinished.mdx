@@ -2,46 +2,145 @@
 title: partialRenderFinished
 description: Occurs whenever a part of the whole music sheet is rendered and can be displayed.
 sidebar_custom_props:
-  jQuery: false
-  dom: false
   category: Events
-  since: 0.9.4
+  since: 1.2.3
 ---
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.4" />
+<SinceBadge since="1.2.3" />
 
 import { EventDescription } from '@site/src/components/EventDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
-import {RenderFinishedEventArgs} from '@site/src/types/RenderFinishedEventArgs';
 
 ## Description
-AlphaTab does not render the whole music sheet into a single canvas but rather
+Occurs whenever a part of the whole music sheet is rendered and can be displayed. AlphaTab does not render the whole music sheet into a single canvas but rather
 splits it down into smaller chunks. This allows faster display of results to the user
 and avoids issues related to browser restrictions (like maximum canvas sizes).
 
 This event is fired whenever one chunk of the music sheet is fully rendered.
 
-Since <span class="badge badge--info">1.2.3</span> the rendering of a chunk needs to be requested via the [`renderResult`](/docs/reference/scorerenderer/renderresult) method after
-a chunk was advertised through the [`partialLayoutFinished`](/docs/reference/scorerenderer/partiallayoutfinished) event.
+<SinceBadge inline={true} since={"1.2.3"} /> the rendering of a chunk needs to be requested via the [`renderResult`](/docs/reference/plain/iscorerenderer.mdx#renderresult) method after
+a chunk was advertised through the [`partialLayoutFinished`](/docs/reference/plain/iscorerenderer.mdx#partiallayoutfinished).
 
 <EventDescription />
-    
+
+## Types
+
+<TypeTable>
+    <TypeRow type="js" name="function (args: alphaTab.rendering.RenderFinishedEventArgs): void" />
+    <TypeRow type="net" name="System.Action<AlphaTab.Rendering.RenderFinishedEventArgs>" />
+    <TypeRow type="android" name="(args: alphaTab.rendering.RenderFinishedEventArgs) -> Unit" />
+</TypeTable>
+
 ## Parameters
 
 <ParameterTable>
-    <ParameterRow platform="js" name="e" type="alphaTab.rendering.RenderFinishedEventArgs">
-        The object containing the information about the chunk. 
+    <ParameterRow platform="js" name="args" type="alphaTab.rendering.RenderFinishedEventArgs">
+        The event arguments containing the information for the event.
     </ParameterRow>
-    <ParameterRow platform="net" name="e" type="AlphaTab.Rendering.RenderFinishedEventArgs">
-        The object containing the information about the chunk.
+    <ParameterRow platform="net" name="args" type="AlphaTab.Rendering.RenderFinishedEventArgs">
+        The event arguments containing the information for the event.
     </ParameterRow>
-    <ParameterRow platform="android" name="e" type="alphaTab.rendering.RenderFinishedEventArgs">
-        The object containing the information about the chunk.
+    <ParameterRow platform="android" name="args" type="alphaTab.rendering.RenderFinishedEventArgs">
+        The event arguments containing the information for the event.
     </ParameterRow>
 </ParameterTable>
 
-## AlphaTab.Rendering.RenderFinishedEventArgs Properties
+### [alphaTab.rendering.RenderFinishedEventArgs](/docs/reference/plain/renderfinishedeventargs.mdx) Properties
 
-<RenderFinishedEventArgs />
+This eventargs define the details about the rendering and layouting process and are
+provided whenever a part of of the music sheet is rendered.
+
+<ParameterTable>
+    <ParameterRow platform="js" name="id" type="string">
+        Gets or sets the unique id of this event args.
+    </ParameterRow>
+    <ParameterRow platform="net" name="Id" type="string">
+        Gets or sets the unique id of this event args.
+    </ParameterRow>
+    <ParameterRow platform="android" name="id" type="String">
+        Gets or sets the unique id of this event args.
+    </ParameterRow>
+    <ParameterRow platform="js" name="x" type="number">
+        Gets or sets the x position of the current rendering result.
+    </ParameterRow>
+    <ParameterRow platform="net" name="X" type="double">
+        Gets or sets the x position of the current rendering result.
+    </ParameterRow>
+    <ParameterRow platform="android" name="x" type="Double">
+        Gets or sets the x position of the current rendering result.
+    </ParameterRow>
+    <ParameterRow platform="js" name="y" type="number">
+        Gets or sets the y position of the current rendering result.
+    </ParameterRow>
+    <ParameterRow platform="net" name="Y" type="double">
+        Gets or sets the y position of the current rendering result.
+    </ParameterRow>
+    <ParameterRow platform="android" name="y" type="Double">
+        Gets or sets the y position of the current rendering result.
+    </ParameterRow>
+    <ParameterRow platform="js" name="width" type="number">
+        Gets or sets the width of the current rendering result.
+    </ParameterRow>
+    <ParameterRow platform="net" name="Width" type="double">
+        Gets or sets the width of the current rendering result.
+    </ParameterRow>
+    <ParameterRow platform="android" name="width" type="Double">
+        Gets or sets the width of the current rendering result.
+    </ParameterRow>
+    <ParameterRow platform="js" name="height" type="number">
+        Gets or sets the height of the current rendering result.
+    </ParameterRow>
+    <ParameterRow platform="net" name="Height" type="double">
+        Gets or sets the height of the current rendering result.
+    </ParameterRow>
+    <ParameterRow platform="android" name="height" type="Double">
+        Gets or sets the height of the current rendering result.
+    </ParameterRow>
+    <ParameterRow platform="js" name="totalWidth" type="number">
+        Gets or sets the currently known total width of the final music sheet.
+    </ParameterRow>
+    <ParameterRow platform="net" name="TotalWidth" type="double">
+        Gets or sets the currently known total width of the final music sheet.
+    </ParameterRow>
+    <ParameterRow platform="android" name="totalWidth" type="Double">
+        Gets or sets the currently known total width of the final music sheet.
+    </ParameterRow>
+    <ParameterRow platform="js" name="totalHeight" type="number">
+        Gets or sets the currently known total height of the final music sheet.
+    </ParameterRow>
+    <ParameterRow platform="net" name="TotalHeight" type="double">
+        Gets or sets the currently known total height of the final music sheet.
+    </ParameterRow>
+    <ParameterRow platform="android" name="totalHeight" type="Double">
+        Gets or sets the currently known total height of the final music sheet.
+    </ParameterRow>
+    <ParameterRow platform="js" name="firstMasterBarIndex" type="number">
+        Gets or sets the index of the first masterbar that was rendered in this result.
+    </ParameterRow>
+    <ParameterRow platform="net" name="FirstMasterBarIndex" type="double">
+        Gets or sets the index of the first masterbar that was rendered in this result.
+    </ParameterRow>
+    <ParameterRow platform="android" name="firstMasterBarIndex" type="Double">
+        Gets or sets the index of the first masterbar that was rendered in this result.
+    </ParameterRow>
+    <ParameterRow platform="js" name="lastMasterBarIndex" type="number">
+        Gets or sets the index of the last masterbar that was rendered in this result.
+    </ParameterRow>
+    <ParameterRow platform="net" name="LastMasterBarIndex" type="double">
+        Gets or sets the index of the last masterbar that was rendered in this result.
+    </ParameterRow>
+    <ParameterRow platform="android" name="lastMasterBarIndex" type="Double">
+        Gets or sets the index of the last masterbar that was rendered in this result.
+    </ParameterRow>
+    <ParameterRow platform="js" name="renderResult" type="unknown">
+        Gets or sets the render engine specific result object which contains the rendered music sheet.
+    </ParameterRow>
+    <ParameterRow platform="net" name="RenderResult" type="object">
+        Gets or sets the render engine specific result object which contains the rendered music sheet.
+    </ParameterRow>
+    <ParameterRow platform="android" name="renderResult" type="Any">
+        Gets or sets the render engine specific result object which contains the rendered music sheet.
+    </ParameterRow>
+</ParameterTable>

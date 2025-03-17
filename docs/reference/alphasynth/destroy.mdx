@@ -1,36 +1,28 @@
 ---
 title: destroy
-description: Destroys the synthesizer and all related components.
+description: Destroys the synthesizer and all related components
 sidebar_custom_props:
-  jQuery: false
-  dom: false
   category: Methods
-  since: 0.9.6
 ---
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
-
 
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
 
 ## Description
-This method destroys the audio synthesizer renderer and by this closes all potentially opened
-contexts and shuts down any worker. 
-
-If you dynamically create/destroy renderers it is recommended to always call this method
-to ensure all resources are leaked. 
+Destroys the synthesizer and all related components 
 
 ## Signatures
 
 <TypeTable>
-    <TypeRow type="js" name="function destroy()" />
+    <TypeRow type="js" name="destroy(): void;" />
     <TypeRow type="net" name="void Destroy()" />
     <TypeRow type="android" name="fun destroy(): Unit" />
 </TypeTable>
 
-### Parameters
-None
+### Parameters 
+None 
 
-### Returns
-Nothing
+### Returns 
+Nothing 

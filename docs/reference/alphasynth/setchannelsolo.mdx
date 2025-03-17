@@ -1,45 +1,48 @@
 ---
 title: setChannelSolo
-description: Flags a single midi channel to e played solo or not.
+description: Gets the solo state of a channel.
 sidebar_custom_props:
-  jQuery: false
-  dom: false
   category: Methods
-  since: 0.9.6
 ---
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
 
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
 
 ## Description
-Flags a single midi channel to e played solo or not. As soon as the first channel
-is marked as playing solo, all channels which are not flagged as solo are not played.
-Multiple channels can be flagged as solo playing. 
+Gets the solo state of a channel. 
 
 ## Signatures
 
 <TypeTable>
-    <TypeRow type="js" name="function setChannelSolo(channel, solo)">
-        Sets the solo state of a channel
-    </TypeRow>
-    <TypeRow type="net" name="void SetChannelSolo(int channel, bool solo)">
-        Sets the solo state of a channel.
-    </TypeRow>
-    <TypeRow type="android" name="fun setChannelSolo(channel: Double, solo: Boolean): Unit">
-        Sets the solo state of a channel.
-    </TypeRow>
+    <TypeRow type="js" name="setChannelSolo(channel: number, solo: boolean): void;" />
+    <TypeRow type="net" name="void SetChannelSolo(double channel, bool solo)" />
+    <TypeRow type="android" name="fun setChannelSolo(channel: Double, solo: Boolean): Unit" />
 </TypeTable>
 
-## Parameters
+### Parameters 
 
 <ParameterTable>
-    <ParameterRow platform="all" name="channel" type="int">
-        The midi channel play solo or not.
+    <ParameterRow platform="js" name="channel" type="number">
+        The channel number
     </ParameterRow>
-    <ParameterRow platform="all" name="solo" type="bool">
-        A value indicating whether the channel should be played solo or not.
+    <ParameterRow platform="net" name="channel" type="double">
+        The channel number
+    </ParameterRow>
+    <ParameterRow platform="android" name="channel" type="Double">
+        The channel number
+    </ParameterRow>
+    <ParameterRow platform="js" name="solo" type="boolean">
+        true if the channel should be played solo, otherwise false.
+    </ParameterRow>
+    <ParameterRow platform="net" name="solo" type="bool">
+        true if the channel should be played solo, otherwise false.
+    </ParameterRow>
+    <ParameterRow platform="android" name="solo" type="Boolean">
+        true if the channel should be played solo, otherwise false.
     </ParameterRow>
 </ParameterTable>
+
+### Returns 
+Nothing 

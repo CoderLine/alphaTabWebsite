@@ -2,13 +2,24 @@
 title: stateChanged
 description: This event is fired when the playback state changed.
 sidebar_custom_props:
-  jQuery: false
-  dom: false
-  category: Events
-  since: 0.9.6
+  category: Properties
 ---
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
 
-Same value as [`api.playerStateChanged`](/docs/reference/api/playerstatechanged)
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
+
+## Description
+This event is fired when the playback state changed. 
+
+<PropertyDescription />
+
+## Types
+
+<TypeTable>
+    <TypeRow type="js" name="IEventEmitterOfT<PlayerStateChangedEventArgs>" />
+    <TypeRow type="net" name="IEventEmitterOfT<PlayerStateChangedEventArgs><AlphaTab.Synth.PlayerStateChangedEventArgs>" />
+    <TypeRow type="android" name="IEventEmitterOfT<PlayerStateChangedEventArgs><alphaTab.synth.PlayerStateChangedEventArgs>" />
+</TypeTable>

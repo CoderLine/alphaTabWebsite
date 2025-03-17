@@ -1,43 +1,48 @@
 ---
 title: setChannelMute
-description: Mutes or unmutes a single midi channel.
+description: Sets the mute state of a channel.
 sidebar_custom_props:
-  jQuery: false
-  dom: false
   category: Methods
-  since: 0.9.6
 ---
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
 
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
 
 ## Description
-Mutes or unmutes a single midi channel.
+Sets the mute state of a channel. 
 
 ## Signatures
 
 <TypeTable>
-    <TypeRow type="js" name="function setChannelMute(channel, mute)">
-        Sets the mute state of a channel
-    </TypeRow>
-    <TypeRow type="net" name="void SetChannelMute(int channel, bool mute)">
-        Sets the mute state of a channel.
-    </TypeRow>
-    <TypeRow type="android" name="fun setChannelMute(channel: Double, mute: Boolean): Unit">
-        Sets the mute state of a channel.
-    </TypeRow>
+    <TypeRow type="js" name="setChannelMute(channel: number, mute: boolean): void;" />
+    <TypeRow type="net" name="void SetChannelMute(double channel, bool mute)" />
+    <TypeRow type="android" name="fun setChannelMute(channel: Double, mute: Boolean): Unit" />
 </TypeTable>
 
-## Parameters
+### Parameters 
 
 <ParameterTable>
-    <ParameterRow platform="all" name="channel" type="int">
-        The midi channel to mute or unmute.
+    <ParameterRow platform="js" name="channel" type="number">
+        The channel number
     </ParameterRow>
-    <ParameterRow platform="all" name="solo" type="bool">
-        A value indicating whether the channel should be muted or unmuted.
+    <ParameterRow platform="net" name="channel" type="double">
+        The channel number
+    </ParameterRow>
+    <ParameterRow platform="android" name="channel" type="Double">
+        The channel number
+    </ParameterRow>
+    <ParameterRow platform="js" name="mute" type="boolean">
+        true if the channel should be muted, otherwise false.
+    </ParameterRow>
+    <ParameterRow platform="net" name="mute" type="bool">
+        true if the channel should be muted, otherwise false.
+    </ParameterRow>
+    <ParameterRow platform="android" name="mute" type="Boolean">
+        true if the channel should be muted, otherwise false.
     </ParameterRow>
 </ParameterTable>
+
+### Returns 
+Nothing 

@@ -1,41 +1,48 @@
 ---
 title: setChannelTranspositionPitch
-description: Sets the transposition pitch of a given channel.
+description: Sets the transposition pitch of a given channel. This pitch is additionally applied beside the
 sidebar_custom_props:
-  jQuery: false
-  dom: false
   category: Methods
-  since: 0.9.6
 ---
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
-<SinceBadge since="0.9.6" />
 
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
 
 ## Description
 Sets the transposition pitch of a given channel. This pitch is additionally applied beside the 
-ones applied already via `applyTranspositionPitches`.
 
 ## Signatures
 
 <TypeTable>
-    <TypeRow type="js" name="function setChannelVolume(channel, volume)">
-    </TypeRow>
-    <TypeRow type="net" name="void SetChannelVolume(int channel, double volume)">
-    </TypeRow>
-    <TypeRow type="android" name="fun setChannelVolume(channel: Double, volume: Double): Unit">
-    </TypeRow>
+    <TypeRow type="js" name="setChannelTranspositionPitch(channel: number, semitones: number): void;" />
+    <TypeRow type="net" name="void SetChannelTranspositionPitch(double channel, double semitones)" />
+    <TypeRow type="android" name="fun setChannelTranspositionPitch(channel: Double, semitones: Double): Unit" />
 </TypeTable>
 
-## Parameters
+### Parameters 
 
 <ParameterTable>
-    <ParameterRow platform="all" name="channel" type="int">
-        The midi channel to set the volume for. 
+    <ParameterRow platform="js" name="channel" type="number">
+        The channel number
     </ParameterRow>
-    <ParameterRow platform="all" name="Volume" type="double">
-        The volume as percentage. 
+    <ParameterRow platform="net" name="channel" type="double">
+        The channel number
+    </ParameterRow>
+    <ParameterRow platform="android" name="channel" type="Double">
+        The channel number
+    </ParameterRow>
+    <ParameterRow platform="js" name="semitones" type="number">
+        The number of semitones to apply as pitch offset.
+    </ParameterRow>
+    <ParameterRow platform="net" name="semitones" type="double">
+        The number of semitones to apply as pitch offset.
+    </ParameterRow>
+    <ParameterRow platform="android" name="semitones" type="Double">
+        The number of semitones to apply as pitch offset.
     </ParameterRow>
 </ParameterTable>
+
+### Returns 
+Nothing 
