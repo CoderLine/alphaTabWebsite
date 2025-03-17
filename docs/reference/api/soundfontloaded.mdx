@@ -12,73 +12,72 @@ import { SinceBadge } from '@site/src/components/SinceBadge';
 import { EventDescription } from '@site/src/components/EventDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 
 ## Description
-This event is fired when the SoundFont needed for playback was loaded.    
+This event is fired when the SoundFont needed for playback was loaded. 
 
 <EventDescription />
 
 ## Types
 
 <TypeTable>
-    <TypeRow type="js" name="function()" />    
-    <TypeRow type="net" name="Action" />    
+    <TypeRow type="js" name="function (): void" />
+    <TypeRow type="net" name="System.Action" />
+    <TypeRow type="android" name="() -> Unit" />
 </TypeTable>
-
-## Parameters
-none
 
 ## Examples
 
-<Tabs
-  defaultValue="js"
-  values={[
-    { label: 'JavaScript', value: 'js', },
-    { label: 'HTML', value: 'html', },
-    { label: 'jQuery', value: 'jq', },
-    { label: 'C#', value: 'cs', },
-    { label: 'Android', value: 'android', }
-  ]
-}>
-<TabItem value="js">
+import ExampleTabs from "@theme/Tabs";
+import ExampleTabItem from "@theme/TabItem";
 
+<ExampleTabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "HTML", value: "html"},
+      { label: "jQuery", value: "jquery"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<ExampleTabItem value="javascript">
 ```js
 const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
 api.soundFontLoaded.on(() => {
     hideSoundFontLoadingIndicator();
 });
 ```
-
-</TabItem>
-<TabItem value="jq">
-
-```js
-$('#alphaTab').on('alphaTab.soundFontLoaded', (e) => {
-    hideSoundFontLoadingIndicator();
-});
-```
-
-</TabItem>
-<TabItem value="html">
-
+</ExampleTabItem>
+<ExampleTabItem value="html">
 ```js
 document.querySelector('#alphaTab').addEventListener('alphaTab.soundFontLoaded', () => {
     hideSoundFontLoadingIndicator();
 }, false);
 ```
-
-</TabItem>
-<TabItem value="cs">
-
+</ExampleTabItem>
+<ExampleTabItem value="jquery">
+```js
+$('#alphaTab').on('alphaTab.soundFontLoaded', (e) => {
+    hideSoundFontLoadingIndicator();
+});
+```
+</ExampleTabItem>
+<ExampleTabItem value="csharp">
 ```cs
 var api = new AlphaTabApi<MyControl>(...);
-api.SoundFontLoaded.On(() => 
+api.SoundFontLoaded.On(() =>
 {
     HideSoundFontLoadingIndicator();
 });
 ```
-
-</TabItem>
-</Tabs>
+</ExampleTabItem>
+<ExampleTabItem value="android">
+```kotlin
+val api = AlphaTabApi<MyControl>(...);
+api.soundFontLoaded.on {
+    hideSoundFontLoadingIndicator();
+}
+```
+</ExampleTabItem>
+</ExampleTabs>

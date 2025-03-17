@@ -1,6 +1,6 @@
 ---
-title: container
-description: The UI container that holds the whole alphaTab control.
+title: canvasElement
+description: The UI container that will hold all rendered results.
 sidebar_custom_props:
   category: Properties - Core
   since: 0.9.4
@@ -14,7 +14,7 @@ import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
 
 ## Description
-The UI container that holds the whole alphaTab control. Gets the UI container that represents the element on which alphaTab was initialized. Note that this is not the raw instance, but a UI framework specific wrapper for alphaTab.
+The UI container that will hold all rendered results. 
 
 <PropertyDescription />
 
@@ -112,42 +112,3 @@ This interface represents a container control in the UI layer.
         This event occurs when a mouse/finger is released from the control.
     </ParameterRow>
 </ParameterTable>
-
-## Examples
-
-import ExampleTabs from "@theme/Tabs";
-import ExampleTabItem from "@theme/TabItem";
-
-<ExampleTabs
-    defaultValue="javascript"
-    values={[
-      { label: "JavaScript", value: "javascript"},
-      { label: "jQuery", value: "jquery"},
-      { label: "C#", value: "csharp"},
-      { label: "Android", value: "android"}
-    ]}
->
-<ExampleTabItem value="javascript">
-```js
-const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
-const container = api.container;
-```
-</ExampleTabItem>
-<ExampleTabItem value="jquery">
-```js
-const container = $('#alphaTab').alphaTab('container');
-```
-</ExampleTabItem>
-<ExampleTabItem value="csharp">
-```cs
-var api = new AlphaTabApi<MyControl>(...);
-var container = api.Container;
-```
-</ExampleTabItem>
-<ExampleTabItem value="android">
-```kotlin
-val api = AlphaTabApi<MyControl>(...)
-val container = api.container;
-```
-</ExampleTabItem>
-</ExampleTabs>

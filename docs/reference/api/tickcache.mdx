@@ -3,120 +3,65 @@ title: tickCache
 description: The tick cache allowing lookup of midi ticks to beats.
 sidebar_custom_props:
   category: Properties - Player
-  since:  1.2.3
+  since: 1.2.3
 ---
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
 <SinceBadge since="1.2.3" />
 
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
 
 ## Description
-Gets the tick cache allowing lookup of midi ticks to beats. If the player is enabled, a midi file will be generated
-for the loaded `alphaTab.model.Score` for later playback. During this generation this tick cache is filled with the 
-exact midi ticks when beats are played. 
+The tick cache allowing lookup of midi ticks to beats. Gets the tick cache allowing lookup of midi ticks to beats. If the player is enabled, a midi file will be generated
+for the loaded [`Score`](/docs/reference/plain/score.mdx) for later playback. During this generation this tick cache is filled with the
+exact midi ticks when beats are played.
 
-The `MidiTickLookup.findBeat` method allows a lookup of the beat related to a given input midi tick.
-
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
+The [`MidiTickLookup.findBeat`](/docs/reference/plain/miditicklookup.mdx#findbeat) method allows a lookup of the beat related to a given input midi tick.
 
 <PropertyDescription />
-
 
 ## Types
 
 <TypeTable>
-    <TypeRow type="js" name="alphaTab.midi.MidiTickLookup" />
-    <TypeRow type="net" name="AlphaTab.Midi.MidiTickLookup" />
-    <TypeRow type="android" name="alphaTab.midi.MidiTickLookup" />
+    <TypeRow type="js" name="alphaTab.midi.MidiTickLookup?" />
+    <TypeRow type="net" name="AlphaTab.Midi.MidiTickLookup?" />
+    <TypeRow type="android" name="alphaTab.midi.MidiTickLookup?" />
 </TypeTable>
-
-
-## MidiTickLookup.findBeat Signatures
-
-<TypeTable>
-    <TypeRow type="js" name="findBeat(trackLookup: Set<number>, tick: number, currentBeatHint: MidiTickLookupFindBeatResult | null): MidiTickLookupFindBeatResult | null">
-        Find the beat played at a given midi tick. 
-    </TypeRow>
-    <TypeRow type="net" name="MidiTickLookupFindBeatResult? FindBeat(AlphaTab.Core.EcmaScript.Set<double> trackLookup, double tick, AlphaTab.Midi.MidiTickLookupFindBeatResult? currentBeatHint = null)">
-        Find the beat played at a given midi tick. 
-    </TypeRow>
-    <TypeRow type="android" name="MidiTickLookupFindBeatResult? findBeat(trackLookup: alphaTab.core.ecmaScript.Set<Double>, tick: Double, currentBeatHint: alphaTab.midi.MidiTickLookupFindBeatResult? = null)">
-        Find the beat played at a given midi tick. 
-    </TypeRow>
-</TypeTable>
-
-## MidiTickLookup.findBeat Parameters
-
-<ParameterTable>
-    <ParameterRow platform="js" name="trackLookup" type="Set<number>">
-        The tracks indices in which to search the played beat for.
-    </ParameterRow>
-    <ParameterRow platform="net" name="trackLookup" type="AlphaTab.Core.EcmaScript.Set<double>">
-        The tracks indices in which to search the played beat for.
-    </ParameterRow>
-    <ParameterRow platform="android" name="trackLookup" type="alphaTab.core.ecmaScript.Set<Double>">
-        The tracks indices in which to search the played beat for.
-    </ParameterRow>
-    <ParameterRow platform="js" name="tick" type="double">
-        The midi tick for which the beat should be looked up. 
-    </ParameterRow>
-    <ParameterRow platform="net" name="tick" type="number">
-        The midi tick for which the beat should be looked up. 
-    </ParameterRow>
-    <ParameterRow platform="js" name="currentBeatHint" type="AlphaTab.Midi.MidiTickLookupFindBeatResult">
-        Used for optimized lookup during playback. By passing in a previous result lookup of the next one can be optimized using heuristics. (optional).
-    </ParameterRow>
-    <ParameterRow platform="net" name="currentBeatHint" type="alphaTab.midi.MidiTickLookupFindBeatResult">
-        Used for optimized lookup during playback. By passing in a previous result lookup of the next one can be optimized using heuristics. (optional).
-    </ParameterRow>
-    <ParameterRow platform="android" name="currentBeatHint" type="alphaTab.midi.MidiTickLookupFindBeatResult">
-        Used for optimized lookup during playback. By passing in a previous result lookup of the next one can be optimized using heuristics. (optional).
-    </ParameterRow>
-</ParameterTable>
 
 ## Examples
 
-<Tabs
-  defaultValue="js"
-  values={[
-    { label: 'JavaScript', value: 'js', },
-    { label: 'jQuery', value: 'jq', },
-    { label: 'C#', value: 'cs', },
-    { label: 'Android', value: 'android', }
-  ]
-}>
-<TabItem value="js">
+import ExampleTabs from "@theme/Tabs";
+import ExampleTabItem from "@theme/TabItem";
 
+<ExampleTabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<ExampleTabItem value="javascript">
 ```js
 const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
 const lookupResult = api.tickCache.findBeat(new Set([0, 1]), 100);
 const currentBeat = lookupResult?.currentBeat;
 ```
-
-</TabItem>
-<TabItem value="jq">
-Not available
-</TabItem>
-<TabItem value="cs">
-
-```csharp
+</ExampleTabItem>
+<ExampleTabItem value="csharp">
+```cs
 var api = new AlphaTabApi<MyControl>(...);
 var lookupResult = api.TickCache.FindBeat(new AlphaTab.Core.EcmaScript.Set(0, 1), 100);
 var currentBeat = lookupResult?.CurrentBeat;
 ```
-
-</TabItem>
-<TabItem value="android">
-
-```csharp
+</ExampleTabItem>
+<ExampleTabItem value="android">
+```kotlin
 val api = AlphaTabApi<MyControl>(...)
 val lookupResult = api.tickCache.findBeat(alphaTab.core.ecmaScript.Set(0, 1), 100);
 val currentBeat = lookupResult?.CurrentBeat;
 ```
-
-</TabItem>
-</Tabs>
+</ExampleTabItem>
+</ExampleTabs>

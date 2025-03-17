@@ -12,65 +12,92 @@ import { SinceBadge } from '@site/src/components/SinceBadge';
 import { EventDescription } from '@site/src/components/EventDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 
 ## Description
-This event is fired when the SoundFont is being loaded and reports the progress accordingly.     
+This event is fired when the SoundFont is being loaded. This event is fired when the SoundFont is being loaded and reports the progress accordingly.
 
 <EventDescription />
 
 ## Types
 
 <TypeTable>
-    <TypeRow type="js" name="function(e)" />    
+    <TypeRow type="js" name="function (args: alphaTab.ProgressEventArgs): void" />
+    <TypeRow type="net" name="System.Action<AlphaTab.ProgressEventArgs>" />
+    <TypeRow type="android" name="(args: alphaTab.ProgressEventArgs) -> Unit" />
 </TypeTable>
 
 ## Parameters
 
 <ParameterTable>
     <ParameterRow platform="js" name="args" type="alphaTab.ProgressEventArgs">
-        The information about the load progress of the file.  
+        The event arguments containing the information for the event.
+    </ParameterRow>
+    <ParameterRow platform="net" name="args" type="AlphaTab.ProgressEventArgs">
+        The event arguments containing the information for the event.
+    </ParameterRow>
+    <ParameterRow platform="android" name="args" type="alphaTab.ProgressEventArgs">
+        The event arguments containing the information for the event.
+    </ParameterRow>
+</ParameterTable>
+
+### [alphaTab.ProgressEventArgs](/docs/reference/plain/progresseventargs.mdx) Properties
+
+Represents the progress of any data being loaded.
+
+<ParameterTable>
+    <ParameterRow platform="js" name="loaded" type="number">
+        Gets the currently loaded bytes.
+    </ParameterRow>
+    <ParameterRow platform="net" name="Loaded" type="double">
+        Gets the currently loaded bytes.
+    </ParameterRow>
+    <ParameterRow platform="android" name="loaded" type="Double">
+        Gets the currently loaded bytes.
+    </ParameterRow>
+    <ParameterRow platform="js" name="total" type="number">
+        Gets the total number of bytes to load.
+    </ParameterRow>
+    <ParameterRow platform="net" name="Total" type="double">
+        Gets the total number of bytes to load.
+    </ParameterRow>
+    <ParameterRow platform="android" name="total" type="Double">
+        Gets the total number of bytes to load.
     </ParameterRow>
 </ParameterTable>
 
 ## Examples
 
-<Tabs
-  defaultValue="js"
-  values={[
-    { label: 'JavaScript', value: 'js', },
-    { label: 'HTML', value: 'html', },
-    { label: 'jQuery', value: 'jq', },
-    { label: 'Android', value: 'android', }
-  ]
-}>
-<TabItem value="js">
+import ExampleTabs from "@theme/Tabs";
+import ExampleTabItem from "@theme/TabItem";
 
+<ExampleTabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "HTML", value: "html"},
+      { label: "jQuery", value: "jquery"}
+    ]}
+>
+<ExampleTabItem value="javascript">
 ```js
 const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
 api.soundFontLoad.on((e) => {
     updateProgress(e.loaded, e.total);
 });
 ```
-
-</TabItem>
-<TabItem value="jq">
-
-```js
-$('#alphaTab').on('alphaTab.soundFontLoad', (e, args) {
-    updateProgress(args.loaded, args.total);
-});
-```
-
-</TabItem>
-<TabItem value="html">
-
+</ExampleTabItem>
+<ExampleTabItem value="html">
 ```js
 document.querySelector('#alphaTab').addEventListener('alphaTab.soundFontLoad', () => {
     updateProgress(e.detail.loaded, e.detail.total);
 }, false);
 ```
-
-</TabItem>
-</Tabs>
+</ExampleTabItem>
+<ExampleTabItem value="jquery">
+```js
+$('#alphaTab').on('alphaTab.soundFontLoad', (e, args) {
+    updateProgress(args.loaded, args.total);
+});
+```
+</ExampleTabItem>
+</ExampleTabs>

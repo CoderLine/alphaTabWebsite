@@ -12,53 +12,105 @@ import { SinceBadge } from '@site/src/components/SinceBadge';
 import { EventDescription } from '@site/src/components/EventDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 
 ## Description
-This event is fired when the Midi file needed for playback was loaded.    
+This event is fired when the Midi file needed for playback was loaded. 
 
 <EventDescription />
 
 ## Types
 
 <TypeTable>
-    <TypeRow type="js" name="function(args)" />    
-    <TypeRow type="net" name="Action<PositionChangedEventArgs>" />    
-    <TypeRow type="android" name="(e: PositionChangedEventArgs) -> Unit" />    
+    <TypeRow type="js" name="function (args: alphaTab.synth.PositionChangedEventArgs): void" />
+    <TypeRow type="net" name="System.Action<AlphaTab.Synth.PositionChangedEventArgs>" />
+    <TypeRow type="android" name="(args: alphaTab.synth.PositionChangedEventArgs) -> Unit" />
 </TypeTable>
 
 ## Parameters
+
 <ParameterTable>
     <ParameterRow platform="js" name="args" type="alphaTab.synth.PositionChangedEventArgs">
-        The information about the song duration. <span class="badge badge--info">since 1.2.0-alpha.97</span>
+        The event arguments containing the information for the event.
     </ParameterRow>
     <ParameterRow platform="net" name="args" type="AlphaTab.Synth.PositionChangedEventArgs">
-        The information about the song duration. <span class="badge badge--info">since 1.2.0-alpha.97</span>
+        The event arguments containing the information for the event.
     </ParameterRow>
     <ParameterRow platform="android" name="args" type="alphaTab.synth.PositionChangedEventArgs">
-        The information about the song duration.
+        The event arguments containing the information for the event.
     </ParameterRow>
 </ParameterTable>
 
-## PositionChangedEventArgs Properties
+### [alphaTab.synth.PositionChangedEventArgs](/docs/reference/plain/positionchangedeventargs.mdx) Properties
 
-See [`playerPositionChanged`](/docs/reference/api/playerpositionchanged)
+Represents the info when the time in the synthesizer changes.
+
+<ParameterTable>
+    <ParameterRow platform="js" name="currentTime" type="number">
+        The current time position within the song in milliseconds.
+    </ParameterRow>
+    <ParameterRow platform="net" name="CurrentTime" type="double">
+        The current time position within the song in milliseconds.
+    </ParameterRow>
+    <ParameterRow platform="android" name="currentTime" type="Double">
+        The current time position within the song in milliseconds.
+    </ParameterRow>
+    <ParameterRow platform="js" name="endTime" type="number">
+        The total length of the song in milliseconds.
+    </ParameterRow>
+    <ParameterRow platform="net" name="EndTime" type="double">
+        The total length of the song in milliseconds.
+    </ParameterRow>
+    <ParameterRow platform="android" name="endTime" type="Double">
+        The total length of the song in milliseconds.
+    </ParameterRow>
+    <ParameterRow platform="js" name="currentTick" type="number">
+        The current time position within the song in midi ticks.
+    </ParameterRow>
+    <ParameterRow platform="net" name="CurrentTick" type="double">
+        The current time position within the song in midi ticks.
+    </ParameterRow>
+    <ParameterRow platform="android" name="currentTick" type="Double">
+        The current time position within the song in midi ticks.
+    </ParameterRow>
+    <ParameterRow platform="js" name="endTick" type="number">
+        The total length of the song in midi ticks.
+    </ParameterRow>
+    <ParameterRow platform="net" name="EndTick" type="double">
+        The total length of the song in midi ticks.
+    </ParameterRow>
+    <ParameterRow platform="android" name="endTick" type="Double">
+        The total length of the song in midi ticks.
+    </ParameterRow>
+    <ParameterRow platform="js" name="isSeek" type="boolean">
+        Whether the position changed because of time seeking.
+        <SinceBadge inline={true} since="1.2.0" />
+    </ParameterRow>
+    <ParameterRow platform="net" name="IsSeek" type="bool">
+        Whether the position changed because of time seeking.
+        <SinceBadge inline={true} since="1.2.0" />
+    </ParameterRow>
+    <ParameterRow platform="android" name="isSeek" type="Boolean">
+        Whether the position changed because of time seeking.
+        <SinceBadge inline={true} since="1.2.0" />
+    </ParameterRow>
+</ParameterTable>
 
 ## Examples
 
-<Tabs
-  defaultValue="js"
-  values={[
-    { label: 'JavaScript', value: 'js', },
-    { label: 'HTML', value: 'html', },
-    { label: 'jQuery', value: 'jq', },
-    { label: 'C#', value: 'cs', },
-    { label: 'Android', value: 'android', }
-  ]
-}>
-<TabItem value="js">
+import ExampleTabs from "@theme/Tabs";
+import ExampleTabItem from "@theme/TabItem";
 
+<ExampleTabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "HTML", value: "html"},
+      { label: "jQuery", value: "jquery"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<ExampleTabItem value="javascript">
 ```js
 const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
 api.midiLoaded.on(e => {
@@ -66,10 +118,16 @@ api.midiLoaded.on(e => {
     updateSongDuration(e.endTime);
 });
 ```
-
-</TabItem>
-<TabItem value="jq">
-
+</ExampleTabItem>
+<ExampleTabItem value="html">
+```js
+document.querySelector('#alphaTab').addEventListener('alphaTab.midiFileLoaded', e => {
+    hideGeneratingAudioIndicator();
+    updateSongDuration(e.endTime);
+}, false);
+```
+</ExampleTabItem>
+<ExampleTabItem value="jquery">
 ```js
 $('#alphaTab').on('alphaTab.midiFileLoaded', (e) => {
     var args = e.detail;
@@ -77,32 +135,18 @@ $('#alphaTab').on('alphaTab.midiFileLoaded', (e) => {
     updateSongDuration(args.endTime);
 });
 ```
-
-</TabItem>
-<TabItem value="html">
-
-```js
-document.querySelector('#alphaTab').addEventListener('alphaTab.midiFileLoaded', e => {
-    hideGeneratingAudioIndicator();
-    updateSongDuration(e.endTime);
-}, false);
-```
-
-</TabItem>
-<TabItem value="cs">
-
+</ExampleTabItem>
+<ExampleTabItem value="csharp">
 ```cs
 var api = new AlphaTabApi<MyControl>(...);
-api.MidiLoaded.On(e => 
+api.MidiLoaded.On(e =>
 {
     HideGeneratingAudioIndicator();
     UpdateSongDuration(e.EndTime);
 });
 ```
-
-</TabItem>
-<TabItem value="android">
-
+</ExampleTabItem>
+<ExampleTabItem value="android">
 ```kotlin
 val api = AlphaTabApi<MyControl>(...)
 api.midiLoaded.on { e ->
@@ -110,6 +154,5 @@ api.midiLoaded.on { e ->
     updateSongDuration(e.endTime)
 }
 ```
-
-</TabItem>
-</Tabs>
+</ExampleTabItem>
+</ExampleTabs>

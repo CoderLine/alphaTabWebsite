@@ -1,6 +1,6 @@
 ---
 title: postRenderFinished
-description: This event is fired when the rendering of the whole music sheet is finished, and all handlers of RenderFinished ran.
+description: This event is fired when the rendering of the whole music sheet is finished, and all handlers of `renderFinished` ran.
 sidebar_custom_props:
   category: Events - Core
   since: 0.9.4
@@ -12,85 +12,76 @@ import { SinceBadge } from '@site/src/components/SinceBadge';
 import { EventDescription } from '@site/src/components/EventDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 
 ## Description
-This event is fired when the rendering of the whole music sheet is finished, and all handlers of RenderFinished ran. When this 
-handlers are called, the whole rendering and display pipeline is completed. 
+This event is fired when the rendering of the whole music sheet is finished, and all handlers of `renderFinished` ran. If [`CoreSettings.enableLazyLoading`](/docs/reference/settings/core/enablelazyloading) is enabled not all partial images of the music sheet might be rendered.
+In this case the `renderFinished` event rather represents that the whole music sheet has been layouted and arranged
+and every partial image can be requested for rendering. If you neeed more fine-grained access
+to the actual layouting and rendering progress, you need to look at the low-level apis [`IScoreRenderer.partialLayoutFinished`](/docs/reference/plain/iscorerenderer.mdx#partiallayoutfinished) and
+[`IScoreRenderer.partialRenderFinished`](/docs/reference/plain/iscorerenderer.mdx#partialrenderfinished) accessible via [`renderer`](/docs/reference/plain/alphatabapibase.mdx#renderer).
 
 <EventDescription />
 
 ## Types
 
 <TypeTable>
-    <TypeRow type="js" name="function()" />    
-    <TypeRow type="net" name="Action" />    
-    <TypeRow type="android" name="() -> Unit" />    
+    <TypeRow type="js" name="function (): void" />
+    <TypeRow type="net" name="System.Action" />
+    <TypeRow type="android" name="() -> Unit" />
 </TypeTable>
-
-## Parameters
-None
 
 ## Examples
 
-<Tabs
-  defaultValue="js"
-  values={[
-    { label: 'JavaScript', value: 'js', },
-    { label: 'HTML', value: 'html', },
-    { label: 'jQuery', value: 'jq', },
-    { label: 'C#', value: 'cs', },
-    { label: 'Android', value: 'android', }
-  ]
-}>
-<TabItem value="js">
+import ExampleTabs from "@theme/Tabs";
+import ExampleTabItem from "@theme/TabItem";
 
+<ExampleTabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "HTML", value: "html"},
+      { label: "jQuery", value: "jquery"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<ExampleTabItem value="javascript">
 ```js
 const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
 api.postRenderFinished.on(() => {
     hideLoadingIndicator();
-});  
+});
 ```
-
-</TabItem>
-<TabItem value="jq">
-
+</ExampleTabItem>
+<ExampleTabItem value="html">
+```js
+document.querySelector('#alphaTab').addEventListener('alphaTab.postRendered', (e) => {
+   hideLoadingIndicator();
+}, false);
+```
+</ExampleTabItem>
+<ExampleTabItem value="jquery">
 ```js
 $('#alphaTab').on('alphaTab.postRendered', () => {
     hideLoadingIndicator();
 });
 ```
-
-</TabItem>
-<TabItem value="html">
-
-```js
-document.querySelector('#alphaTab').addEventListener('alphaTab.postRendered', (e) => {
-    hideLoadingIndicator();
-}, false);
-```
-
-</TabItem>
-<TabItem value="cs">
-
+</ExampleTabItem>
+<ExampleTabItem value="csharp">
 ```cs
 var api = new AlphaTabApi<MyControl>(...);
-api.PostRenderFinished.On(() => 
+api.PostRenderFinished.On(() =>
 {
     HideLoadingIndicator();
 });
 ```
-
-</TabItem>
-<TabItem value="android">
-
+</ExampleTabItem>
+<ExampleTabItem value="android">
 ```kotlin
 val api = AlphaTabApi<MyControl>(...)
-api.postRenderFinished.on { 
+api.postRenderFinished.on {
     hideLoadingIndicator();
 }
 ```
-
-</TabItem>
-</Tabs>
+</ExampleTabItem>
+</ExampleTabs>

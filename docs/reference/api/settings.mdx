@@ -1,25 +1,22 @@
 ---
 title: settings
-description: The settings that are used for rendering the music notation
+description: The settings that are used for rendering the music notation.
 sidebar_custom_props:
   category: Properties - Core
-  since:  0.9.4
+  since: 0.9.4
 ---
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
 <SinceBadge since="0.9.4" />
 
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
 
 ## Description
-Gets access to the underling <code>AlphaTab.Settings</code> object that is currently used by AlphaTab. 
-
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
+The settings that are used for rendering the music notation. Gets access to the underling [`Settings`](/docs/reference/plain/settings.mdx) object that is currently used by alphaTab.
 
 <PropertyDescription />
-
 
 ## Types
 
@@ -28,47 +25,96 @@ import { PropertyDescription } from '@site/src/components/PropertyDescription';
     <TypeRow type="net" name="AlphaTab.Settings" />
     <TypeRow type="android" name="alphaTab.Settings" />
 </TypeTable>
+### [alphaTab.Settings](/docs/reference/plain/settings.mdx) Properties
+
+This public class contains instance specific settings for alphaTab
+
+<ParameterTable>
+    <ParameterRow platform="js" name="core" type="alphaTab.CoreSettings">
+        The core settings control the general behavior of alphatab like
+        what modules are active.
+    </ParameterRow>
+    <ParameterRow platform="net" name="Core" type="AlphaTab.CoreSettings">
+        The core settings control the general behavior of alphatab like
+        what modules are active.
+    </ParameterRow>
+    <ParameterRow platform="android" name="core" type="alphaTab.CoreSettings">
+        The core settings control the general behavior of alphatab like
+        what modules are active.
+    </ParameterRow>
+    <ParameterRow platform="js" name="display" type="alphaTab.DisplaySettings">
+        The display settings control how the general layout and display of alphaTab is done.
+    </ParameterRow>
+    <ParameterRow platform="net" name="Display" type="AlphaTab.DisplaySettings">
+        The display settings control how the general layout and display of alphaTab is done.
+    </ParameterRow>
+    <ParameterRow platform="android" name="display" type="alphaTab.DisplaySettings">
+        The display settings control how the general layout and display of alphaTab is done.
+    </ParameterRow>
+    <ParameterRow platform="js" name="notation" type="alphaTab.NotationSettings">
+        The notation settings control how various music notation elements are shown and behaving.
+    </ParameterRow>
+    <ParameterRow platform="net" name="Notation" type="AlphaTab.NotationSettings">
+        The notation settings control how various music notation elements are shown and behaving.
+    </ParameterRow>
+    <ParameterRow platform="android" name="notation" type="alphaTab.NotationSettings">
+        The notation settings control how various music notation elements are shown and behaving.
+    </ParameterRow>
+    <ParameterRow platform="js" name="importer" type="alphaTab.ImporterSettings">
+        All settings related to importers that decode file formats.
+    </ParameterRow>
+    <ParameterRow platform="net" name="Importer" type="AlphaTab.ImporterSettings">
+        All settings related to importers that decode file formats.
+    </ParameterRow>
+    <ParameterRow platform="android" name="importer" type="alphaTab.ImporterSettings">
+        All settings related to importers that decode file formats.
+    </ParameterRow>
+    <ParameterRow platform="js" name="player" type="alphaTab.PlayerSettings">
+        Contains all player related settings
+    </ParameterRow>
+    <ParameterRow platform="net" name="Player" type="AlphaTab.PlayerSettings">
+        Contains all player related settings
+    </ParameterRow>
+    <ParameterRow platform="android" name="player" type="alphaTab.PlayerSettings">
+        Contains all player related settings
+    </ParameterRow>
+</ParameterTable>
 
 ## Examples
 
-<Tabs
-  defaultValue="js"
-  values={[
-    { label: 'JavaScript', value: 'js', },
-    { label: 'jQuery', value: 'jq', },
-    { label: 'C#', value: 'cs', },
-    { label: 'Android', value: 'android', }
-  ]
-}>
-<TabItem value="js">
+import ExampleTabs from "@theme/Tabs";
+import ExampleTabItem from "@theme/TabItem";
 
+<ExampleTabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "jQuery", value: "jquery"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<ExampleTabItem value="javascript">
 ```js
 const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
 showSettingsModal(api.settings);
 ```
-
-</TabItem>
-<TabItem value="jq">
-
+</ExampleTabItem>
+<ExampleTabItem value="jquery">
 ```js
 showSettingsModal($('#alphaTab').alphaTab('settings'));
 ```
-
-</TabItem>
-<TabItem value="cs">
-
-```csharp
+</ExampleTabItem>
+<ExampleTabItem value="csharp">
+```cs
 var api = new AlphaTabApi<MyControl>(...);
 ShowSettingsDialog(api.Settings);
 ```
-
-</TabItem>
-<TabItem value="android">
-
+</ExampleTabItem>
+<ExampleTabItem value="android">
 ```kotlin
 val api = AlphaTabApi<MyControl>(...)
 showSettingsDialog(api.settings)
 ```
-
-</TabItem>
-</Tabs>
+</ExampleTabItem>
+</ExampleTabs>

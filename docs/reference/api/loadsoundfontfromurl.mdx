@@ -1,0 +1,50 @@
+---
+title: loadSoundFontFromUrl
+description: Triggers a load of the soundfont from the given URL.
+sidebar_custom_props:
+  category: Methods - Player
+  since: 0.9.4
+---
+import { SinceBadge } from '@site/src/components/SinceBadge';
+
+<SinceBadge since="0.9.4" />
+
+import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
+
+## Description
+Triggers a load of the soundfont from the given URL. 
+
+## Signatures
+
+<TypeTable>
+    <TypeRow type="js" name="loadSoundFontFromUrl(url: string, append: boolean): void;" />
+    <TypeRow type="net" name="void LoadSoundFontFromUrl(string url, bool append)" />
+    <TypeRow type="android" name="fun loadSoundFontFromUrl(url: String, append: Boolean): Unit" />
+</TypeTable>
+
+### Parameters 
+
+<ParameterTable>
+    <ParameterRow platform="js" name="url" type="string">
+        The URL from which to load the soundfont
+    </ParameterRow>
+    <ParameterRow platform="net" name="url" type="string">
+        The URL from which to load the soundfont
+    </ParameterRow>
+    <ParameterRow platform="android" name="url" type="String">
+        The URL from which to load the soundfont
+    </ParameterRow>
+    <ParameterRow platform="js" name="append" type="boolean">
+        Whether to fully replace or append the data from the given soundfont.
+    </ParameterRow>
+    <ParameterRow platform="net" name="append" type="bool">
+        Whether to fully replace or append the data from the given soundfont.
+    </ParameterRow>
+    <ParameterRow platform="android" name="append" type="Boolean">
+        Whether to fully replace or append the data from the given soundfont.
+    </ParameterRow>
+</ParameterTable>
+
+### Returns 
+Nothing 

@@ -1,73 +1,102 @@
 ---
 title: getOutputDevice
-description: Gets the currently configured output device.
+description: The currently configured output device if changed via `setOutputDevice`.
 sidebar_custom_props:
   category: Methods - Player
-  since:  1.5.0
+  since: 1.5.0
 ---
-
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
 <SinceBadge since="1.5.0" />
 
-import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
+import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
 
 ## Description
-Gets the currently configured output device used by the player. Assumes [`setOutputDevice`](./setoutputdevice) has been used. 
-
+The currently configured output device if changed via [`setOutputDevice`](/docs/reference/plain/alphatabapibase.mdx#setoutputdevice). Assumes [`setOutputDevice`](/docs/reference/plain/alphatabapibase.mdx#setoutputdevice) has been used.
 In the web version this functionality relies on experimental APIs and might not yet be available in all browsers. https://caniuse.com/mdn-api_audiocontext_sinkid
 
 ## Signatures
 
 <TypeTable>
-    <TypeRow type="js" name="async function getOutputDevice()" />
-    <TypeRow type="net" name="Task<ISynthOutputDevice?> GetOutputDevice()" />
-    <TypeRow type="android" name="fun getOutputDevice(): Deferred<ISynthOutputDevice?>" />
+    <TypeRow type="js" name="getOutputDevice(): Promise<ISynthOutputDevice | null>;" />
+    <TypeRow type="net" name="Task<AlphaTab.Synth.ISynthOutputDevice?> GetOutputDevice()" />
+    <TypeRow type="android" name="suspend fun getOutputDevice(): alphaTab.synth.ISynthOutputDevice?" />
 </TypeTable>
 
-### Parameters
-None
+### Parameters 
+None 
 
-### Returns
-Returns an awaitable, which completes with the currently configured output device.
+### Returns 
+The custom configured output device which was set via [`setOutputDevice`](/docs/reference/plain/alphatabapibase.mdx#setoutputdevice) or `null`
+if the default outputDevice is used.
+The output device might change dynamically if devices are connected/disconnected (e.g. bluetooth headset). 
+
+### [alphaTab.synth.ISynthOutputDevice](/docs/reference/plain/isynthoutputdevice.mdx) Properties
+
+Represents a output device on which the synth can send the audio to.
+
+<ParameterTable>
+    <ParameterRow platform="js" name="deviceId" type="string">
+        The ID to uniquely identify the device.
+    </ParameterRow>
+    <ParameterRow platform="net" name="DeviceId" type="string">
+        The ID to uniquely identify the device.
+    </ParameterRow>
+    <ParameterRow platform="android" name="deviceId" type="String">
+        The ID to uniquely identify the device.
+    </ParameterRow>
+    <ParameterRow platform="js" name="label" type="string">
+        A string describing the device.
+    </ParameterRow>
+    <ParameterRow platform="net" name="Label" type="string">
+        A string describing the device.
+    </ParameterRow>
+    <ParameterRow platform="android" name="label" type="String">
+        A string describing the device.
+    </ParameterRow>
+    <ParameterRow platform="js" name="isDefault" type="boolean">
+        Gets a value indicating whether the device is the default output device.
+    </ParameterRow>
+    <ParameterRow platform="net" name="IsDefault" type="bool">
+        Gets a value indicating whether the device is the default output device.
+    </ParameterRow>
+    <ParameterRow platform="android" name="isDefault" type="Boolean">
+        Gets a value indicating whether the device is the default output device.
+    </ParameterRow>
+</ParameterTable>
 
 ## Examples
 
-<Tabs
-  defaultValue="js"
-  values={[
-    { label: 'JavaScript', value: 'js', },
-    { label: 'C#', value: 'cs', },
-    { label: 'Android', value: 'android', }
-  ]
-}>
-<TabItem value="js">
+import ExampleTabs from "@theme/Tabs";
+import ExampleTabItem from "@theme/TabItem";
 
+<ExampleTabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<ExampleTabItem value="javascript">
 ```js
 const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
 updateOutputDeviceUI(await api.getOutputDevice())
-
 ```
-
-</TabItem>
-<TabItem value="cs">
-
-```csharp
+</ExampleTabItem>
+<ExampleTabItem value="csharp">
+```cs
 var api = new AlphaTabApi<MyControl>(...);
 UpdateOutputDeviceUI(await api.GetOutputDevice())
 ```
-
-</TabItem>
-<TabItem value="android">
-
+</ExampleTabItem>
+<ExampleTabItem value="android">
 ```kotlin
 fun init() = kotlinx.coroutines.runBlocking {
   val api = AlphaTabApi<MyControl>(...)
   updateOutputDeviceUI(api.getOutputDevice().await())
 }
 ```
-
-</TabItem>
-</Tabs>
+</ExampleTabItem>
+</ExampleTabs>

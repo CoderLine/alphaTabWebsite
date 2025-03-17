@@ -1,0 +1,26 @@
+---
+title: uiFacade
+description: Gets the UI facade to use for interacting with the user interface.
+sidebar_custom_props:
+  category: 
+---
+import { SinceBadge } from '@site/src/components/SinceBadge';
+
+<SinceBadge since="" />
+
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
+
+## Description
+Gets the UI facade to use for interacting with the user interface. 
+
+<PropertyDescription />
+
+## Types
+
+<TypeTable>
+    <TypeRow type="js" name="IUiFacade<TSettings>" />
+    <TypeRow type="net" name="IUiFacade<TSettings><TSettings>" />
+    <TypeRow type="android" name="IUiFacade<TSettings><TSettings>" />
+</TypeTable>

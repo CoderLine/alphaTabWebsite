@@ -12,8 +12,6 @@ import { SinceBadge } from '@site/src/components/SinceBadge';
 import { EventDescription } from '@site/src/components/EventDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 
 ## Description
 This event is fired when the playback state changed. 
@@ -23,104 +21,103 @@ This event is fired when the playback state changed.
 ## Types
 
 <TypeTable>
-    <TypeRow type="js" name="function(e)" />    
-    <TypeRow type="net" name="Action<PlayerStateChangedEventArgs>" />    
-    <TypeRow type="android" name="(e : PlayerStateChangedEventArgs): Unit" />    
+    <TypeRow type="js" name="function (args: alphaTab.synth.PlayerStateChangedEventArgs): void" />
+    <TypeRow type="net" name="System.Action<AlphaTab.Synth.PlayerStateChangedEventArgs>" />
+    <TypeRow type="android" name="(args: alphaTab.synth.PlayerStateChangedEventArgs) -> Unit" />
 </TypeTable>
 
 ## Parameters
 
 <ParameterTable>
     <ParameterRow platform="js" name="args" type="alphaTab.synth.PlayerStateChangedEventArgs">
-        The information about the player state change event. 
+        The event arguments containing the information for the event.
     </ParameterRow>
     <ParameterRow platform="net" name="args" type="AlphaTab.Synth.PlayerStateChangedEventArgs">
-        The information about the player state change event. 
+        The event arguments containing the information for the event.
     </ParameterRow>
     <ParameterRow platform="android" name="args" type="alphaTab.synth.PlayerStateChangedEventArgs">
-        The information about the player state change event. 
+        The event arguments containing the information for the event.
     </ParameterRow>
 </ParameterTable>
 
-## PlayerStateChangedEventArgs Properties
+### [alphaTab.synth.PlayerStateChangedEventArgs](/docs/reference/plain/playerstatechangedeventargs.mdx) Properties
+
+Represents the info when the player state changes.
 
 <ParameterTable>
     <ParameterRow platform="js" name="state" type="alphaTab.synth.PlayerState">
-        The new state of the player. <br />
-        `0` - Paused
-        `1` - Playing
-    </ParameterRow>
-    <ParameterRow platform="net" name="State" type="AlphaTab.Synth.PlayerState">
-        The new state of the player.  
-    </ParameterRow>
-    <ParameterRow platform="net" name="state" type="alphaTab.synth.PlayerState">
         The new state of the player.
     </ParameterRow>
-    <ParameterRow platform="all" name="stopped" type="bool">
-        Whether the playback was fully stopped (including jump to start) or only paused.
+    <ParameterRow platform="net" name="State" type="AlphaTab.Synth.PlayerState">
+        The new state of the player.
+    </ParameterRow>
+    <ParameterRow platform="android" name="state" type="alphaTab.synth.PlayerState">
+        The new state of the player.
+    </ParameterRow>
+    <ParameterRow platform="js" name="stopped" type="boolean">
+        Gets a value indicating whether the playback was stopped or only paused.
+    </ParameterRow>
+    <ParameterRow platform="net" name="Stopped" type="bool">
+        Gets a value indicating whether the playback was stopped or only paused.
+    </ParameterRow>
+    <ParameterRow platform="android" name="stopped" type="Boolean">
+        Gets a value indicating whether the playback was stopped or only paused.
     </ParameterRow>
 </ParameterTable>
 
 ## Examples
 
-<Tabs
-  defaultValue="js"
-  values={[
-    { label: 'JavaScript', value: 'js', },
-    { label: 'HTML', value: 'html', },
-    { label: 'jQuery', value: 'jq', },
-    { label: 'C#', value: 'cs', },
-    { label: 'Android', value: 'android', }
-  ]
-}>
-<TabItem value="js">
+import ExampleTabs from "@theme/Tabs";
+import ExampleTabItem from "@theme/TabItem";
 
+<ExampleTabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "HTML", value: "html"},
+      { label: "jQuery", value: "jquery"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<ExampleTabItem value="javascript">
 ```js
 const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
 api.playerStateChanged.on((args) => {
     updatePlayerControls(args.state, args.stopped);
 });
 ```
-
-</TabItem>
-<TabItem value="jq">
-
-```js
-$('#alphaTab').on('alphaTab.playerStateChanged', (e, args) => {
-    updatePlayerControls(args.state, args.stopped);
-});
-```
-
-</TabItem>
-<TabItem value="html">
-
+</ExampleTabItem>
+<ExampleTabItem value="html">
 ```js
 document.querySelector('#alphaTab').addEventListener('alphaTab.playerStateChanged', (e) => {
     const args = e.detail;
     updatePlayerControls(args.state, args.stopped);
 }, false);
 ```
-
-</TabItem>
-<TabItem value="cs">
-
+</ExampleTabItem>
+<ExampleTabItem value="jquery">
+```js
+$('#alphaTab').on('alphaTab.playerStateChanged', (e, args) => {
+    updatePlayerControls(args.state, args.stopped);
+});
+```
+</ExampleTabItem>
+<ExampleTabItem value="csharp">
 ```cs
 var api = new AlphaTabApi<MyControl>(...);
-api.PlayerStateChanged.On(args => 
+api.PlayerStateChanged.On(args =>
 {
     UpdatePlayerControls(args);
 });
 ```
-
-</TabItem>
-<TabItem value="android">
-
+</ExampleTabItem>
+<ExampleTabItem value="android">
 ```kotlin
 val api = AlphaTabApi<MyControl>(...)
 api.playerStateChanged.on { args ->
     updatePlayerControls(args)
 }
 ```
-
-</TabItem>
-</Tabs>
+</ExampleTabItem>
+</ExampleTabs>

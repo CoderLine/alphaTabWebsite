@@ -12,102 +12,96 @@ import { SinceBadge } from '@site/src/components/SinceBadge';
 import { EventDescription } from '@site/src/components/EventDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 
 ## Description
-This event is fired when a Midi file for the song was generated and is being loaded
-by the synthesizer. This event can be used to inspect or modify the midi events 
+This event is fired when a Midi file is being loaded. This event is fired when a Midi file for the song was generated and is being loaded
+by the synthesizer. This event can be used to inspect or modify the midi events
 which will be played for the song. This can be used to generate other visual representations
 of the song.
 
-:::note
-The generated midi file will NOT contain any metronome and count-in related events. The metronome and
-count-in ticks are handled within the synthesizer. 
-:::
+> [!NOTE]
+> The generated midi file will NOT contain any metronome and count-in related events. The metronome and
+> count-in ticks are handled within the synthesizer.
 
 <EventDescription />
 
 ## Types
 
 <TypeTable>
-    <TypeRow type="js" name="function(midiFile)" />    
-    <TypeRow type="net" name="Action<MidiFile>" />    
-    <TypeRow type="android" name="(file: MidiFile) -> Unit" />    
+    <TypeRow type="js" name="function (args: alphaTab.midi.MidiFile): void" />
+    <TypeRow type="net" name="System.Action<AlphaTab.Midi.MidiFile>" />
+    <TypeRow type="android" name="(args: alphaTab.midi.MidiFile) -> Unit" />
 </TypeTable>
 
 ## Parameters
+
 <ParameterTable>
-    <ParameterRow platform="all" name="midiFile" type="alphaTab.midi.MidiFile">
-        The midi file containing all events which will be synthesized. 
+    <ParameterRow platform="js" name="args" type="alphaTab.midi.MidiFile">
+        The event arguments containing the information for the event.
+    </ParameterRow>
+    <ParameterRow platform="net" name="args" type="AlphaTab.Midi.MidiFile">
+        The event arguments containing the information for the event.
+    </ParameterRow>
+    <ParameterRow platform="android" name="args" type="alphaTab.midi.MidiFile">
+        The event arguments containing the information for the event.
     </ParameterRow>
 </ParameterTable>
-
-## MidiFile Properties
-
 
 
 ## Examples
 
-<Tabs
-  defaultValue="js"
-  values={[
-    { label: 'JavaScript', value: 'js', },
-    { label: 'HTML', value: 'html', },
-    { label: 'jQuery', value: 'jq', },
-    { label: 'C#', value: 'cs', },
-    { label: 'Android', value: 'android', }
-  ]
-}>
-<TabItem value="js">
+import ExampleTabs from "@theme/Tabs";
+import ExampleTabItem from "@theme/TabItem";
 
+<ExampleTabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "HTML", value: "html"},
+      { label: "jQuery", value: "jquery"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<ExampleTabItem value="javascript">
 ```js
 const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
 api.midiLoad.on(file => {
     initializePianoPractice(file);
 });
 ```
-
-</TabItem>
-<TabItem value="jq">
-
-```js
-$('#alphaTab').on('alphaTab.midiLoad', (e) => {
-    const file = e.detail;
-    initializePianoPractice(file);
-});
-```
-
-</TabItem>
-<TabItem value="html">
-
+</ExampleTabItem>
+<ExampleTabItem value="html">
 ```js
 document.querySelector('#alphaTab').addEventListener('alphaTab.midiLoad', e => {
     const file = e.detail;
     initializePianoPractice(file);
 }, false);
 ```
-
-</TabItem>
-<TabItem value="cs">
-
+</ExampleTabItem>
+<ExampleTabItem value="jquery">
+```js
+$('#alphaTab').on('alphaTab.midiLoad', (e) => {
+    const file = e.detail;
+    initializePianoPractice(file);
+});
+```
+</ExampleTabItem>
+<ExampleTabItem value="csharp">
 ```cs
 var api = new AlphaTabApi<MyControl>(...);
-api.MidiLoad.On(file => 
+api.MidiLoad.On(file =>
 {
     InitializePianoPractice(file);
 });
 ```
-
-</TabItem>
-<TabItem value="android">
-
-```cs
+</ExampleTabItem>
+<ExampleTabItem value="android">
+```kotlin
 val api = AlphaTabApi<MyControl>(...)
 api.midiLoad.on { file ->
     initializePianoPractice(file)
 }
 ```
-
-</TabItem>
-</Tabs>
+</ExampleTabItem>
+</ExampleTabs>

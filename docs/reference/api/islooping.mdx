@@ -1,76 +1,69 @@
 ---
 title: isLooping
-description: Whether the playback should automatically restart after it finished
+description: Whether the playback should automatically restart after it finished.
 sidebar_custom_props:
-  jQueryName: alphaTab('looping')
   category: Properties - Player
-  since:  0.9.4
+  since: 0.9.4
 ---
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
 <SinceBadge since="0.9.4" />
 
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
 
 ## Description
-This setting controls whether the playback should automatically restart after it finished to create a playback loop.
-
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
+Whether the playback should automatically restart after it finished. This setting controls whether the playback should automatically restart after it finished to create a playback loop.
 
 <PropertyDescription />
 
 ## Types
 
 <TypeTable>
-    <TypeRow type="all" name="bool" />
+    <TypeRow type="js" name="boolean" />
+    <TypeRow type="net" name="bool" />
+    <TypeRow type="android" name="Boolean" />
 </TypeTable>
-
 ## Default Value
 
 `false`
 
 ## Examples
 
-<Tabs
-  defaultValue="js"
-  values={[
-    { label: 'JavaScript', value: 'js', },
-    { label: 'jQuery', value: 'jq', },
-    { label: 'C#', value: 'cs', },
-    { label: 'Android', value: 'android', }
-  ]
-}>
-<TabItem value="js">
+import ExampleTabs from "@theme/Tabs";
+import ExampleTabItem from "@theme/TabItem";
 
+<ExampleTabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "jQuery", value: "jquery"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<ExampleTabItem value="javascript">
 ```js
 const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
 api.isLooping = true;
 ```
-
-</TabItem>
-<TabItem value="jq">
-
+</ExampleTabItem>
+<ExampleTabItem value="jquery">
 ```js
 $('#alphaTab').alphaTab('looping', true)
 ```
-
-</TabItem>
-<TabItem value="cs">
-
-```csharp
+</ExampleTabItem>
+<ExampleTabItem value="csharp">
+```cs
 var api = new AlphaTabApi<MyControl>(...);
 api.IsLooping = true;
 ```
-
-</TabItem>
-<TabItem value="android">
-
+</ExampleTabItem>
+<ExampleTabItem value="android">
 ```kotlin
 val api = AlphaTabApi<MyControl>(...)
 api.isLooping = true
 ```
-
-</TabItem>
-</Tabs>
+</ExampleTabItem>
+</ExampleTabs>

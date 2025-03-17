@@ -1,74 +1,66 @@
 ---
 title: tracks
-description: A list of the tracks that should be rendered based on the Score and TrackIndexes properties
+description: The list of the tracks that are currently rendered.
 sidebar_custom_props:
   category: Properties - Core
-  since:  0.9.4
+  since: 0.9.4
 ---
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
 <SinceBadge since="0.9.4" />
 
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
 
 ## Description
-Gets a list of the tracks that are currently being rendered. 
-
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
+The list of the tracks that are currently rendered. 
 
 <PropertyDescription />
-
 
 ## Types
 
 <TypeTable>
     <TypeRow type="js" name="alphaTab.model.Track[]" />
-    <TypeRow type="net" name="AlphaTab.Model.Track[]" />
+    <TypeRow type="net" name="IList<AlphaTab.Model.Track>" />
     <TypeRow type="android" name="alphaTab.collections.List<alphaTab.model.Track>" />
 </TypeTable>
 
 ## Examples
 
-<Tabs
-  defaultValue="js"
-  values={[
-    { label: 'JavaScript', value: 'js', },
-    { label: 'jQuery', value: 'jq', },
-    { label: 'C#', value: 'cs', },
-    { label: 'Android', value: 'android', }
-  ]
-}>
-<TabItem value="js">
+import ExampleTabs from "@theme/Tabs";
+import ExampleTabItem from "@theme/TabItem";
 
+<ExampleTabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "jQuery", value: "jquery"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<ExampleTabItem value="javascript">
 ```js
 const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
-fillTrackSelector(api.tracks);
+highlightCurrentTracksInTrackSelector(api.tracks);
 ```
-
-</TabItem>
-<TabItem value="jq">
-
+</ExampleTabItem>
+<ExampleTabItem value="jquery">
 ```js
-fillTrackSelector($('#alphaTab').alphaTab('tracks'));
+highlightCurrentTracksInTrackSelector($('#alphaTab').alphaTab('tracks'));
 ```
-
-</TabItem>
-<TabItem value="cs">
-
-```csharp
+</ExampleTabItem>
+<ExampleTabItem value="csharp">
+```cs
 var api = new AlphaTabApi<MyControl>(...);
-FillTrackSelector(api.Tracks);
+HighlightCurrentTracksInTrackSelector(api.Tracks);
 ```
-
-</TabItem>
-<TabItem value="android">
-
+</ExampleTabItem>
+<ExampleTabItem value="android">
 ```kotlin
 val api = AlphaTabApi<MyControl>(...)
-fillTrackSelector(api.tracks)
+highlightCurrentTracksInTrackSelector(api.tracks)
 ```
-
-</TabItem>
-</Tabs>
+</ExampleTabItem>
+</ExampleTabs>

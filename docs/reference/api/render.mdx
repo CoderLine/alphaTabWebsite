@@ -3,16 +3,14 @@ title: render
 description: Initiates a re-rendering of the current setup.
 sidebar_custom_props:
   category: Methods - Core
-  since:  0.9.4
+  since: 0.9.4
 ---
-
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
 <SinceBadge since="0.9.4" />
 
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
 
 ## Description
 Initiates a re-rendering of the current setup. If rendering is not yet possible, it will be deferred until the UI changes to be ready for rendering.
@@ -20,59 +18,52 @@ Initiates a re-rendering of the current setup. If rendering is not yet possible,
 ## Signatures
 
 <TypeTable>
-    <TypeRow type="js" name="function render()" />
-    <TypeRow type="jquery" name="alphaTab('render')" />
+    <TypeRow type="js" name="render(): void;" />
     <TypeRow type="net" name="void Render()" />
     <TypeRow type="android" name="fun render(): Unit" />
 </TypeTable>
 
-### Parameters
-None
+### Parameters 
+None 
 
-### Returns
-Nothing
-
+### Returns 
+Nothing 
 
 ## Examples
 
-<Tabs
-  defaultValue="js"
-  values={[
-    { label: 'JavaScript', value: 'js', },
-    { label: 'jQuery', value: 'jq', },
-    { label: 'C#', value: 'cs', },
-    { label: 'Android', value: 'android', }
-  ]
-}>
-<TabItem value="js">
+import ExampleTabs from "@theme/Tabs";
+import ExampleTabItem from "@theme/TabItem";
 
+<ExampleTabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "jQuery", value: "jquery"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<ExampleTabItem value="javascript">
 ```js
 const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
 api.render();
 ```
-
-</TabItem>
-<TabItem value="jq">
-
+</ExampleTabItem>
+<ExampleTabItem value="jquery">
 ```js
 $('#alphaTab').alphaTab('render');
 ```
-
-</TabItem>
-<TabItem value="cs">
-
-```csharp
+</ExampleTabItem>
+<ExampleTabItem value="csharp">
+```cs
 var api = new AlphaTabApi<MyControl>(...);
 api.Render();
 ```
-
-</TabItem>
-<TabItem value="android">
-
+</ExampleTabItem>
+<ExampleTabItem value="android">
 ```kotlin
 val api = AlphaTabApi<MyControl>(...)
 api.render()
 ```
-
-</TabItem>
-</Tabs>
+</ExampleTabItem>
+</ExampleTabs>

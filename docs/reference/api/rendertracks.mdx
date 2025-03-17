@@ -1,12 +1,10 @@
 ---
 title: renderTracks
-description: Initiates a rendering of the given tracks.
+description: Renders the given list of tracks.
 sidebar_custom_props:
   category: Methods - Core
-  since:  0.9.4
+  since: 0.9.4
 ---
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
 <SinceBadge since="0.9.4" />
@@ -15,55 +13,54 @@ import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
 
 ## Description
-Initiates a rendering of the tracks. All tracks must be from the same score, otherwise an error is raised. 
+Renders the given list of tracks. 
 
 ## Signatures
 
 <TypeTable>
-    <TypeRow type="js" name="function renderTracks(tracks)" />
-    <TypeRow type="jquery" name="alphaTab('renderTracks', tracks)" />
-    <TypeRow type="net" name="bool RenderTracks(Tracks[] track)" />
+    <TypeRow type="js" name="renderTracks(tracks: Track[]): void;" />
+    <TypeRow type="net" name="void RenderTracks(IList<AlphaTab.Model.Track> tracks)" />
     <TypeRow type="android" name="fun renderTracks(tracks: alphaTab.collections.List<alphaTab.model.Track>): Unit" />
 </TypeTable>
 
-### Parameters
+### Parameters 
 
 <ParameterTable>
     <ParameterRow platform="js" name="tracks" type="alphaTab.model.Track[]">
-        The tracks that should be rendered.
+        The tracks to render. They must all belong to the same score.
     </ParameterRow>
-    <ParameterRow platform="net" name="tracks" type="AlphaTab.Model.Track[]">
-        The tracks that should be rendered.
+    <ParameterRow platform="net" name="tracks" type="IList<AlphaTab.Model.Track>">
+        The tracks to render. They must all belong to the same score.
     </ParameterRow>
     <ParameterRow platform="android" name="tracks" type="alphaTab.collections.List<alphaTab.model.Track>">
-        The tracks that should be rendered.
+        The tracks to render. They must all belong to the same score.
     </ParameterRow>
 </ParameterTable>
 
-### Returns
-Nothing
+### Returns 
+Nothing 
 
 ## Examples
 
-<Tabs
-  defaultValue="js"
-  values={[
-    { label: 'JavaScript', value: 'js', },
-    { label: 'jQuery', value: 'jq', },
-    { label: 'C#', value: 'cs', },
-    { label: 'Android', value: 'android', }
-  ]
-}>
-<TabItem value="js">
+import ExampleTabs from "@theme/Tabs";
+import ExampleTabItem from "@theme/TabItem";
 
+<ExampleTabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "jQuery", value: "jquery"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<ExampleTabItem value="javascript">
 ```js
 const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
-api.changeTrackMute([api.score.tracks[0], api.score.tracks[1]], true);
+api.renderTracks([api.score.tracks[0], api.score.tracks[1]]);
 ```
-
-</TabItem>
-<TabItem value="jq">
-
+</ExampleTabItem>
+<ExampleTabItem value="jquery">
 ```js
 const at = $('#alphaTab');
 const score = at.alphaTab('score');
@@ -72,27 +69,23 @@ at.alphaTab('renderTracks', [
     api.score.tracks[3]
 ]);
 ```
-
-</TabItem>
-<TabItem value="cs">
-
-```csharp
+</ExampleTabItem>
+<ExampleTabItem value="csharp">
+```cs
 var api = new AlphaTabApi<MyControl>(...);
 api.RenderTracks(new []{
-    api.Score.Tracks[2], 
+    api.Score.Tracks[2],
     api.Score.Tracks[3]
 });
 ```
-</TabItem>
-<TabItem value="android">
-
+</ExampleTabItem>
+<ExampleTabItem value="android">
 ```kotlin
 val api = AlphaTabApi<MyControl>(...)
 api.renderTracks(alphaTab.collections.List(
-    api.score.tracks[2], 
+    api.score.tracks[2],
     api.score.tracks[3]
 }
-
 ```
-</TabItem>
-</Tabs>
+</ExampleTabItem>
+</ExampleTabs>

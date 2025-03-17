@@ -1,6 +1,6 @@
 ---
 title: scoreLoaded
-description: This event is fired whenever a new song is loaded
+description: This event is fired whenever a new song is loaded.
 sidebar_custom_props:
   category: Events - Core
   since: 0.9.4
@@ -12,97 +12,89 @@ import { SinceBadge } from '@site/src/components/SinceBadge';
 import { EventDescription } from '@site/src/components/EventDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
 
 ## Description
-This event is fired whenever a new song is loaded. It is fired after the transposition midi pitches from the settings were applied, but before any midi is generated or rendering is started. 
-This allows any modification of the score before further processing. 
+This event is fired whenever a new song is loaded. This event is fired whenever a new song is loaded or changing due to [`renderScore`](/docs/reference/plain/alphatabapibase.mdx#renderscore) or [`renderTracks`](/docs/reference/plain/alphatabapibase.mdx#rendertracks) calls.
+It is fired after the transposition midi pitches from the settings were applied, but before any midi is generated or rendering is started.
+This allows any modification of the score before further processing.
 
 <EventDescription />
 
 ## Types
 
 <TypeTable>
-    <TypeRow type="js" name="function(score)" />    
-    <TypeRow type="net" name="Action<AlphaTab.Model.Score>" />    
-    <TypeRow type="android" name="(score: AlphaTab.Model.Score) : Unit" />    
+    <TypeRow type="js" name="function (args: alphaTab.model.Score): void" />
+    <TypeRow type="net" name="System.Action<AlphaTab.Model.Score>" />
+    <TypeRow type="android" name="(args: alphaTab.model.Score) -> Unit" />
 </TypeTable>
 
 ## Parameters
 
 <ParameterTable>
-    <ParameterRow platform="js" name="score" type="alphaTab.model.Score">
-        The score that was loaded with applied transpositions. 
+    <ParameterRow platform="js" name="args" type="alphaTab.model.Score">
+        The event arguments containing the information for the event.
     </ParameterRow>
-    <ParameterRow platform="net" name="score" type="AlphaTab.Model.Score">
-        The score that was loaded with applied transpositions. 
+    <ParameterRow platform="net" name="args" type="AlphaTab.Model.Score">
+        The event arguments containing the information for the event.
     </ParameterRow>
-    <ParameterRow platform="android" name="score" type="alphaTab.model.Score">
-        The score that was loaded with applied transpositions. 
+    <ParameterRow platform="android" name="args" type="alphaTab.model.Score">
+        The event arguments containing the information for the event.
     </ParameterRow>
 </ParameterTable>
 
+
 ## Examples
 
-<Tabs
-  defaultValue="js"
-  values={[
-    { label: 'JavaScript', value: 'js', },
-    { label: 'HTML', value: 'html', },
-    { label: 'jQuery', value: 'jq', },
-    { label: 'C#', value: 'cs', },
-    { label: 'Android', value: 'android', }
-  ]
-}>
-<TabItem value="js">
+import ExampleTabs from "@theme/Tabs";
+import ExampleTabItem from "@theme/TabItem";
 
+<ExampleTabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "HTML", value: "html"},
+      { label: "jQuery", value: "jquery"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<ExampleTabItem value="javascript">
 ```js
 const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
 api.scoreLoaded.on((score) => {
     updateSongInformationInUi(score);
 });
 ```
-
-</TabItem>
-<TabItem value="jq">
-
-```js
-$('#alphaTab').on('alphaTab.scoreLoaded', (e, score) => {
-    updateSongInformationInUi(score);
-});
-```
-
-</TabItem>
-<TabItem value="html">
-
+</ExampleTabItem>
+<ExampleTabItem value="html">
 ```js
 document.querySelector('#alphaTab').addEventListener('alphaTab.scoreLoaded', (e) => {
     updateSongInformationInUi(e.detail);
 }, false);
 ```
-
-</TabItem>
-<TabItem value="cs">
-
+</ExampleTabItem>
+<ExampleTabItem value="jquery">
+```js
+$('#alphaTab').on('alphaTab.scoreLoaded', (e, score) => {
+    updateSongInformationInUi(score);
+});
+```
+</ExampleTabItem>
+<ExampleTabItem value="csharp">
 ```cs
 var api = new AlphaTabApi<MyControl>(...);
-api.ScoreLoaded.On(score => 
+api.ScoreLoaded.On(score =>
 {
     UpdateSongInformationInUi(score);
 });
 ```
-
-</TabItem>
-<TabItem value="android">
-
+</ExampleTabItem>
+<ExampleTabItem value="android">
 ```kotlin
 val api = AlphaTabApi<MyControl>(...)
 api.scoreLoaded.on { score ->
     updateSongInformationInUi(score)
 }
 ```
-
-</TabItem>
-</Tabs>
+</ExampleTabItem>
+</ExampleTabs>

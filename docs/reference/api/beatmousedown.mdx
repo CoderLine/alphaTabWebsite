@@ -12,73 +12,59 @@ import { SinceBadge } from '@site/src/components/SinceBadge';
 import { EventDescription } from '@site/src/components/EventDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 
 ## Description
-This event is fired whenever a the user presses the mouse button on a beat.
+This event is fired whenever a the user presses the mouse button on a beat. 
 
 <EventDescription />
 
 ## Types
 
 <TypeTable>
-    <TypeRow type="js" name="function(beat, originalEvent)" />    
-    <TypeRow type="net" name="Action<AlphaTab.Model.Beat>" />    
-    <TypeRow type="android" name="(beat: alphaTab.model.Beat) -> Unit" />    
+    <TypeRow type="js" name="function (args: alphaTab.model.Beat): void" />
+    <TypeRow type="net" name="System.Action<AlphaTab.Model.Beat>" />
+    <TypeRow type="android" name="(args: alphaTab.model.Beat) -> Unit" />
 </TypeTable>
 
 ## Parameters
 
 <ParameterTable>
-    <ParameterRow platform="js" name="beat" type="alphaTab.model.Beat">
-        The new beat that is now being played..
+    <ParameterRow platform="js" name="args" type="alphaTab.model.Beat">
+        The event arguments containing the information for the event.
     </ParameterRow>
-    <ParameterRow platform="js-jquery" name="originalEvent" type="MouseEvent">
-        The original mouse event that lead to trigger of the beat event. For the DOM event it is stored in the event.originalEvent.
+    <ParameterRow platform="net" name="args" type="AlphaTab.Model.Beat">
+        The event arguments containing the information for the event.
     </ParameterRow>
-    <ParameterRow platform="net" name="beat" type="AlphaTab.Model.Beat">
-        The new beat that is now being played.
-    </ParameterRow>
-    <ParameterRow platform="android" name="beat" type="alphaTab.model.Beat">
-        The new beat that is now being played.
+    <ParameterRow platform="android" name="args" type="alphaTab.model.Beat">
+        The event arguments containing the information for the event.
     </ParameterRow>
 </ParameterTable>
 
+
 ## Examples
 
-<Tabs
-  defaultValue="js"
-  values={[
-    { label: 'JavaScript', value: 'js', },
-    { label: 'HTML', value: 'html', },
-    { label: 'jQuery', value: 'jq', },
-    { label: 'C#', value: 'cs', },
-    { label: 'Android', value: 'android', }
-  ]
-}>
-<TabItem value="js">
+import ExampleTabs from "@theme/Tabs";
+import ExampleTabItem from "@theme/TabItem";
 
+<ExampleTabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "HTML", value: "html"},
+      { label: "jQuery", value: "jquery"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<ExampleTabItem value="javascript">
 ```js
 const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
 api.beatMouseDown.on((beat) => {
     startSelectionOnBeat(beat);
 });
 ```
-
-</TabItem>
-<TabItem value="jq">
-
-```js
-$('#alphaTab').on('alphaTab.beatMouseDown', (e, beat) => {
-    originalEvent.preventDefault();
-    startSelectionOnBeat(beat);
-});
-```
-
-</TabItem>
-<TabItem value="html">
-
+</ExampleTabItem>
+<ExampleTabItem value="html">
 ```js
 document.querySelector('#alphaTab').addEventListener('alphaTab.beatMouseDown', (e) => {
     const beat = e.detail;
@@ -86,27 +72,30 @@ document.querySelector('#alphaTab').addEventListener('alphaTab.beatMouseDown', (
     startSelectionOnBeat(beat);
 }, false);
 ```
-
-</TabItem>
-<TabItem value="cs">
-
+</ExampleTabItem>
+<ExampleTabItem value="jquery">
+```js
+$('#alphaTab').on('alphaTab.beatMouseDown', (e, beat) => {
+    originalEvent.preventDefault();
+    startSelectionOnBeat(beat);
+});
+```
+</ExampleTabItem>
+<ExampleTabItem value="csharp">
 ```cs
 var api = new AlphaTabApi<MyControl>(...);
-api.BeatMouseDown.On(beat => 
+api.BeatMouseDown.On(beat =>
 {
     StartSelectionOnBeat(args);
 });
 ```
-
-</TabItem>
-<TabItem value="android">
-
+</ExampleTabItem>
+<ExampleTabItem value="android">
 ```kotlin
 val api = AlphaTabApi<MyControl>(...)
 api.beatMouseDown.on { beat ->
     startSelectionOnBeat(args)
 }
 ```
-
-</TabItem>
-</Tabs>
+</ExampleTabItem>
+</ExampleTabs>

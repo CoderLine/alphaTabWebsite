@@ -12,8 +12,6 @@ import { SinceBadge } from '@site/src/components/SinceBadge';
 import { EventDescription } from '@site/src/components/EventDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 
 ## Description
 This event is fired when the playback range changed. 
@@ -23,53 +21,57 @@ This event is fired when the playback range changed.
 ## Types
 
 <TypeTable>
-    <TypeRow type="js" name="function(e)" />    
-    <TypeRow type="net" name="Action<PlaybackRangeChangedEventArgs>" />    
-    <TypeRow type="android" name="(e: PlaybackRangeChangedEventArgs) : Unit" />    
+    <TypeRow type="js" name="function (args: alphaTab.synth.PlaybackRangeChangedEventArgs): void" />
+    <TypeRow type="net" name="System.Action<AlphaTab.Synth.PlaybackRangeChangedEventArgs>" />
+    <TypeRow type="android" name="(args: alphaTab.synth.PlaybackRangeChangedEventArgs) -> Unit" />
 </TypeTable>
 
 ## Parameters
 
 <ParameterTable>
     <ParameterRow platform="js" name="args" type="alphaTab.synth.PlaybackRangeChangedEventArgs">
-        The information about the changed playback range. 
+        The event arguments containing the information for the event.
     </ParameterRow>
     <ParameterRow platform="net" name="args" type="AlphaTab.Synth.PlaybackRangeChangedEventArgs">
-        The information about the changed playback range.
+        The event arguments containing the information for the event.
     </ParameterRow>
     <ParameterRow platform="android" name="args" type="alphaTab.synth.PlaybackRangeChangedEventArgs">
-        The information about the changed playback range.
+        The event arguments containing the information for the event.
     </ParameterRow>
 </ParameterTable>
 
-## PlaybackRangeChangedEventArgs Properties
+### [alphaTab.synth.PlaybackRangeChangedEventArgs](/docs/reference/plain/playbackrangechangedeventargs.mdx) Properties
+
+Represents the info when the playback range changed.
 
 <ParameterTable>
-    <ParameterRow platform="js" name="playbackRange" type="alphaTab.synth.PlaybackRange">
-        The new playback range or null if no range is selected. (see [PlaybackRange](/docs/reference/api/playbackrange))
+    <ParameterRow platform="js" name="playbackRange" type="alphaTab.synth.PlaybackRange?">
+        The new playback range.
     </ParameterRow>
-    <ParameterRow platform="net" name="PlaybackRange" type="AlphaTab.Synth.PlaybackRange">
-        The new playback range or null if no range is selected. (see [PlaybackRange](/docs/reference/api/playbackrange))
+    <ParameterRow platform="net" name="PlaybackRange" type="AlphaTab.Synth.PlaybackRange?">
+        The new playback range.
     </ParameterRow>
-    <ParameterRow platform="android" name="playbackRange" type="alphaTab.synth.PlaybackRange">
-        The new playback range or null if no range is selected. (see [PlaybackRange](/docs/reference/api/playbackrange))
+    <ParameterRow platform="android" name="playbackRange" type="alphaTab.synth.PlaybackRange?">
+        The new playback range.
     </ParameterRow>
 </ParameterTable>
 
 ## Examples
 
-<Tabs
-  defaultValue="js"
-  values={[
-    { label: 'JavaScript', value: 'js', },
-    { label: 'HTML', value: 'html', },
-    { label: 'jQuery', value: 'jq', },
-    { label: 'C#', value: 'cs', },
-    { label: 'Android', value: 'android', }
-  ]
-}>
-<TabItem value="js">
+import ExampleTabs from "@theme/Tabs";
+import ExampleTabItem from "@theme/TabItem";
 
+<ExampleTabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "HTML", value: "html"},
+      { label: "jQuery", value: "jquery"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<ExampleTabItem value="javascript">
 ```js
 const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
 api.playbackRangeChanged.on((args) => {
@@ -80,23 +82,8 @@ api.playbackRangeChanged.on((args) => {
     }
 });
 ```
-
-</TabItem>
-<TabItem value="jq">
-
-```js
-$('#alphaTab').on('alphaTab.playbackRangeChanged', (e, args) => {
-    if (args.playbackRange) {
-        highlightRangeInProgressBar(args.playbackRange.startTick, args.playbackRange.endTick);
-    } else {
-        clearHighlightInProgressBar();
-    }
-});
-```
-
-</TabItem>
-<TabItem value="html">
-
+</ExampleTabItem>
+<ExampleTabItem value="html">
 ```js
 document.querySelector('#alphaTab').addEventListener('alphaTab.playbackRangeChanged', (e) => {
     const args = e.detail;
@@ -107,28 +94,35 @@ document.querySelector('#alphaTab').addEventListener('alphaTab.playbackRangeChan
     }
 }, false);
 ```
-
-</TabItem>
-<TabItem value="cs">
-
+</ExampleTabItem>
+<ExampleTabItem value="jquery">
+```js
+$('#alphaTab').on('alphaTab.playbackRangeChanged', (e, args) => {
+    if (args.playbackRange) {
+        highlightRangeInProgressBar(args.playbackRange.startTick, args.playbackRange.endTick);
+    } else {
+        clearHighlightInProgressBar();
+    }
+});
+```
+</ExampleTabItem>
+<ExampleTabItem value="csharp">
 ```cs
 var api = new AlphaTabApi<MyControl>(...);
-api.PlaybackRangeChanged.On(args => 
+api.PlaybackRangeChanged.On(args =>
 {
-    if (args.PlaybackRange != null) 
+    if (args.PlaybackRange != null)
     {
         HighlightRangeInProgressBar(args.PlaybackRange.StartTick, args.PlaybackRange.EndTick);
     }
-    else 
+    else
     {
         ClearHighlightInProgressBar();
     }
 });
 ```
-
-</TabItem>
-<TabItem value="android">
-
+</ExampleTabItem>
+<ExampleTabItem value="android">
 ```kotlin
 val api = AlphaTabApi<MyControl>(...)
 api.playbackRangeChanged.on { args ->
@@ -140,6 +134,5 @@ api.playbackRangeChanged.on { args ->
     }
 }
 ```
-
-</TabItem>
-</Tabs>
+</ExampleTabItem>
+</ExampleTabs>

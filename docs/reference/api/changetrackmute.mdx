@@ -2,12 +2,9 @@
 title: changeTrackMute
 description: Changes the given tracks to be muted or not.
 sidebar_custom_props:
-  jQueryName: alphaTab('muteTracks')
   category: Methods - Player
-  since:  0.9.4
+  since: 0.9.4
 ---
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
 <SinceBadge since="0.9.4" />
@@ -17,78 +14,79 @@ import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable'
 
 ## Description
 Changes the given tracks to be muted or not. This will result in a muting of the primary and secondary midi channel that the track uses
-for playback. If the track shares the channels with another track, all tracks will be muted as during playback they cannot be distinguished. 
+for playback. If the track shares the channels with another track, all tracks will be muted as during playback they cannot be distinguished.
 
 ## Signatures
 
 <TypeTable>
-    <TypeRow type="js" name="function changeTrackMute(tracks, mute)" />
-    <TypeRow type="jquery" name="alphaTab('muteTracks', tracks, mute)" />
-    <TypeRow type="net" name="void ChangeTrackMute(Track[] tracks, bool mute)" />
+    <TypeRow type="js" name="changeTrackMute(tracks: Track[], mute: boolean): void;" />
+    <TypeRow type="net" name="void ChangeTrackMute(IList<AlphaTab.Model.Track> tracks, bool mute)" />
     <TypeRow type="android" name="fun changeTrackMute(tracks: alphaTab.collections.List<alphaTab.model.Track>, mute: Boolean): Unit" />
 </TypeTable>
 
-### Parameters
+### Parameters 
+
 <ParameterTable>
-    <ParameterRow platform="js" name="tracks" type="alphaTab.model.Tracks[]">
-        The array of tracks that should be muted.
+    <ParameterRow platform="js" name="tracks" type="alphaTab.model.Track[]">
+        The list of track to mute or unmute.
     </ParameterRow>
-    <ParameterRow platform="net" name="tracks" type="AlphaTab.Model.Tracks[]">
-        The array of tracks that should be muted.
+    <ParameterRow platform="net" name="tracks" type="IList<AlphaTab.Model.Track>">
+        The list of track to mute or unmute.
     </ParameterRow>
     <ParameterRow platform="android" name="tracks" type="alphaTab.collections.List<alphaTab.model.Track>">
-        The array of tracks that should be muted.
+        The list of track to mute or unmute.
     </ParameterRow>
-    <ParameterRow platform="all" name="mute" type="bool">
-         value indicating whether the track should be muted or not.
+    <ParameterRow platform="js" name="mute" type="boolean">
+        If set to true, the tracks will be muted. If false they are unmuted.
+    </ParameterRow>
+    <ParameterRow platform="net" name="mute" type="bool">
+        If set to true, the tracks will be muted. If false they are unmuted.
+    </ParameterRow>
+    <ParameterRow platform="android" name="mute" type="Boolean">
+        If set to true, the tracks will be muted. If false they are unmuted.
     </ParameterRow>
 </ParameterTable>
 
-### Returns
-Nothing
+### Returns 
+Nothing 
 
 ## Examples
 
-<Tabs
-  defaultValue="js"
-  values={[
-    { label: 'JavaScript', value: 'js', },
-    { label: 'jQuery', value: 'jq', },
-    { label: 'C#', value: 'cs', },
-    { label: 'Android', value: 'android', }
-  ]
-}>
-<TabItem value="js">
+import ExampleTabs from "@theme/Tabs";
+import ExampleTabItem from "@theme/TabItem";
 
+<ExampleTabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "jQuery", value: "jquery"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<ExampleTabItem value="javascript">
 ```js
 const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
 api.changeTrackMute([api.score.tracks[0], api.score.tracks[1]], true);
 ```
-
-</TabItem>
-<TabItem value="jq">
-
+</ExampleTabItem>
+<ExampleTabItem value="jquery">
 ```js
 const at = $('#alphaTab');
 const tracks = at.alphaTab('tracks');
 at.alphaTab('muteTracks', [tracks[0], tracks[1]], true);
 ```
-
-</TabItem>
-<TabItem value="cs">
-
-```csharp
+</ExampleTabItem>
+<ExampleTabItem value="csharp">
+```cs
 var api = new AlphaTabApi<MyControl>(...);
 api.ChangeTrackMute(new Track[] { api.Score.Tracks[0], api.Score.Tracks[1] }, true);
 ```
-
-</TabItem>
-<TabItem value="android">
-
+</ExampleTabItem>
+<ExampleTabItem value="android">
 ```kotlin
 val api = AlphaTabApi<MyControl>(...)
 api.changeTrackMute(alphaTab.collections.List<alphaTab.model.Track>(api.score.tracks[0], api.score.tracks[1]), true);
 ```
-
-</TabItem>
-</Tabs>
+</ExampleTabItem>
+</ExampleTabs>

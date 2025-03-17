@@ -1,74 +1,301 @@
 ---
 title: player
-description: The alphaSynth player used for playback. This is the low-level API to the Midi synthesizer used for playback.
+description: The alphaSynth player used for playback.
 sidebar_custom_props:
   category: Properties - Player
-  since:  0.9.4
+  since: 0.9.4
 ---
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
 <SinceBadge since="0.9.4" />
 
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
 
 ## Description
-Gets access to the underling `alphaTab.synth.IAlphaSynth` that is used for the audio playback. 
-
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
+The alphaSynth player used for playback. This is the low-level API to the Midi synthesizer used for playback.
+Gets access to the underling [`IAlphaSynth`](/docs/reference/plain/ialphasynth.mdx) that is used for the audio playback.
 
 <PropertyDescription />
-
 
 ## Types
 
 <TypeTable>
-    <TypeRow type="js" name="alphaTab.synth.IAlphaSynth" />
-    <TypeRow type="net" name="AlphaTab.Synth.IAlphaSynth" />
-    <TypeRow type="android" name="alphaTab.synth.IAlphaSynth" />
+    <TypeRow type="js" name="alphaTab.synth.IAlphaSynth?" />
+    <TypeRow type="net" name="AlphaTab.Synth.IAlphaSynth?" />
+    <TypeRow type="android" name="alphaTab.synth.IAlphaSynth?" />
 </TypeTable>
+### [alphaTab.synth.IAlphaSynth](/docs/reference/plain/ialphasynth.mdx) Properties
+
+The public API interface for interacting with the synthesizer.
+
+<ParameterTable>
+    <ParameterRow platform="js" name="isReady" type="boolean">
+        Gets or sets whether the synthesizer is ready for interaction. (output and worker are initialized)
+    </ParameterRow>
+    <ParameterRow platform="net" name="IsReady" type="bool">
+        Gets or sets whether the synthesizer is ready for interaction. (output and worker are initialized)
+    </ParameterRow>
+    <ParameterRow platform="android" name="isReady" type="Boolean">
+        Gets or sets whether the synthesizer is ready for interaction. (output and worker are initialized)
+    </ParameterRow>
+    <ParameterRow platform="js" name="isReadyForPlayback" type="boolean">
+        Gets or sets whether the synthesizer is ready for playback. (output, worker are initialized, soundfont and midi are loaded)
+    </ParameterRow>
+    <ParameterRow platform="net" name="IsReadyForPlayback" type="bool">
+        Gets or sets whether the synthesizer is ready for playback. (output, worker are initialized, soundfont and midi are loaded)
+    </ParameterRow>
+    <ParameterRow platform="android" name="isReadyForPlayback" type="Boolean">
+        Gets or sets whether the synthesizer is ready for playback. (output, worker are initialized, soundfont and midi are loaded)
+    </ParameterRow>
+    <ParameterRow platform="js" name="state" type="alphaTab.synth.PlayerState">
+        Gets the current player state.
+    </ParameterRow>
+    <ParameterRow platform="net" name="State" type="AlphaTab.Synth.PlayerState">
+        Gets the current player state.
+    </ParameterRow>
+    <ParameterRow platform="android" name="state" type="alphaTab.synth.PlayerState">
+        Gets the current player state.
+    </ParameterRow>
+    <ParameterRow platform="js" name="logLevel" type="alphaTab.LogLevel">
+        Gets or sets the loging level.
+    </ParameterRow>
+    <ParameterRow platform="net" name="LogLevel" type="AlphaTab.LogLevel">
+        Gets or sets the loging level.
+    </ParameterRow>
+    <ParameterRow platform="android" name="logLevel" type="alphaTab.LogLevel">
+        Gets or sets the loging level.
+    </ParameterRow>
+    <ParameterRow platform="js" name="masterVolume" type="number">
+        Gets or sets the current master volume as percentage. (range: 0.0-3.0, default 1.0)
+    </ParameterRow>
+    <ParameterRow platform="net" name="MasterVolume" type="double">
+        Gets or sets the current master volume as percentage. (range: 0.0-3.0, default 1.0)
+    </ParameterRow>
+    <ParameterRow platform="android" name="masterVolume" type="Double">
+        Gets or sets the current master volume as percentage. (range: 0.0-3.0, default 1.0)
+    </ParameterRow>
+    <ParameterRow platform="js" name="metronomeVolume" type="number">
+        Gets or sets the metronome volume. (range: 0.0-3.0, default 0.0)
+    </ParameterRow>
+    <ParameterRow platform="net" name="MetronomeVolume" type="double">
+        Gets or sets the metronome volume. (range: 0.0-3.0, default 0.0)
+    </ParameterRow>
+    <ParameterRow platform="android" name="metronomeVolume" type="Double">
+        Gets or sets the metronome volume. (range: 0.0-3.0, default 0.0)
+    </ParameterRow>
+    <ParameterRow platform="js" name="playbackSpeed" type="number">
+        Gets or sets the current playback speed as percentage. (range: 0.125-8.0, default: 1.0)
+    </ParameterRow>
+    <ParameterRow platform="net" name="PlaybackSpeed" type="double">
+        Gets or sets the current playback speed as percentage. (range: 0.125-8.0, default: 1.0)
+    </ParameterRow>
+    <ParameterRow platform="android" name="playbackSpeed" type="Double">
+        Gets or sets the current playback speed as percentage. (range: 0.125-8.0, default: 1.0)
+    </ParameterRow>
+    <ParameterRow platform="js" name="tickPosition" type="number">
+        Gets or sets the position within the song in midi ticks.
+    </ParameterRow>
+    <ParameterRow platform="net" name="TickPosition" type="double">
+        Gets or sets the position within the song in midi ticks.
+    </ParameterRow>
+    <ParameterRow platform="android" name="tickPosition" type="Double">
+        Gets or sets the position within the song in midi ticks.
+    </ParameterRow>
+    <ParameterRow platform="js" name="timePosition" type="number">
+        Gets or sets the position within the song in milliseconds.
+    </ParameterRow>
+    <ParameterRow platform="net" name="TimePosition" type="double">
+        Gets or sets the position within the song in milliseconds.
+    </ParameterRow>
+    <ParameterRow platform="android" name="timePosition" type="Double">
+        Gets or sets the position within the song in milliseconds.
+    </ParameterRow>
+    <ParameterRow platform="js" name="playbackRange" type="alphaTab.synth.PlaybackRange?">
+        Gets or sets the range of the song that should be played. Set this to null
+        to play the whole song.
+    </ParameterRow>
+    <ParameterRow platform="net" name="PlaybackRange" type="AlphaTab.Synth.PlaybackRange?">
+        Gets or sets the range of the song that should be played. Set this to null
+        to play the whole song.
+    </ParameterRow>
+    <ParameterRow platform="android" name="playbackRange" type="alphaTab.synth.PlaybackRange?">
+        Gets or sets the range of the song that should be played. Set this to null
+        to play the whole song.
+    </ParameterRow>
+    <ParameterRow platform="js" name="isLooping" type="boolean">
+        Gets or sets whether the playback should automatically restart after it finished.
+    </ParameterRow>
+    <ParameterRow platform="net" name="IsLooping" type="bool">
+        Gets or sets whether the playback should automatically restart after it finished.
+    </ParameterRow>
+    <ParameterRow platform="android" name="isLooping" type="Boolean">
+        Gets or sets whether the playback should automatically restart after it finished.
+    </ParameterRow>
+    <ParameterRow platform="js" name="countInVolume" type="number">
+        Gets or sets volume of the metronome during count-in. (range: 0.0-3.0, default 0.0 - no count in)
+    </ParameterRow>
+    <ParameterRow platform="net" name="CountInVolume" type="double">
+        Gets or sets volume of the metronome during count-in. (range: 0.0-3.0, default 0.0 - no count in)
+    </ParameterRow>
+    <ParameterRow platform="android" name="countInVolume" type="Double">
+        Gets or sets volume of the metronome during count-in. (range: 0.0-3.0, default 0.0 - no count in)
+    </ParameterRow>
+    <ParameterRow platform="js" name="midiEventsPlayedFilter" type="alphaTab.midi.MidiEventType[]">
+        Gets or sets the midi events which will trigger the `midiEventsPlayed` event.
+    </ParameterRow>
+    <ParameterRow platform="net" name="MidiEventsPlayedFilter" type="IList<AlphaTab.Midi.MidiEventType>">
+        Gets or sets the midi events which will trigger the `midiEventsPlayed` event.
+    </ParameterRow>
+    <ParameterRow platform="android" name="midiEventsPlayedFilter" type="alphaTab.collections.List<alphaTab.midi.MidiEventType>">
+        Gets or sets the midi events which will trigger the `midiEventsPlayed` event.
+    </ParameterRow>
+    <ParameterRow platform="js" name="output" type="alphaTab.synth.ISynthOutput">
+        Gets the output used by alphaSynth.
+    </ParameterRow>
+    <ParameterRow platform="net" name="Output" type="AlphaTab.Synth.ISynthOutput">
+        Gets the output used by alphaSynth.
+    </ParameterRow>
+    <ParameterRow platform="android" name="output" type="alphaTab.synth.ISynthOutput">
+        Gets the output used by alphaSynth.
+    </ParameterRow>
+    <ParameterRow platform="js" name="ready" type="alphaTab.IEventEmitter">
+        This event is fired when the player is ready to be interacted with.
+    </ParameterRow>
+    <ParameterRow platform="net" name="Ready" type="AlphaTab.IEventEmitter">
+        This event is fired when the player is ready to be interacted with.
+    </ParameterRow>
+    <ParameterRow platform="android" name="ready" type="alphaTab.IEventEmitter">
+        This event is fired when the player is ready to be interacted with.
+    </ParameterRow>
+    <ParameterRow platform="js" name="readyForPlayback" type="alphaTab.IEventEmitter">
+        This event is fired when all required data for playback is loaded and ready.
+    </ParameterRow>
+    <ParameterRow platform="net" name="ReadyForPlayback" type="AlphaTab.IEventEmitter">
+        This event is fired when all required data for playback is loaded and ready.
+    </ParameterRow>
+    <ParameterRow platform="android" name="readyForPlayback" type="alphaTab.IEventEmitter">
+        This event is fired when all required data for playback is loaded and ready.
+    </ParameterRow>
+    <ParameterRow platform="js" name="finished" type="alphaTab.IEventEmitter">
+        This event is fired when the playback of the whole song finished.
+    </ParameterRow>
+    <ParameterRow platform="net" name="Finished" type="AlphaTab.IEventEmitter">
+        This event is fired when the playback of the whole song finished.
+    </ParameterRow>
+    <ParameterRow platform="android" name="finished" type="alphaTab.IEventEmitter">
+        This event is fired when the playback of the whole song finished.
+    </ParameterRow>
+    <ParameterRow platform="js" name="soundFontLoaded" type="alphaTab.IEventEmitter">
+        This event is fired when the SoundFont needed for playback was loaded.
+    </ParameterRow>
+    <ParameterRow platform="net" name="SoundFontLoaded" type="AlphaTab.IEventEmitter">
+        This event is fired when the SoundFont needed for playback was loaded.
+    </ParameterRow>
+    <ParameterRow platform="android" name="soundFontLoaded" type="alphaTab.IEventEmitter">
+        This event is fired when the SoundFont needed for playback was loaded.
+    </ParameterRow>
+    <ParameterRow platform="js" name="soundFontLoadFailed" type="IEventEmitterOfT<Error>">
+        This event is fired when the loading of the SoundFont failed.
+    </ParameterRow>
+    <ParameterRow platform="net" name="SoundFontLoadFailed" type="IEventEmitterOfT<Error><System.Exception>">
+        This event is fired when the loading of the SoundFont failed.
+    </ParameterRow>
+    <ParameterRow platform="android" name="soundFontLoadFailed" type="IEventEmitterOfT<Error><kotlin.Throwable>">
+        This event is fired when the loading of the SoundFont failed.
+    </ParameterRow>
+    <ParameterRow platform="js" name="midiLoaded" type="IEventEmitterOfT<PositionChangedEventArgs>">
+        This event is fired when the Midi file needed for playback was loaded.
+    </ParameterRow>
+    <ParameterRow platform="net" name="MidiLoaded" type="IEventEmitterOfT<PositionChangedEventArgs><AlphaTab.Synth.PositionChangedEventArgs>">
+        This event is fired when the Midi file needed for playback was loaded.
+    </ParameterRow>
+    <ParameterRow platform="android" name="midiLoaded" type="IEventEmitterOfT<PositionChangedEventArgs><alphaTab.synth.PositionChangedEventArgs>">
+        This event is fired when the Midi file needed for playback was loaded.
+    </ParameterRow>
+    <ParameterRow platform="js" name="midiLoadFailed" type="IEventEmitterOfT<Error>">
+        This event is fired when the loading of the Midi file failed.
+    </ParameterRow>
+    <ParameterRow platform="net" name="MidiLoadFailed" type="IEventEmitterOfT<Error><System.Exception>">
+        This event is fired when the loading of the Midi file failed.
+    </ParameterRow>
+    <ParameterRow platform="android" name="midiLoadFailed" type="IEventEmitterOfT<Error><kotlin.Throwable>">
+        This event is fired when the loading of the Midi file failed.
+    </ParameterRow>
+    <ParameterRow platform="js" name="stateChanged" type="IEventEmitterOfT<PlayerStateChangedEventArgs>">
+        This event is fired when the playback state changed.
+    </ParameterRow>
+    <ParameterRow platform="net" name="StateChanged" type="IEventEmitterOfT<PlayerStateChangedEventArgs><AlphaTab.Synth.PlayerStateChangedEventArgs>">
+        This event is fired when the playback state changed.
+    </ParameterRow>
+    <ParameterRow platform="android" name="stateChanged" type="IEventEmitterOfT<PlayerStateChangedEventArgs><alphaTab.synth.PlayerStateChangedEventArgs>">
+        This event is fired when the playback state changed.
+    </ParameterRow>
+    <ParameterRow platform="js" name="positionChanged" type="IEventEmitterOfT<PositionChangedEventArgs>">
+        This event is fired when the current playback position of/ the song changed.
+    </ParameterRow>
+    <ParameterRow platform="net" name="PositionChanged" type="IEventEmitterOfT<PositionChangedEventArgs><AlphaTab.Synth.PositionChangedEventArgs>">
+        This event is fired when the current playback position of/ the song changed.
+    </ParameterRow>
+    <ParameterRow platform="android" name="positionChanged" type="IEventEmitterOfT<PositionChangedEventArgs><alphaTab.synth.PositionChangedEventArgs>">
+        This event is fired when the current playback position of/ the song changed.
+    </ParameterRow>
+    <ParameterRow platform="js" name="midiEventsPlayed" type="IEventEmitterOfT<MidiEventsPlayedEventArgs>">
+        The event is fired when certain midi events were sent to the audio output device for playback.
+    </ParameterRow>
+    <ParameterRow platform="net" name="MidiEventsPlayed" type="IEventEmitterOfT<MidiEventsPlayedEventArgs><AlphaTab.Synth.MidiEventsPlayedEventArgs>">
+        The event is fired when certain midi events were sent to the audio output device for playback.
+    </ParameterRow>
+    <ParameterRow platform="android" name="midiEventsPlayed" type="IEventEmitterOfT<MidiEventsPlayedEventArgs><alphaTab.synth.MidiEventsPlayedEventArgs>">
+        The event is fired when certain midi events were sent to the audio output device for playback.
+    </ParameterRow>
+    <ParameterRow platform="js" name="playbackRangeChanged" type="IEventEmitterOfT<PlaybackRangeChangedEventArgs>">
+        The event is fired when the playback range within the player was updated.
+    </ParameterRow>
+    <ParameterRow platform="net" name="PlaybackRangeChanged" type="IEventEmitterOfT<PlaybackRangeChangedEventArgs><AlphaTab.Synth.PlaybackRangeChangedEventArgs>">
+        The event is fired when the playback range within the player was updated.
+    </ParameterRow>
+    <ParameterRow platform="android" name="playbackRangeChanged" type="IEventEmitterOfT<PlaybackRangeChangedEventArgs><alphaTab.synth.PlaybackRangeChangedEventArgs>">
+        The event is fired when the playback range within the player was updated.
+    </ParameterRow>
+</ParameterTable>
 
 ## Examples
 
-<Tabs
-  defaultValue="js"
-  values={[
-    { label: 'JavaScript', value: 'js', },
-    { label: 'jQuery', value: 'jq', },
-    { label: 'C#', value: 'cs', },
-    { label: 'Android', value: 'android', }
-  ]
-}>
-<TabItem value="js">
+import ExampleTabs from "@theme/Tabs";
+import ExampleTabItem from "@theme/TabItem";
 
+<ExampleTabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "jQuery", value: "jquery"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<ExampleTabItem value="javascript">
 ```js
 const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
 setupPlayerEvents(api.settings);
 ```
-
-</TabItem>
-<TabItem value="jq">
-
+</ExampleTabItem>
+<ExampleTabItem value="jquery">
 ```js
 setupPlayerEvents($('#alphaTab').alphaTab('player'));
 ```
-
-</TabItem>
-<TabItem value="cs">
-
-```csharp
+</ExampleTabItem>
+<ExampleTabItem value="csharp">
+```cs
 var api = new AlphaTabApi<MyControl>(...);
 SetupPlayerEvents(api.Player);
 ```
-
-</TabItem>
-<TabItem value="android">
-
+</ExampleTabItem>
+<ExampleTabItem value="android">
 ```kotlin
 val api = AlphaTabApi<MyControl>(...)
 setupPlayerEvents(api.player)
 ```
-
-</TabItem>
-</Tabs>
+</ExampleTabItem>
+</ExampleTabs>

@@ -12,38 +12,37 @@ import { SinceBadge } from '@site/src/components/SinceBadge';
 import { EventDescription } from '@site/src/components/EventDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 
 ## Description
-This event is fired when the currently active beats across all tracks change. Unlike the `playedBeatChanged` event
-this event contains the beats of all tracks and voices independent of them being rendered.
+This event is fired when the currently active beats across all tracks change. Unlike the [`playedBeatChanged`](/docs/reference/plain/alphatabapibase.mdx#playedbeatchanged) event this event contains the beats of all tracks and voices independent of them being rendered.
 
 <EventDescription />
 
 ## Types
 
 <TypeTable>
-    <TypeRow type="js" name="function(activeBeatsChangedEventArgs)" />    
-    <TypeRow type="net" name="Action<AlphaTab.Synth.ActiveBeatsChangedEventArgs>" />    
-    <TypeRow type="android" name="(args : AlphaTab.Synth.ActiveBeatsChangedEventArgs) -> Unit" />    
+    <TypeRow type="js" name="function (args: alphaTab.synth.ActiveBeatsChangedEventArgs): void" />
+    <TypeRow type="net" name="System.Action<AlphaTab.Synth.ActiveBeatsChangedEventArgs>" />
+    <TypeRow type="android" name="(args: alphaTab.synth.ActiveBeatsChangedEventArgs) -> Unit" />
 </TypeTable>
 
 ## Parameters
 
 <ParameterTable>
-    <ParameterRow platform="js" name="beat" type="alphaTab.synth.ActiveBeatsChangedEventArgs">
-        The event args containing the info about the active beats. 
-    </ParameterRow>    
-    <ParameterRow platform="net" name="beat" type="AlphaTab.Synth.ActiveBeatsChangedEventArgs">
-        The event args containing the info about the active beats.
+    <ParameterRow platform="js" name="args" type="alphaTab.synth.ActiveBeatsChangedEventArgs">
+        The event arguments containing the information for the event.
     </ParameterRow>
-    <ParameterRow platform="android" name="beat" type="alphaTab.synth.ActiveBeatsChangedEventArgs">
-        The event args containing the info about the active beats.
+    <ParameterRow platform="net" name="args" type="AlphaTab.Synth.ActiveBeatsChangedEventArgs">
+        The event arguments containing the information for the event.
+    </ParameterRow>
+    <ParameterRow platform="android" name="args" type="alphaTab.synth.ActiveBeatsChangedEventArgs">
+        The event arguments containing the information for the event.
     </ParameterRow>
 </ParameterTable>
 
-## ActiveBeatsChangedEventArgs Properties
+### [alphaTab.synth.ActiveBeatsChangedEventArgs](/docs/reference/plain/activebeatschangedeventargs.mdx) Properties
+
+Represents the information related to the beats actively being played now.
 
 <ParameterTable>
     <ParameterRow platform="js" name="activeBeats" type="alphaTab.model.Beat[]">
@@ -59,64 +58,57 @@ this event contains the beats of all tracks and voices independent of them being
 
 ## Examples
 
-<Tabs
-  defaultValue="js"
-  values={[
-    { label: 'JavaScript', value: 'js', },
-    { label: 'HTML', value: 'html', },
-    { label: 'jQuery', value: 'jq', },
-    { label: 'C#', value: 'cs', },
-    { label: 'Android', value: 'android', }
-  ]
-}>
-<TabItem value="js">
+import ExampleTabs from "@theme/Tabs";
+import ExampleTabItem from "@theme/TabItem";
 
+<ExampleTabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "HTML", value: "html"},
+      { label: "jQuery", value: "jquery"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<ExampleTabItem value="javascript">
 ```js
 const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
 api.activeBeatsChanged.on(args => {
-    updateHighlights(args.activeBeats);
+   updateHighlights(args.activeBeats);
 });
 ```
-
-</TabItem>
-<TabItem value="jq">
-
-```js
-$('#alphaTab').on('alphaTab.activeBeatsChanged', (e, args) => {
-    updateHighlights(args.activeBeats);
-});
-```
-
-</TabItem>
-<TabItem value="html">
-
+</ExampleTabItem>
+<ExampleTabItem value="html">
 ```js
 document.querySelector('#alphaTab').addEventListener('alphaTab.activeBeatsChanged', (e) => {
     const args = e.detail;
     updateHighlights(args.activeBeats);
 }, false);
 ```
-
-</TabItem>
-<TabItem value="cs">
-
+</ExampleTabItem>
+<ExampleTabItem value="jquery">
+```js
+$('#alphaTab').on('alphaTab.activeBeatsChanged', (e, args) => {
+ updateHighlights(args.activeBeats);
+});
+```
+</ExampleTabItem>
+<ExampleTabItem value="csharp">
 ```cs
 var api = new AlphaTabApi<MyControl>(...);
-api.ActiveBeatsChanged.On(args => 
+api.ActiveBeatsChanged.On(args =>
 {
     UpdateHighlights(args.ActiveBeats);
 });
 ```
-
-</TabItem>
-<TabItem value="android">
-
+</ExampleTabItem>
+<ExampleTabItem value="android">
 ```kotlin
 val api = AlphaTabApi<MyControl>(...)
 api.activeBeatsChanged.on { args ->
     updateHighlights(args.activeBeats)
 }
 ```
-
-</TabItem>
-</Tabs>
+</ExampleTabItem>
+</ExampleTabs>

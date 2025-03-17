@@ -2,12 +2,9 @@
 title: changeTrackSolo
 description: Changes the given tracks to be played solo or not.
 sidebar_custom_props:
-  jQueryName: alphaTab('soloTracks')
   category: Methods - Player
-  since:  0.9.4
+  since: 0.9.4
 ---
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
 <SinceBadge since="0.9.4" />
@@ -17,81 +14,80 @@ import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable'
 
 ## Description
 Changes the given tracks to be played solo or not. If any track is set to solo, all other tracks are muted, unless they are also flagged as solo.
-This will result in a solo playback of the primary and secondary midi channel that the track uses for playback. 
+This will result in a solo playback of the primary and secondary midi channel that the track uses for playback.
 If the track shares the channels with another track, all related tracks will be played as they cannot be distinguished.
 
 ## Signatures
 
 <TypeTable>
-    <TypeRow type="js" name="function changeTrackSolo(tracks, solo)" />
-    <TypeRow type="jquery" name="alphaTab('soloTracks', tracks, solo)" />
-    <TypeRow type="net" name="void ChangeTrackSolo(Track[] tracks, bool solo)" />
+    <TypeRow type="js" name="changeTrackSolo(tracks: Track[], solo: boolean): void;" />
+    <TypeRow type="net" name="void ChangeTrackSolo(IList<AlphaTab.Model.Track> tracks, bool solo)" />
     <TypeRow type="android" name="fun changeTrackSolo(tracks: alphaTab.collections.List<alphaTab.model.Track>, solo: Boolean): Unit" />
 </TypeTable>
 
-### Parameters
+### Parameters 
 
 <ParameterTable>
-    <ParameterRow platform="js" name="tracks" type="alphaTab.model.Tracks[]">
-        The array of tracks that should be played solo.
+    <ParameterRow platform="js" name="tracks" type="alphaTab.model.Track[]">
+        The list of tracks to play solo or not.
     </ParameterRow>
-    <ParameterRow platform="net" name="tracks" type="AlphaTab.Model.Tracks[]">
-        The array of tracks that should be played solo.
+    <ParameterRow platform="net" name="tracks" type="IList<AlphaTab.Model.Track>">
+        The list of tracks to play solo or not.
     </ParameterRow>
     <ParameterRow platform="android" name="tracks" type="alphaTab.collections.List<alphaTab.model.Track>">
-        The array of tracks that should be played solo.
+        The list of tracks to play solo or not.
     </ParameterRow>
-    <ParameterRow platform="all" name="solo" type="bool">
-        A value indicating whether the track should be played solo or not.
+    <ParameterRow platform="js" name="solo" type="boolean">
+        If set to true, the tracks will be added to the solo list. If false, they are removed.
+    </ParameterRow>
+    <ParameterRow platform="net" name="solo" type="bool">
+        If set to true, the tracks will be added to the solo list. If false, they are removed.
+    </ParameterRow>
+    <ParameterRow platform="android" name="solo" type="Boolean">
+        If set to true, the tracks will be added to the solo list. If false, they are removed.
     </ParameterRow>
 </ParameterTable>
 
-### Returns
-Nothing
+### Returns 
+Nothing 
 
 ## Examples
 
-<Tabs
-  defaultValue="js"
-  values={[
-    { label: 'JavaScript', value: 'js', },
-    { label: 'jQuery', value: 'jq', },
-    { label: 'C#', value: 'cs', },
-    { label: 'Android', value: 'android', }
-  ]
-}>
-<TabItem value="js">
+import ExampleTabs from "@theme/Tabs";
+import ExampleTabItem from "@theme/TabItem";
 
+<ExampleTabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "jQuery", value: "jquery"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<ExampleTabItem value="javascript">
 ```js
 const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
 api.changeTrackSolo([api.score.tracks[0], api.score.tracks[1]], true);
 ```
-
-</TabItem>
-<TabItem value="jq">
-
+</ExampleTabItem>
+<ExampleTabItem value="jquery">
 ```js
 const at = $('#alphaTab');
 const tracks = at.alphaTab('tracks');
 at.alphaTab('soloTracks', [tracks[0], tracks[1]], true);
 ```
-
-</TabItem>
-<TabItem value="cs">
-
-
-```csharp
+</ExampleTabItem>
+<ExampleTabItem value="csharp">
+```cs
 var api = new AlphaTabApi<MyControl>(...);
 api.ChangeTrackSolo(new Track[] { api.Score.Tracks[0], api.Score.Tracks[1] }, true);
 ```
-
-</TabItem>
-<TabItem value="android">
-
+</ExampleTabItem>
+<ExampleTabItem value="android">
 ```kotlin
 val api = AlphaTabApi<MyControl>(...)
 api.changeTrackSolo(alphaTab.collections.List<alphaTab.model.Track>(api.score.tracks[0], api.score.tracks[1]), true);
 ```
-
-</TabItem>
-</Tabs>
+</ExampleTabItem>
+</ExampleTabs>

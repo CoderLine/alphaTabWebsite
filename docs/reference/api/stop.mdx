@@ -3,75 +3,67 @@ title: stop
 description: Stops the playback of the current song, and moves the playback position back to the start.
 sidebar_custom_props:
   category: Methods - Player
-  since:  0.9.4
+  since: 0.9.4
 ---
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
 <SinceBadge since="0.9.4" />
 
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
 
 ## Description
-Stops the playback of the current song, and moves the playback position back to the start. If a dedicated playback range is selected, 
-it will move the playback position to the start of this range, not the whole song.
+Stops the playback of the current song, and moves the playback position back to the start. If a dedicated playback range is selected, it will move the playback position to the start of this range, not the whole song.
 
 ## Signatures
 
 <TypeTable>
-    <TypeRow type="js" name="function stop()" />
-    <TypeRow type="jquery" name="alphaTab('stop')" />
+    <TypeRow type="js" name="stop(): void;" />
     <TypeRow type="net" name="void Stop()" />
     <TypeRow type="android" name="fun stop(): Unit" />
 </TypeTable>
 
-### Parameters
-None
+### Parameters 
+None 
 
-### Returns
-Nothing
+### Returns 
+Nothing 
 
 ## Examples
 
-<Tabs
-  defaultValue="js"
-  values={[
-    { label: 'JavaScript', value: 'js', },
-    { label: 'jQuery', value: 'jq', },
-    { label: 'C#', value: 'cs', },
-    { label: 'Android', value: 'android', }
-  ]
-}>
-<TabItem value="js">
+import ExampleTabs from "@theme/Tabs";
+import ExampleTabItem from "@theme/TabItem";
 
+<ExampleTabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "jQuery", value: "jquery"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<ExampleTabItem value="javascript">
 ```js
 const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
 api.stop();
 ```
-
-</TabItem>
-<TabItem value="jq">
-
+</ExampleTabItem>
+<ExampleTabItem value="jquery">
 ```js
 $('#alphaTab').alphaTab('stop');
 ```
-
-</TabItem>
-<TabItem value="cs">
-
-```csharp
+</ExampleTabItem>
+<ExampleTabItem value="csharp">
+```cs
 var api = new AlphaTabApi<MyControl>(...);
 api.Stop();
 ```
-
-</TabItem>
-<TabItem value="android">
-
+</ExampleTabItem>
+<ExampleTabItem value="android">
 ```kotlin
 val api = AlphaTabApi<MyControl>(...)
 api.stop()
 ```
-
-</TabItem>
-</Tabs>
+</ExampleTabItem>
+</ExampleTabs>

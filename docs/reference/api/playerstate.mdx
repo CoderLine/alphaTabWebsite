@@ -1,78 +1,71 @@
 ---
 title: playerState
-description: The current player state
+description: The current player state.
 sidebar_custom_props:
   category: Properties - Player
-  since:  0.9.4
+  since: 0.9.4
 ---
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
 <SinceBadge since="0.9.4" />
 
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
 import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
+import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
 
 ## Description
-Gets the current player state, meaning whether it is paused or playing. 
-
-import { PropertyDescription } from '@site/src/components/PropertyDescription';
+The current player state. Gets the current player state, meaning whether it is paused or playing.
 
 <PropertyDescription />
-
 
 ## Types
 
 <TypeTable>
-    <TypeRow type="js" name="alphaTab.synth.PlayerState">
-        `0` for paused<br />
-        `1` for playing
-    </TypeRow>
+    <TypeRow type="js" name="alphaTab.synth.PlayerState" />
     <TypeRow type="net" name="AlphaTab.Synth.PlayerState" />
     <TypeRow type="android" name="alphaTab.synth.PlayerState" />
 </TypeTable>
+### [alphaTab.synth.PlayerState](/docs/reference/plain/playerstate.mdx) Properties
+
+Lists the different states of the player
+
 
 ## Examples
 
-<Tabs
-  defaultValue="js"
-  values={[
-    { label: 'JavaScript', value: 'js', },
-    { label: 'jQuery', value: 'jq', },
-    { label: 'C#', value: 'cs', },
-    { label: 'Android', value: 'android', }
-  ]
-}>
-<TabItem value="js">
+import ExampleTabs from "@theme/Tabs";
+import ExampleTabItem from "@theme/TabItem";
 
+<ExampleTabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "jQuery", value: "jquery"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<ExampleTabItem value="javascript">
 ```js
 const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
 if(api.playerState != alphaTab.synth.PlayerState.Playing) api.play();
 ```
-
-</TabItem>
-<TabItem value="jq">
-
+</ExampleTabItem>
+<ExampleTabItem value="jquery">
 ```js
 const at = $('#alphaTab');
 if(at.alphaTab('playerState') != alphaTab.synth.PlayerState.Playing) at.alphaTab('play');
 ```
-
-</TabItem>
-<TabItem value="cs">
-
-```csharp
+</ExampleTabItem>
+<ExampleTabItem value="csharp">
+```cs
 var api = new AlphaTabApi<MyControl>(...);
 if(api.PlayerState != PlayerState.Playing) api.Play();
 ```
-
-</TabItem>
-<TabItem value="android">
-
+</ExampleTabItem>
+<ExampleTabItem value="android">
 ```kotlin
 val api = AlphaTabApi<MyControl>(...)
 if (api.playerState != PlayerState.Playing) api.play()
 ```
-
-</TabItem>
-</Tabs>
+</ExampleTabItem>
+</ExampleTabs>

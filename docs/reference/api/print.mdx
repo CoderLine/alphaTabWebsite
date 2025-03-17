@@ -2,13 +2,9 @@
 title: print
 description: Opens a popup window with the rendered music notation for printing.
 sidebar_custom_props:
-  javaScriptOnly: true
   category: Methods - Core
-  since:  0.9.4
+  since: 0.9.4
 ---
-
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 import { SinceBadge } from '@site/src/components/SinceBadge';
 
 <SinceBadge since="0.9.4" />
@@ -17,9 +13,9 @@ import {TypeTable, TypeRow} from '@site/src/components/TypeTable';
 import {ParameterTable, ParameterRow} from '@site/src/components/ParameterTable';
 
 ## Description
-Opens a popup window with the rendered music notation for printing. The default display of alphaTab in the browser is not very 
+Opens a popup window with the rendered music notation for printing. Opens a popup window with the rendered music notation for printing. The default display of alphaTab in the browser is not very
 suitable for printing. The items are lazy loaded, the width can be dynamic, and the scale might be better suitable for screens.
-This function opens a popup window which is filled with a by-default A4 optimized view of the rendered score: 
+This function opens a popup window which is filled with a by-default A4 optimized view of the rendered score:
 
 * Lazy loading is disabled
 * The scale is reduced to 0.8
@@ -29,51 +25,59 @@ This function opens a popup window which is filled with a by-default A4 optimize
 ## Signatures
 
 <TypeTable>
-    <TypeRow type="js" name="function print()" />
-    <TypeRow type="js" name="function print(width)" />
-    <TypeRow type="js" name="function print(width, additionalSettings)" />
-    <TypeRow type="jquery" name="alphaTab('print')" />
-    <TypeRow type="jquery" name="alphaTab('print', width, additionalSettings)" />
+    <TypeRow type="js" name="print(width?: string, additionalSettings?: unknown): void;" />
+    <TypeRow type="net" name="void Print(string? width, object? additionalSettings)" />
+    <TypeRow type="android" name="fun print(width: String?, additionalSettings: Any?): Unit" />
 </TypeTable>
 
-### Parameters
+### Parameters 
 
 <ParameterTable>
-    <ParameterRow platform="js-jquery" name="width" type="string">
+    <ParameterRow platform="js" name="width" type="string?">
         An optional custom width as CSS width that should be used. Best is to use a CSS width that is suitable for your preferred page size.
     </ParameterRow>
-    <ParameterRow platform="js-jquery" name="additionalSettings" type="object">
-        An optional parameter to specify additional setting values which should be respected during printing. 
-        <span class="badge badge--info">since 1.2.0-alpha.79</span>
+    <ParameterRow platform="net" name="width" type="string?">
+        An optional custom width as CSS width that should be used. Best is to use a CSS width that is suitable for your preferred page size.
+    </ParameterRow>
+    <ParameterRow platform="android" name="width" type="String?">
+        An optional custom width as CSS width that should be used. Best is to use a CSS width that is suitable for your preferred page size.
+    </ParameterRow>
+    <ParameterRow platform="js" name="additionalSettings" type="unknown?">
+        An optional parameter to specify additional setting values which should be respected during printing (<SinceBadge inline={true} since={"1.2.0"} />)
+    </ParameterRow>
+    <ParameterRow platform="net" name="additionalSettings" type="object?">
+        An optional parameter to specify additional setting values which should be respected during printing (<SinceBadge inline={true} since={"1.2.0"} />)
+    </ParameterRow>
+    <ParameterRow platform="android" name="additionalSettings" type="Any?">
+        An optional parameter to specify additional setting values which should be respected during printing (<SinceBadge inline={true} since={"1.2.0"} />)
     </ParameterRow>
 </ParameterTable>
 
-### Returns
-Nothing
+### Returns 
+Nothing 
 
 ## Examples
 
-<Tabs
-  defaultValue="js"
-  values={[
-    { label: 'JavaScript', value: 'js', },
-    { label: 'jQuery', value: 'jq', }
-  ]
-}>
-<TabItem value="js">
+import ExampleTabs from "@theme/Tabs";
+import ExampleTabItem from "@theme/TabItem";
 
+<ExampleTabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "jQuery", value: "jquery"}
+    ]}
+>
+<ExampleTabItem value="javascript">
 ```js
 const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
 api.print();
 api.print(undefined, { display: { barsPerRow: 5 } });
 ```
-
-</TabItem>
-<TabItem value="jq">
-
+</ExampleTabItem>
+<ExampleTabItem value="jquery">
 ```js
 $('#alphaTab').alphaTab('print');
 ```
-
-</TabItem>
-</Tabs>
+</ExampleTabItem>
+</ExampleTabs>
