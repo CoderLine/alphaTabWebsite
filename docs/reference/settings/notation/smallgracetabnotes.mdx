@@ -5,19 +5,19 @@ sidebar_custom_props:
   category: Notation
   since: 0.9.6
 ---
-import { CodeBadge } from '@site/src/components/CodeBadge';
-
-import { SinceBadge } from '@site/src/components/SinceBadge';
-
-import { SettingsHeader } from '@site/src/components/SettingsHeader';
-
-<SettingsHeader />
 
 import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
 import CodeBlock from '@theme/CodeBlock';
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
 
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
+
+<SettingsHeader />
 
 ### Description
 If set to true the guitar tabs on grace beats are rendered smaller. By default, grace notes are drawn smaller on the guitar tabs than the other numbers. With this setting alphaTab can be configured to show grace tab notes with normal text size.
@@ -25,13 +25,15 @@ If set to true the guitar tabs on grace beats are rendered smaller. By default, 
 |--------------------------------------------------------------------|----------------------------------------------------------------------|
 | ![Enabled](/img/reference/property/smallgracetabnotes-enabled.png) | ![Disabled](/img/reference/property/smallgracetabnotes-disabled.png) |
 
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`smallGraceTabNotes : boolean = true;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`bool SmallGraceTabNotes { get; set; } = true`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`var smallGraceTabNotes: Boolean = true`}</CodeBlock>
+</TabItem>
+</Tabs>
 
-### Default Value
-
-`true`
-
-### Type
-
-<CodeBadge type="js" name="boolean" link={"https://mdn.io/boolean"} />
-<CodeBadge type="net" name="bool" />
-<CodeBadge type="android" name="Boolean" />

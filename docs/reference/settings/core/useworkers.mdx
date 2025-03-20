@@ -6,31 +6,33 @@ sidebar_custom_props:
   category: Core
   since: 0.9.6
 ---
-import { CodeBadge } from '@site/src/components/CodeBadge';
-
-import { SinceBadge } from '@site/src/components/SinceBadge';
-
-import { SettingsHeader } from '@site/src/components/SettingsHeader';
-
-<SettingsHeader />
 
 import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
 import CodeBlock from '@theme/CodeBlock';
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
 
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
+
+<SettingsHeader />
 
 ### Description
 Whether the rendering should be done in a worker if possible. AlphaTab normally tries to render the music sheet asynchronously in a worker. This reduces the load on the UI side and avoids hanging. However sometimes it might be more desirable to have
 a synchronous rendering behavior. This setting can be set to false to synchronously render the music sheet on the UI side.
 
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`useWorkers : boolean = true;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`bool UseWorkers { get; set; } = true`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`var useWorkers: Boolean = true`}</CodeBlock>
+</TabItem>
+</Tabs>
 
-### Default Value
-
-`true`
-
-### Type
-
-<CodeBadge type="js" name="boolean" link={"https://mdn.io/boolean"} />
-<CodeBadge type="net" name="bool" />
-<CodeBadge type="android" name="Boolean" />

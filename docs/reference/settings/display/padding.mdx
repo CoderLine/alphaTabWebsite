@@ -6,19 +6,19 @@ sidebar_custom_props:
   category: Display
   since: 0.9.6
 ---
-import { CodeBadge } from '@site/src/components/CodeBadge';
-
-import { SinceBadge } from '@site/src/components/SinceBadge';
-
-import { SettingsHeader } from '@site/src/components/SettingsHeader';
-
-<SettingsHeader />
 
 import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
 import CodeBlock from '@theme/CodeBlock';
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
 
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
+
+<SettingsHeader />
 
 ### Description
 Adjusts the padding between the music notation and the border. Adjusts the padding between the music notation and the outer border of the container element.
@@ -26,10 +26,15 @@ The array is either:
 * 2 elements: `[left-right, top-bottom]`
 * 4 elements: ``[left, top, right, bottom]``
 
-
-### Default Value
-
-`[35, 35]`
-
-## Type: [`number[]`](https://mdn.io/number)
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`padding : number[] = [35, 35];`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`IList<double> Padding { get; set; } = [35, 35]`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`var padding: alphaTab.collections.DoubleList = [35, 35]`}</CodeBlock>
+</TabItem>
+</Tabs>
 

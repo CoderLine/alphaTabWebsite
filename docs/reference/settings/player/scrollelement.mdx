@@ -6,29 +6,24 @@ sidebar_custom_props:
   category: Player - JavaScript Specific
   since: 0.9.6
 ---
-import { CodeBadge } from '@site/src/components/CodeBadge';
-
-import { SinceBadge } from '@site/src/components/SinceBadge';
-
-import { SettingsHeader } from '@site/src/components/SettingsHeader';
-
-<SettingsHeader />
 
 import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
 import CodeBlock from '@theme/CodeBlock';
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
 
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
+
+<SettingsHeader />
 
 ### Description
 The element to apply the scrolling on. When the player is active, it by default automatically scrolls the browser window to the currently played bar. This setting
 defines which elements should be scrolled to bring the played bar into the view port. By default scrolling happens on the `html,body`
 selector.
 
-
-### Default Value
-
-`html,body`
-
-## Type: [`string | HTMLElement`](https://mdn.io/string)
+<CodeBlock language="ts">{`scrollElement : string | HTMLElement = html,body;`}</CodeBlock>
 

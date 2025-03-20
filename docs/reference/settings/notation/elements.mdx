@@ -5,19 +5,19 @@ sidebar_custom_props:
   category: Notation
   since: 0.9.8
 ---
-import { CodeBadge } from '@site/src/components/CodeBadge';
-
-import { SinceBadge } from '@site/src/components/SinceBadge';
-
-import { SettingsHeader } from '@site/src/components/SettingsHeader';
-
-<SettingsHeader />
 
 import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
 import CodeBlock from '@theme/CodeBlock';
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
 
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
+
+<SettingsHeader />
 
 ### Description
 Whether music notation elements are visible or not. AlphaTab has quite a set of notation elements that are usually shown by default or only shown when using
@@ -27,16 +27,18 @@ song information or the track names.
 For each element you can configure whether it is visible or not. The setting is a Map/Dictionary where
 the key is the element to configure and the value is a boolean value whether it should be visible or not.
 
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`elements : Map<NotationElement, boolean> = [[NotationElement.ZerosOnDiveWhammys, false]];`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`Map<AlphaTab.NotationElement, bool> Elements { get; set; } = [[NotationElement.ZerosOnDiveWhammys, false]]`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`var elements: alphaTab.collections.ObjectBooleanMap = [[NotationElement.ZerosOnDiveWhammys, false]]`}</CodeBlock>
+</TabItem>
+</Tabs>
 
-### Default Value
-
-`[[NotationElement.ZerosOnDiveWhammys, false]]`
-
-## Type: [`Map<NotationElement, boolean>`](/docs/reference/types/notationelement/index.mdx)
-
-import PropTypeDocs from '@site/docs/reference/types/notationelement/index.mdx';
-
-<PropTypeDocs inlined={true} />
 
 ## Examples
 
@@ -49,7 +51,7 @@ import PropTypeDocs from '@site/docs/reference/types/notationelement/index.mdx';
     ]}
 >
 <TabItem value="javascript">
-Internally the setting is a [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) where the key must be a [`NotationElement`](/docs/reference/types/notationelement/index.mdx) enumeration value.
+Internally the setting is a [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) where the key must be a [`NotationElement`](/docs/reference/types/notationelement/) enumeration value.
 For JSON input the usual enumeration serialization applies where also the names can be used. The names
 are case insensitive.
 

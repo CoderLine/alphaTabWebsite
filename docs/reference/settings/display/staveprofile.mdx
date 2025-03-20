@@ -6,31 +6,33 @@ sidebar_custom_props:
   category: Display
   since: 0.9.6
 ---
-import { CodeBadge } from '@site/src/components/CodeBadge';
-
-import { SinceBadge } from '@site/src/components/SinceBadge';
-
-import { SettingsHeader } from '@site/src/components/SettingsHeader';
-
-<SettingsHeader />
 
 import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
 import CodeBlock from '@theme/CodeBlock';
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
 
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
+
+<SettingsHeader />
 
 ### Description
 The stave profile defining which staves are shown for the music sheet. AlphaTab has various stave profiles that define which staves will be shown in for the rendered tracks. Its recommended
-to keep this on [`StaveProfile.Default`](/docs/reference/types/staveprofile/index.mdx#default) and rather rely on the options available ob [`Staff`](/docs/reference/types/model/staff/index.mdx) level
+to keep this on [`StaveProfile.Default`](/docs/reference/types/staveprofile/#default) and rather rely on the options available ob [`Staff`](/docs/reference/types/model/staff/) level
 
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`staveProfile : StaveProfile = StaveProfile.Default;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`AlphaTab.StaveProfile StaveProfile { get; set; } = StaveProfile.Default`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`var staveProfile: alphaTab.StaveProfile = StaveProfile.Default`}</CodeBlock>
+</TabItem>
+</Tabs>
 
-### Default Value
-
-`StaveProfile.Default`
-
-## Type: [`StaveProfile`](/docs/reference/types/staveprofile/index.mdx)
-
-import PropTypeDocs from '@site/docs/reference/types/staveprofile/index.mdx';
-
-<PropTypeDocs inlined={true} />

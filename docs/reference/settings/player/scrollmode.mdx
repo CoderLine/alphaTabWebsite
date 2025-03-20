@@ -5,30 +5,32 @@ sidebar_custom_props:
   category: Player
   since: 0.9.6
 ---
-import { CodeBadge } from '@site/src/components/CodeBadge';
-
-import { SinceBadge } from '@site/src/components/SinceBadge';
-
-import { SettingsHeader } from '@site/src/components/SettingsHeader';
-
-<SettingsHeader />
 
 import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
 import CodeBlock from '@theme/CodeBlock';
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
 
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
+
+<SettingsHeader />
 
 ### Description
 The mode how to scroll. This setting controls how alphaTab behaves for scrolling.
 
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`scrollMode : ScrollMode = ScrollMode.Continuous;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`AlphaTab.ScrollMode ScrollMode { get; set; } = ScrollMode.Continuous`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`var scrollMode: alphaTab.ScrollMode = ScrollMode.Continuous`}</CodeBlock>
+</TabItem>
+</Tabs>
 
-### Default Value
-
-`ScrollMode.Continuous`
-
-## Type: [`ScrollMode`](/docs/reference/types/scrollmode/index.mdx)
-
-import PropTypeDocs from '@site/docs/reference/types/scrollmode/index.mdx';
-
-<PropTypeDocs inlined={true} />

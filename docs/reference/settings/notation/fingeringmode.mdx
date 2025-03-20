@@ -5,19 +5,19 @@ sidebar_custom_props:
   category: Notation
   since: 0.9.6
 ---
-import { CodeBadge } from '@site/src/components/CodeBadge';
-
-import { SinceBadge } from '@site/src/components/SinceBadge';
-
-import { SettingsHeader } from '@site/src/components/SettingsHeader';
-
-<SettingsHeader />
 
 import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
 import CodeBlock from '@theme/CodeBlock';
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
 
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
+
+<SettingsHeader />
 
 ### Description
 The fingering mode to use. AlphaTab supports multiple modes on how to display fingering information in the music sheet. This setting controls how they should be displayed. The default behavior is to show the finger information
@@ -27,13 +27,15 @@ directly in the score along the notes. For some use cases of training courses an
 |-------------------------------------------------------------|-------------------------------------------------------------------|
 | ![Enabled](/img/reference/property/fingeringmode-score.png) | ![Disabled](/img/reference/property/fingeringmode-effectband.png) |
 
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`fingeringMode : FingeringMode = FingeringMode.ScoreDefault;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`AlphaTab.FingeringMode FingeringMode { get; set; } = FingeringMode.ScoreDefault`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`var fingeringMode: alphaTab.FingeringMode = FingeringMode.ScoreDefault`}</CodeBlock>
+</TabItem>
+</Tabs>
 
-### Default Value
-
-`FingeringMode.ScoreDefault`
-
-## Type: [`FingeringMode`](/docs/reference/types/fingeringmode/index.mdx)
-
-import PropTypeDocs from '@site/docs/reference/types/fingeringmode/index.mdx';
-
-<PropTypeDocs inlined={true} />

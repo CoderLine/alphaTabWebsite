@@ -5,19 +5,19 @@ sidebar_custom_props:
   category: Importer
   since: 1.2.0
 ---
-import { CodeBadge } from '@site/src/components/CodeBadge';
-
-import { SinceBadge } from '@site/src/components/SinceBadge';
-
-import { SettingsHeader } from '@site/src/components/SettingsHeader';
-
-<SettingsHeader />
 
 import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
 import CodeBlock from '@theme/CodeBlock';
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
 
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
+
+<SettingsHeader />
 
 ### Description
 Enables detecting lyrics from beat texts On various old Guitar Pro 3-5 files tab authors often used the "beat text" feature to add lyrics to the individual tracks.
@@ -43,13 +43,15 @@ Enable this option for input files which suffer from this practice.
 
 ![Disabled](/img/reference/property/beattextaslyrics-disabled.png)
 
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`beatTextAsLyrics : boolean = false;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`bool BeatTextAsLyrics { get; set; } = false`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`var beatTextAsLyrics: Boolean = false`}</CodeBlock>
+</TabItem>
+</Tabs>
 
-### Default Value
-
-`false`
-
-### Type
-
-<CodeBadge type="js" name="boolean" link={"https://mdn.io/boolean"} />
-<CodeBadge type="net" name="bool" />
-<CodeBadge type="android" name="Boolean" />

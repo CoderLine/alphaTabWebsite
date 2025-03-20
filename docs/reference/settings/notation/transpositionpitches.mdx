@@ -5,28 +5,33 @@ sidebar_custom_props:
   category: Notation
   since: 0.9.6
 ---
-import { CodeBadge } from '@site/src/components/CodeBadge';
-
-import { SinceBadge } from '@site/src/components/SinceBadge';
-
-import { SettingsHeader } from '@site/src/components/SettingsHeader';
-
-<SettingsHeader />
 
 import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
 import CodeBlock from '@theme/CodeBlock';
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
 
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
+
+<SettingsHeader />
 
 ### Description
 The transposition pitch offsets for the individual tracks used for rendering and playback. This setting allows transposing of tracks for display and playback.
 The `transpositionPitches` setting allows defining an additional pitch offset per track, that is then considered when displaying the music sheet.
 
-
-### Default Value
-
-`[]`
-
-## Type: [`number[]`](https://mdn.io/number)
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`transpositionPitches : number[] = [];`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`IList<double> TranspositionPitches { get; set; } = []`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`var transpositionPitches: alphaTab.collections.DoubleList = []`}</CodeBlock>
+</TabItem>
+</Tabs>
 

@@ -1,57 +1,7 @@
-import { CodeBadge } from '@site/src/components/CodeBadge'
-import { SinceBadge }  from '@site/src/components/SinceBadge'
-import { MarkdownString } from '@site/src/components/MarkdownString'
 
-export const Resources = {
-    colors:[],
-    fonts: []
-};
+## [RenderingResources](/docs/reference/types/renderingresources/)
+Following resources exist for adjusting the style.
 
+import ResourceDocs from '@site/docs/reference/types/renderingresources/index.mdx'
 
-export function toPascalCase(v) {
-    return v.substr(0, 1).toUpperCase() + v.substr(1);
-}
-
-export function ResourceRow({ resource, type }) {
-    return (
-        <tr>
-            <td>
-                <CodeBadge type="all" name={resource.name} /><br />
-            </td>
-            <td>
-                <CodeBadge type="all" name={type} />
-            </td>
-            <td><MarkdownString content={resource.defaultValue} /></td>
-            <td>
-                {resource.description}
-                {resource.since && <SinceBadge since={resource.since} inline="true" />}
-            </td>
-        </tr>
-    );
-}
-
-export function ResourceTable() {
-    const colors = Resources.colors.map(c => <ResourceRow type="color" resource={c} />);
-    const fonts = Resources.fonts.map(f => <ResourceRow type="font" resource={f} />);
-    return (
-        <table className="table table-striped table-condensed type-table">
-            <thead>
-                <tr>
-                    <th>Resource</th>
-                    <th>Type</th>
-                    <th>Default</th>
-                    <th>Summary</th>
-                </tr>
-            </thead>
-            <tbody>
-                {colors}
-                {fonts}
-            </tbody>
-        </table>
-    );
-}
-
-## Resources
-Following resources exist for adjusting the style. 
-
-<ResourceTable />
+<ResourceDocs inlined={true} detailed={true} />

@@ -5,19 +5,19 @@ sidebar_custom_props:
   category: Player
   since: 0.9.6
 ---
-import { CodeBadge } from '@site/src/components/CodeBadge';
-
-import { SinceBadge } from '@site/src/components/SinceBadge';
-
-import { SettingsHeader } from '@site/src/components/SettingsHeader';
-
-<SettingsHeader />
 
 import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
 import CodeBlock from '@theme/CodeBlock';
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
 
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
+
+<SettingsHeader />
 
 ### Description
 Whether the player should be enabled. This setting configures whether the player feature is enabled or not. Depending on the platform enabling the player needs some additional actions of the developer.
@@ -26,13 +26,15 @@ For .net manually the soundfont must be loaded.
 
 AlphaTab does not ship a default UI for the player. The API must be hooked up to some UI controls to allow the user to interact with the player.
 
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`enablePlayer : boolean = false;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`bool EnablePlayer { get; set; } = false`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`var enablePlayer: Boolean = false`}</CodeBlock>
+</TabItem>
+</Tabs>
 
-### Default Value
-
-`false`
-
-### Type
-
-<CodeBadge type="js" name="boolean" link={"https://mdn.io/boolean"} />
-<CodeBadge type="net" name="bool" />
-<CodeBadge type="android" name="Boolean" />

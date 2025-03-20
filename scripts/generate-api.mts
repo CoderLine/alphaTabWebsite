@@ -8,6 +8,7 @@ import {
   getSummary,
   isEvent,
   isTargetWeb,
+  writeCommonImports,
   writeEventDetails,
   writeMethodDetails,
   writePropertyDetails,
@@ -16,9 +17,6 @@ import ts from "typescript";
 import { FileStream, openFileStream } from "./util";
 
 export async function generateApiDocs(context: GenerateContext) {
-  const api = context.flatExports.get(
-    "alphaTab.AlphaTabApi"
-  ) as ts.ClassDeclaration;
   const basePath = path.join(repositoryRoot, "docs", "reference", "api");
   await fs.promises.mkdir(basePath, { recursive: true });
 
@@ -37,7 +35,12 @@ export async function generateApiDocs(context: GenerateContext) {
   const methods: (ts.MethodDeclaration | ts.MethodSignature)[] = [];
 
   const members: Map<string, ts.ClassElement | ts.TypeElement> = new Map();
-  collectMembers(context, members, api);
+  collectMembers(context, members, context.flatExports.get(
+    "alphaTab.AlphaTabApiBase"
+  ) as ts.ClassDeclaration, false);
+  collectMembers(context, members, context.flatExports.get(
+    "alphaTab.AlphaTabApi"
+  ) as ts.ClassDeclaration, false);
 
   for (const m of Array.from(members.values())) {
     if (isEvent(context, m)) {
@@ -127,9 +130,8 @@ async function writeFrontMatter(
 
   await fileStream.write("---\n");
 
-  await fileStream.write(
-    "import { SinceBadge } from '@site/src/components/SinceBadge';\n\n"
-  );
+  await writeCommonImports(fileStream);
+  
   if (since) {
     await fileStream.write(`<SinceBadge since=${JSON.stringify(since)} />\n`);
   }

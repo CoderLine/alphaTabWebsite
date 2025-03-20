@@ -48,7 +48,7 @@ export const ParameterTable: React.FC<ParameterTableProps> = ({ children }) => {
     <table className="table table-striped table-condensed type-table">
       <thead>
         <tr>
-          <th>Parameters</th>
+          <th>Parameter</th>
           <th>Summary</th>
         </tr>
       </thead>

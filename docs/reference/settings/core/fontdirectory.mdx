@@ -7,19 +7,19 @@ sidebar_custom_props:
   category: Core - JavaScript Specific
   since: 0.9.6
 ---
-import { CodeBadge } from '@site/src/components/CodeBadge';
-
-import { SinceBadge } from '@site/src/components/SinceBadge';
-
-import { SettingsHeader } from '@site/src/components/SettingsHeader';
-
-<SettingsHeader />
 
 import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
 import CodeBlock from '@theme/CodeBlock';
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
 
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
+
+<SettingsHeader />
 
 ### Description
 The full URL to the alphaTab font directory. AlphaTab will generate some dynamic CSS that is needed for displaying the music symbols correctly. For this it needs to know
@@ -27,10 +27,5 @@ where the Web Font files of [Bravura](https://github.com/steinbergmedia/bravura)
 them to be in a `font` subfolder beside the script file. If this is not the case, this setting must be used to configure the path.
 Alternatively also a global variable `ALPHATAB_FONT` can be set on the page before initializing alphaTab.
 
-
-### Default Value
-
-`${AlphaTabScriptFolder}/font/`
-
-## Type: [`string | null`](https://mdn.io/string)
+<CodeBlock language="ts">{`fontDirectory : string | null = "$\{AlphaTabScriptFolder}/font/";`}</CodeBlock>
 

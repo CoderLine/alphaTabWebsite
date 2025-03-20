@@ -5,19 +5,19 @@ sidebar_custom_props:
   category: Notation
   since: 0.9.6
 ---
-import { CodeBadge } from '@site/src/components/CodeBadge';
-
-import { SinceBadge } from '@site/src/components/SinceBadge';
-
-import { SettingsHeader } from '@site/src/components/SettingsHeader';
-
-<SettingsHeader />
 
 import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
 import CodeBlock from '@theme/CodeBlock';
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
 
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
+
+<SettingsHeader />
 
 ### Description
 The transposition pitch offsets for the individual tracks used for rendering only. For some instruments the pitch shown on the standard notation has an additional transposition. One example is the Guitar.
@@ -29,10 +29,15 @@ The `DisplayTranspositionPitch` setting allows defining an additional pitch offs
 This setting does not affect the playback of the instrument in any way. Despite the 2 different standard notations in the above example, they both play the same note height.
 The transposition is defined as number of semitones and one value per track of the song can be defined.
 
-
-### Default Value
-
-`[]`
-
-## Type: [`number[]`](https://mdn.io/number)
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`displayTranspositionPitches : number[] = [];`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`IList<double> DisplayTranspositionPitches { get; set; } = []`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`var displayTranspositionPitches: alphaTab.collections.DoubleList = []`}</CodeBlock>
+</TabItem>
+</Tabs>
 

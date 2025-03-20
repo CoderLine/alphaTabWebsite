@@ -6,34 +6,36 @@ sidebar_custom_props:
   category: Core
   since: 0.9.6
 ---
-import { CodeBadge } from '@site/src/components/CodeBadge';
-
-import { SinceBadge } from '@site/src/components/SinceBadge';
-
-import { SettingsHeader } from '@site/src/components/SettingsHeader';
-
-<SettingsHeader />
 
 import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
 import CodeBlock from '@theme/CodeBlock';
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
 
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
+
+<SettingsHeader />
 
 ### Description
-Whether in the [`BoundsLookup`](/docs/reference/types/rendering/boundslookup/index.mdx) also the position and area of each individual note is provided. AlphaTab collects the position of the rendered music notation elements during the rendering process. This way some level of interactivity can be provided like the feature that seeks to the corresponding position when clicking on a beat.
+Whether in the [`BoundsLookup`](/docs/reference/types/rendering/boundslookup/) also the position and area of each individual note is provided. AlphaTab collects the position of the rendered music notation elements during the rendering process. This way some level of interactivity can be provided like the feature that seeks to the corresponding position when clicking on a beat.
 By default the position of the individual notes is not collected due to performance reasons. If access to note position information is needed, this setting can enable it.
 
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`includeNoteBounds : boolean = false;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`bool IncludeNoteBounds { get; set; } = false`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`var includeNoteBounds: Boolean = false`}</CodeBlock>
+</TabItem>
+</Tabs>
 
-### Default Value
-
-`false`
-
-### Type
-
-<CodeBadge type="js" name="boolean" link={"https://mdn.io/boolean"} />
-<CodeBadge type="net" name="bool" />
-<CodeBadge type="android" name="Boolean" />
 
 ## Example - JavaScript
 

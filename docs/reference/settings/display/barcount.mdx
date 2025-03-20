@@ -1,37 +1,39 @@
 ---
 title: display.barCount
-description: "The total number of bars that should be rendered from the song."
+description: "The total number of bars that should be rendered from the song. (-1 for all bars)"
 sidebar_custom_props:
   jsOnParent: true
   category: Display
   since: 0.9.6
 ---
-import { CodeBadge } from '@site/src/components/CodeBadge';
-
-import { SinceBadge } from '@site/src/components/SinceBadge';
-
-import { SettingsHeader } from '@site/src/components/SettingsHeader';
-
-<SettingsHeader />
 
 import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
 import CodeBlock from '@theme/CodeBlock';
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
 
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
+
+<SettingsHeader />
 
 ### Description
-The total number of bars that should be rendered from the song. This setting sets the number of bars that should be rendered from the overall song. This setting can be used to
+The total number of bars that should be rendered from the song. (-1 for all bars) This setting sets the number of bars that should be rendered from the overall song. This setting can be used to
 achieve a paging system or to only show partial bars of the same file. By this a tutorial alike display can be achieved
 that explains various parts of the song. [Demo](/docs/showcase/layouts)
 
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`barCount : number = -1;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`double BarCount { get; set; } = -1`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`var barCount: Double = -1`}</CodeBlock>
+</TabItem>
+</Tabs>
 
-### Default Value
-
-`-1` (All bars)
-
-### Type
-
-<CodeBadge type="js" name="number" link={"https://mdn.io/number"} />
-<CodeBadge type="net" name="double" />
-<CodeBadge type="android" name="Double" />

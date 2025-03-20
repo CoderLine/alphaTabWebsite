@@ -536,7 +536,7 @@ export function tryGetReferenceLink(
 
         return `/docs/reference/types/${name
           .replaceAll(".", "/")
-          .toLowerCase()}/index.mdx`;
+          .toLowerCase()}/`;
 
       case ts.SyntaxKind.MethodDeclaration:
       case ts.SyntaxKind.MethodSignature:
@@ -545,12 +545,11 @@ export function tryGetReferenceLink(
       case ts.SyntaxKind.SetAccessor:
       case ts.SyntaxKind.PropertyDeclaration:
       case ts.SyntaxKind.PropertySignature:
-        return tryGetReferenceLink(
-          context,
-          element.parent as ts.ClassDeclaration | ts.InterfaceDeclaration
-        ).replace(
-          "index.mdx",
-          (element as ts.ClassElement).name!.getText().toLowerCase() + ".mdx"
+        return (
+          tryGetReferenceLink(
+            context,
+            element.parent as ts.ClassDeclaration | ts.InterfaceDeclaration
+          ) + (element as ts.ClassElement).name!.getText().toLowerCase()
         );
       case ts.SyntaxKind.EnumMember:
         return (
@@ -851,14 +850,14 @@ export async function writeEventDetails(
 ) {
   await writeCommonDescription(context, fileStream, member);
 
-  // TODO: Write signatures
+  await writeEventSignatures(context, fileStream, member);
 
-  await writeEventArg(context, fileStream, member);
+  await writeManualDocs(fileStream, member);
 
   await writeExamples(fileStream, context, member);
 }
 
-export async function writeEventArg(
+export async function writeEventSignatures(
   context: GenerateContext,
   fileStream: FileStream,
   member:
@@ -866,22 +865,7 @@ export async function writeEventArg(
     | ts.PropertyDeclaration
     | ts.GetAccessorDeclaration
 ) {
-  const typeInfo = getTypeWithNullableInfo(context, member.type, true, false);
-  const referenceUrl = typeInfo.typeArguments
-    ? tryGetReferenceLink(context, typeInfo.typeArguments[0])
-    : undefined;
-
-  if (referenceUrl) {
-    await fileStream.write(
-      `\n## Event Args: [\`${toJsTypeName(context, typeInfo.typeArguments![0])}\`](${referenceUrl})\n\n`
-    );
-
-    // if (!referenceUrl.startsWith("http")) {
-    //   await fileStream.writeLine(
-    //     `import ${typeInfo.typeArguments![0].ownTypeAsString}Docs from '@site${referenceUrl}';\n\n<${typeInfo.typeArguments![0].ownTypeAsString}Docs inlined={true} />`
-    //   );
-    // }
-  }
+  await writePropertySignatures(context, fileStream, member);
 }
 
 export async function writeMethodDetails(
@@ -894,6 +878,8 @@ export async function writeMethodDetails(
   await writeMethodSignatures(context, fileStream, member);
   await writeMethodParameters(context, fileStream, member);
   await writeMethodReturn(context, fileStream, member);
+
+  await writeManualDocs(fileStream, member);
 
   await writeExamples(fileStream, context, member);
 }
@@ -915,7 +901,6 @@ export async function writeMethodParameters(
   fileStream: FileStream,
   m: ts.MethodDeclaration | ts.MethodSignature
 ) {
-  await fileStream.write(`### Parameters \n`);
   if (m.parameters.length > 0) {
     await fileStream.write(`\n<ParameterTable>\n`);
 
@@ -935,8 +920,6 @@ export async function writeMethodParameters(
       await fileStream.write(`    </ParameterRow>\n`);
     }
     await fileStream.write(`</ParameterTable>\n\n`);
-  } else {
-    await fileStream.write(`None \n\n`);
   }
 }
 
@@ -945,8 +928,6 @@ export async function writeMethodSignatures(
   fileStream: FileStream,
   m: ts.MethodDeclaration | ts.MethodSignature
 ) {
-  await fileStream.write(`## Signatures\n\n`);
-
   const isWebOnly = isTargetWeb(context, m);
 
   if (!isWebOnly) {
@@ -1039,11 +1020,7 @@ export async function writeMethodSignatures(
   await fileStream.writeLine();
 }
 
-async function writeCommonDescription(
-  context: GenerateContext,
-  fileStream: FileStream,
-  member: ts.TypeElement | ts.ClassElement
-) {
+export async function writeCommonImports(fileStream: FileStream) {
   await fileStream.writeLine();
   await fileStream.writeLine(
     "import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';"
@@ -1051,11 +1028,33 @@ async function writeCommonDescription(
   await fileStream.writeLine("import CodeBlock from '@theme/CodeBlock';");
   await fileStream.writeLine('import Tabs from "@theme/Tabs";');
   await fileStream.writeLine('import TabItem from "@theme/TabItem";');
-  await fileStream.writeLine();
+  await fileStream.writeLine(
+    "import { CodeBadge } from '@site/src/components/CodeBadge';"
+  );
+  await fileStream.writeLine(
+    "import { SinceBadge } from '@site/src/components/SinceBadge';"
+  );
+  await fileStream.writeLine(
+    "import DynHeading from '@site/src/components/DynHeading';"
+  );
+  await fileStream.writeLine("import Link from '@docusaurus/Link';");
 
+  await fileStream.writeLine();
+}
+
+async function writeCommonDescription(
+  context: GenerateContext,
+  fileStream: FileStream,
+  member: ts.TypeElement | ts.ClassElement
+) {
   await fileStream.write(`\n### Description\n`);
   await fileStream.write(`${getFullDescription(context, member)}\n\n`);
+}
 
+export async function writeManualDocs(
+  fileStream: FileStream,
+  member: ts.TypeElement | ts.ClassElement
+) {
   try {
     const importFile = path.join(
       path.dirname(fileStream.path),
@@ -1085,65 +1084,9 @@ export async function writePropertyDetails(
 ) {
   await writeCommonDescription(context, fileStream, member);
 
-  const defaultValue = getJsDocTagText(context, member, "defaultValue");
-  if (defaultValue) {
-    await fileStream.write(`\n### Default Value\n\n`);
-    await fileStream.write(`${defaultValue}\n`);
-  }
+  await writePropertySignatures(context, fileStream, member);
 
-  // TODO: Write types as signatures
-
-  const typeInfo = getTypeWithNullableInfo(context, member.type, true, false);
-
-  const referenceUrl = tryGetReferenceLink(context, typeInfo);
-
-  const isWebOnly = isTargetWeb(context, member);
-
-  if (!referenceUrl) {
-    if (isWebOnly) {
-      await fileStream.write(
-        `\n### Type: \`${toJsTypeName(context, typeInfo)}\`\n\n`
-      );
-    } else {
-      await fileStream.write(`\n### Type\n\n`);
-      await fileStream.writeLine(
-        `<CodeBadge type="js" name="${toJsTypeName(context, typeInfo)}" />`
-      );
-      await fileStream.writeLine(
-        `<CodeBadge type="net" name="${toDotNetTypeName(context, typeInfo)}" />`
-      );
-      await fileStream.writeLine(
-        `<CodeBadge type="android" name="${toKotlinTypeName(context, typeInfo)}" />`
-      );
-    }
-  } else if (typeInfo.isPrimitiveType) {
-    if (isWebOnly) {
-      await fileStream.write(
-        `\n## Type: [\`${toJsTypeName(context, typeInfo)}\`](${referenceUrl})\n\n`
-      );
-    } else {
-      await fileStream.write(`\n### Type\n\n`);
-      await fileStream.writeLine(
-        `<CodeBadge type="js" name="${toJsTypeName(context, typeInfo)}" link={${JSON.stringify(referenceUrl)}} />`
-      );
-      await fileStream.writeLine(
-        `<CodeBadge type="net" name="${toDotNetTypeName(context, typeInfo)}" />`
-      );
-      await fileStream.writeLine(
-        `<CodeBadge type="android" name="${toKotlinTypeName(context, typeInfo)}" />`
-      );
-    }
-  } else {
-    await fileStream.write(
-      `\n## Type: [\`${toJsTypeName(context, typeInfo)}\`](${referenceUrl})\n\n`
-    );
-
-    // if (!referenceUrl.startsWith("http")) {
-    //   await fileStream.writeLine(
-    //     `import PropTypeDocs from '@site${referenceUrl}';\n\n<PropTypeDocs inlined={true} />`
-    //   );
-    // }
-  }
+  await writeManualDocs(fileStream, member);
 
   await writeExamples(fileStream, context, member);
 }
@@ -1208,7 +1151,8 @@ function shouldGenerateMember(
 export function collectMembers(
   context: GenerateContext,
   members: Map<string, ts.ClassElement | ts.TypeElement>,
-  exportedType: ts.ClassDeclaration | ts.InterfaceDeclaration
+  exportedType: ts.ClassDeclaration | ts.InterfaceDeclaration,
+  collectBase: boolean = true
 ) {
   for (const m of exportedType.members) {
     if (shouldGenerateMember(context, m) && !members.has(m.name!.getText())) {
@@ -1219,7 +1163,7 @@ export function collectMembers(
   const extendsClause = exportedType.heritageClauses?.find(
     (c) => c.token === ts.SyntaxKind.ExtendsKeyword
   );
-  if (extendsClause) {
+  if (extendsClause && collectBase) {
     const symbol = context.checker.getTypeAtLocation(
       extendsClause.types[0]
     ).symbol;
@@ -1245,4 +1189,169 @@ export function collectMembers(
       }
     }
   }
+}
+
+async function writePropertySignatures(
+  context: GenerateContext,
+  fileStream: FileStream,
+  m: ts.PropertySignature | ts.PropertyDeclaration | ts.GetAccessorDeclaration
+) {
+  const isWebOnly = isTargetWeb(context, m);
+
+  if (!isWebOnly) {
+    await fileStream.writeLine(
+      `<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>`
+    );
+    await fileStream.writeLine(`<TabItem value="js">`);
+  }
+
+  await fileStream.write(`<CodeBlock language="ts">{\``);
+
+  if (m.modifiers) {
+    for (const mod of m.modifiers) {
+      switch (mod.kind) {
+        case ts.SyntaxKind.AccessorKeyword:
+          break;
+        default:
+          await fileStream.write(mod.getText() + " ");
+          break;
+      }
+    }
+  }
+
+  const isReadonlyAccessor =
+    ts.isGetAccessor(m) &&
+    !(m.parent as ts.ClassDeclaration | ts.InterfaceDeclaration).members.some(
+      (p) => ts.isSetAccessor(p) && p.name.getText() === m.name.getText()
+    );
+
+  if (isReadonlyAccessor) {
+    await fileStream.write("readonly ");
+  }
+
+  await fileStream.write(m.name.getText());
+  if (m.questionToken) {
+    await fileStream.write(m.questionToken.getText());
+  }
+  await fileStream.write(" : ");
+  if (m.type) {
+    await fileStream.write(m.type.getText());
+  }
+
+  let defaultValue = getJsDocTagText(context, m, "defaultValue");
+  let defaultValueIsCode = defaultValue.startsWith("`");
+  if (defaultValueIsCode) {
+    defaultValue = defaultValue.substring(1, defaultValue.length - 1);
+  }
+
+  defaultValue = defaultValue.replaceAll("`", "\\`");
+  defaultValue = defaultValue.replaceAll("${", "$\\{");
+
+  if (
+    defaultValue &&
+    !(m.parent as ts.NamedDeclaration).name!?.getText().endsWith("Json")
+  ) {
+    await fileStream.write(` = `);
+    if (defaultValueIsCode) {
+      await fileStream.write(`${defaultValue}`);
+    } else {
+      await fileStream.write(`/* ${defaultValue} */`);
+    }
+  }
+
+  await fileStream.write(`;`);
+
+  await fileStream.write(`\`}</CodeBlock>\n`);
+
+  if (!isWebOnly) {
+    await fileStream.writeLine(`</TabItem>`);
+    await fileStream.writeLine(`<TabItem value="cs">`);
+
+    await fileStream.write(`<CodeBlock language="csharp">{\``);
+
+    const isReadonly =
+      m.modifiers?.some((mod) => mod.kind === ts.SyntaxKind.ReadonlyKeyword) ||
+      (ts.isGetAccessor(m) &&
+        !(
+          m.parent as ts.ClassDeclaration | ts.InterfaceDeclaration
+        ).members.some(
+          (p) => ts.isSetAccessor(p) && p.name.getText() === m.name.getText()
+        ));
+    const isStatic = m.modifiers?.some(
+      (mod) => mod.kind === ts.SyntaxKind.StaticKeyword
+    );
+    const isAbstract = m.modifiers?.some(
+      (mod) => mod.kind === ts.SyntaxKind.AbstractKeyword
+    );
+
+    if (isStatic) {
+      await fileStream.write(`static `);
+    }
+
+    if (isAbstract) {
+      await fileStream.write(`abstract `);
+    }
+
+    await fileStream.write(
+      toDotNetTypeName(
+        context,
+        getTypeWithNullableInfo(context, m.type, false, false)
+      )
+    );
+
+    await fileStream.write(` ${toPascalCase(m.name!.getText())} { get; `);
+
+    if (!isReadonly) {
+      await fileStream.write(`set; `);
+    }
+
+    await fileStream.write(`}`);
+
+    if (defaultValue) {
+      await fileStream.write(` = `);
+      await fileStream.write(`${defaultValue}`);
+    }
+
+    await fileStream.write(`\`}</CodeBlock>\n`);
+
+    await fileStream.writeLine(`</TabItem>`);
+    await fileStream.writeLine(`<TabItem value="kt">`);
+
+    const val = isReadonly ? "val" : "var";
+
+    await fileStream.write(`<CodeBlock language="kotlin">{\``);
+
+    if (isAbstract) {
+      await fileStream.write(`abstract `);
+    }
+
+    if (isStatic) {
+      await fileStream.write(`companion object {`);
+    }
+
+    await fileStream.write(`${val} ${m.name!.getText()}`);
+
+    await fileStream.write(
+      `: ${toKotlinTypeName(
+        context,
+        getTypeWithNullableInfo(context, m.type, false, false)
+      )}`
+    );
+
+    if (defaultValue) {
+      await fileStream.write(` = `);
+      await fileStream.write(`${defaultValue}`);
+    }
+
+    if (isStatic) {
+      await fileStream.write(` }`);
+    }
+
+    await fileStream.write(`\`}</CodeBlock>\n`);
+
+    await fileStream.writeLine(`</TabItem>`);
+    await fileStream.writeLine(`</Tabs>`);
+  }
+
+  await fileStream.writeLine();
 }

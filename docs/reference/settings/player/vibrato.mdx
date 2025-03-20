@@ -5,19 +5,19 @@ sidebar_custom_props:
   category: Player
   since: 0.9.6
 ---
-import { CodeBadge } from '@site/src/components/CodeBadge';
-
-import { SinceBadge } from '@site/src/components/SinceBadge';
-
-import { SettingsHeader } from '@site/src/components/SettingsHeader';
-
-<SettingsHeader />
 
 import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
 import CodeBlock from '@theme/CodeBlock';
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
 
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
+
+<SettingsHeader />
 
 ### Description
 The Vibrato settings allow control how the different vibrato types are generated for audio. AlphaTab supports 4 types of vibratos, for each vibrato the amplitude and the wavelength can be configured. The amplitude controls how many semitones
@@ -29,13 +29,19 @@ The 4 vibrato types are:
 3. Note Slight - A fast vibrato on a single note. This vibrato is usually done with the finger on the fretboard.
 4. Note Wide - A slow vibrato on a single note. This vibrato is usually done with the finger on the fretboard.
 
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`readonly vibrato : VibratoPlaybackSettings;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`AlphaTab.VibratoPlaybackSettings Vibrato { get; }`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`val vibrato: alphaTab.VibratoPlaybackSettings`}</CodeBlock>
+</TabItem>
+</Tabs>
+
 
 import ManualDocs from './_vibrato.mdx';
 
 <ManualDocs />
-
-## Type: [`VibratoPlaybackSettings`](/docs/reference/types/vibratoplaybacksettings/index.mdx)
-
-import PropTypeDocs from '@site/docs/reference/types/vibratoplaybacksettings/index.mdx';
-
-<PropTypeDocs inlined={true} />

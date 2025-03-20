@@ -6,19 +6,19 @@ sidebar_custom_props:
   category: Display
   since: 1.3.0
 ---
-import { CodeBadge } from '@site/src/components/CodeBadge';
-
-import { SinceBadge } from '@site/src/components/SinceBadge';
-
-import { SettingsHeader } from '@site/src/components/SettingsHeader';
-
-<SettingsHeader />
 
 import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
 import CodeBlock from '@theme/CodeBlock';
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
 
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
+
+<SettingsHeader />
 
 ### Description
 The mode used to arrange staves and systems. By default alphaTab uses an own (automatic) mode to arrange and scale the bars when
@@ -78,13 +78,15 @@ The horizontal layout uses the `displayWidth` to scale the bars to size the bars
 * Comparing files against each other (top/bottom comparison)
 * Aligning the playback of multiple files on one screen assuming the same tempo (e.g. one file per track).
 
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`systemsLayoutMode : SystemsLayoutMode = 1;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`AlphaTab.SystemsLayoutMode SystemsLayoutMode { get; set; } = 1`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`var systemsLayoutMode: alphaTab.SystemsLayoutMode = 1`}</CodeBlock>
+</TabItem>
+</Tabs>
 
-### Default Value
-
-`1`
-
-## Type: [`SystemsLayoutMode`](/docs/reference/types/systemslayoutmode/index.mdx)
-
-import PropTypeDocs from '@site/docs/reference/types/systemslayoutmode/index.mdx';
-
-<PropTypeDocs inlined={true} />

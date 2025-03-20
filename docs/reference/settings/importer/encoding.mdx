@@ -5,19 +5,19 @@ sidebar_custom_props:
   category: Importer
   since: 0.9.6
 ---
-import { CodeBadge } from '@site/src/components/CodeBadge';
-
-import { SinceBadge } from '@site/src/components/SinceBadge';
-
-import { SettingsHeader } from '@site/src/components/SettingsHeader';
-
-<SettingsHeader />
 
 import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
 import CodeBlock from '@theme/CodeBlock';
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
 
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
+
+<SettingsHeader />
 
 ### Description
 The text encoding to use when decoding strings. By default strings are interpreted as UTF-8 from the input files. This is sometimes not the case and leads to strong display
@@ -29,13 +29,15 @@ encodings depend on the browser or operating system. This setting is considered 
 * Guitar Pro 3-5
 * MusicXML
 
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`encoding : string = utf-8;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`string Encoding { get; set; } = utf-8`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`var encoding: String = utf-8`}</CodeBlock>
+</TabItem>
+</Tabs>
 
-### Default Value
-
-`utf-8`
-
-### Type
-
-<CodeBadge type="js" name="string" link={"https://mdn.io/string"} />
-<CodeBadge type="net" name="string" />
-<CodeBadge type="android" name="String" />

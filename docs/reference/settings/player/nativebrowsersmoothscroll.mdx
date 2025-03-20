@@ -6,29 +6,24 @@ sidebar_custom_props:
   category: Player
   since: 1.2.3
 ---
-import { CodeBadge } from '@site/src/components/CodeBadge';
-
-import { SinceBadge } from '@site/src/components/SinceBadge';
-
-import { SettingsHeader } from '@site/src/components/SettingsHeader';
-
-<SettingsHeader />
 
 import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
 import CodeBlock from '@theme/CodeBlock';
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
 
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
+
+<SettingsHeader />
 
 ### Description
 Whether the native browser smooth scroll mechanism should be used over a custom animation. This setting configures whether the [native browser feature](https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollTo)
 for smooth scrolling should be used over a custom animation.
 If this setting is enabled, options like [`scrollSpeed`](/docs/reference/settings/player/scrollspeed) will not have an effect anymore.
 
-
-### Default Value
-
-`true`
-
-## Type: [`boolean`](https://mdn.io/boolean)
+<CodeBlock language="ts">{`nativeBrowserSmoothScroll : boolean = true;`}</CodeBlock>
 

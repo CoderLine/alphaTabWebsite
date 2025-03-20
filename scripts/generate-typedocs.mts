@@ -12,7 +12,9 @@ import {
   getJsDocTagText,
   getSummary,
   isEvent,
+  toJsTypeName,
   tryGetReferenceLink,
+  writeCommonImports,
   writeEventDetails,
   writeMethodDetails,
   writePropertyDetails,
@@ -45,13 +47,11 @@ export async function generateTypeDocs(context: GenerateContext) {
     await fileStream.write(`title: ${exportedName}\n`);
     await fileStream.write("---\n");
 
-    await fileStream.write(
-      "import { SinceBadge } from '@site/src/components/SinceBadge';\n"
-    );
-    await fileStream.write("import CodeBlock from '@theme/CodeBlock';\n\n");
-    await fileStream.write("import DynHeading from '@site/src/components/DynHeading';\n\n");
+    await writeCommonImports(fileStream);
 
-    await fileStream.write(`\n<DynHeading as="h3" inlined={props.inlined}>Description</DynHeading>\n\n`);
+    await fileStream.write(
+      `\n<DynHeading as="h3" inlined={props.inlined}>Description</DynHeading>\n\n`
+    );
     await fileStream.write(`${getFullDescription(context, exportedType)}\n\n`);
 
     if (
@@ -208,7 +208,9 @@ async function writeProperties(
     return;
   }
 
-  await fileStream.write(`\n<DynHeading as="h3" inlined={props.inlined}>Properties</DynHeading>\n\n`);
+  await fileStream.write(
+    `\n<DynHeading as="h3" inlined={props.inlined}>Properties</DynHeading>\n\n`
+  );
 
   await fileStream.write(
     `<table className="table table-striped table-condensed type-table">\n`
@@ -227,6 +229,30 @@ async function writeProperties(
     } else {
       await fileStream.write(`      <td>\`${member.name.getText()}\`</td>\n`);
     }
+
+    const typeInfo = getTypeWithNullableInfo(
+      context,
+      member.type,
+      true,
+      !!member.questionToken
+    );
+    const typeReferenceLink = tryGetReferenceLink(context, typeInfo);
+
+    if (typeReferenceLink) {
+      await fileStream.writeLine(
+        `      {props.detailed && (<td><Link to={${JSON.stringify(typeReferenceLink)}}><code>{${JSON.stringify(toJsTypeName(context, typeInfo))}}</code></Link></td>)}`
+      );
+    } else {
+      await fileStream.writeLine(
+        `      {props.detailed && (<td><code>{${JSON.stringify(toJsTypeName(context, typeInfo))}}</code></td>)}`
+      );
+    }
+
+    let defaultValue = getJsDocTagText(context, member, "defaultValue");
+    if(!defaultValue) {
+      defaultValue = '(no default)';
+    }
+    await fileStream.writeLine(`      {props.detailed && <td><code>{${JSON.stringify(defaultValue)}}</code></td>}`);
 
     let description =
       getSummary(context, member, true, true) +
@@ -260,7 +286,9 @@ async function writeMethods(
     return;
   }
 
-  await fileStream.write(`\n<DynHeading as="h3" inlined={props.inlined}>Methods</DynHeading>\n\n`);
+  await fileStream.write(
+    `\n<DynHeading as="h3" inlined={props.inlined}>Methods</DynHeading>\n\n`
+  );
 
   await fileStream.write(
     `<table className="table table-striped table-condensed type-table">\n`
@@ -314,7 +342,9 @@ async function writeEvents(
     return;
   }
 
-  await fileStream.write(`\n<DynHeading as="h3" inlined={props.inlined}>Events</DynHeading>\n\n`);
+  await fileStream.write(
+    `\n<DynHeading as="h3" inlined={props.inlined}>Events</DynHeading>\n\n`
+  );
 
   await fileStream.write(
     `<table className="table table-striped table-condensed type-table">\n`
@@ -355,7 +385,9 @@ async function writeEnumMembers(
   fileStream: FileStream,
   exportedType: ts.EnumDeclaration
 ) {
-  await fileStream.write(`\n<DynHeading as="h3" inlined={props.inlined}>Enum Members</DynHeading>\n\n`);
+  await fileStream.write(
+    `\n<DynHeading as="h3" inlined={props.inlined}>Enum Members</DynHeading>\n\n`
+  );
 
   await fileStream.write(
     `<table className="table table-striped table-condensed type-table">\n`
@@ -368,7 +400,9 @@ async function writeEnumMembers(
   for (const member of exportedType.members) {
     await fileStream.write(`    <tr>\n`);
 
-    await fileStream.write(`      <td id="${member.name.getText().toLowerCase()}">\`${member.name.getText()}\`</td>\n`);
+    await fileStream.write(
+      `      <td id="${member.name.getText().toLowerCase()}">\`${member.name.getText()}\`</td>\n`
+    );
 
     const numericValue = context.checker.getConstantValue(member);
     await fileStream.write(`      <td>\`${numericValue}\`</td>\n`);
@@ -413,9 +447,8 @@ async function writeFrontMatter(
 
   await fileStream.write("---\n");
 
-  await fileStream.write(
-    "import { SinceBadge } from '@site/src/components/SinceBadge';\n\n"
-  );
+  await writeCommonImports(fileStream);
+
   if (since) {
     await fileStream.write(`<SinceBadge since=${JSON.stringify(since)} />\n`);
   }
@@ -439,7 +472,7 @@ async function writePropertyPage(
 
   await using fileStream = await openFileStream(filePath);
 
-  await writeFrontMatter(context, fileStream, memberName, member, 'property');
+  await writeFrontMatter(context, fileStream, memberName, member, "property");
   await writePropertyDetails(context, fileStream, member);
 }
 
@@ -456,7 +489,7 @@ async function writeEventPage(
 
   await using fileStream = await openFileStream(filePath);
 
-  await writeFrontMatter(context, fileStream, memberName, member, 'event');
+  await writeFrontMatter(context, fileStream, memberName, member, "event");
   await writeEventDetails(context, fileStream, member);
 }
 
@@ -470,7 +503,7 @@ async function writeMethodPage(
 
   await using fileStream = await openFileStream(filePath);
 
-  await writeFrontMatter(context, fileStream, memberName, member, 'method');
+  await writeFrontMatter(context, fileStream, memberName, member, "method");
   await writeMethodDetails(context, fileStream, member);
 }
 

@@ -5,19 +5,19 @@ sidebar_custom_props:
   category: Notation
   since: 0.9.6
 ---
-import { CodeBadge } from '@site/src/components/CodeBadge';
-
-import { SinceBadge } from '@site/src/components/SinceBadge';
-
-import { SettingsHeader } from '@site/src/components/SettingsHeader';
-
-<SettingsHeader />
 
 import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
 import CodeBlock from '@theme/CodeBlock';
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
 
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
+
+<SettingsHeader />
 
 ### Description
 If set to true, line effects like w/bar and let-ring are drawn until the end of the beat instead of the start By default effect annotations that render a line above the staff, stop on the beat. This is the typical display of Guitar Pro. In songbooks and some other tools
@@ -26,13 +26,15 @@ these effects are drawn to the end of this beat.
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------|
 | ![Enabled](/img/reference/property/extendlineeffectstobeatend-enabled.png) | ![Disabled](/img/reference/property/extendlineeffectstobeatend-disabled.png) |
 
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`extendLineEffectsToBeatEnd : boolean = false;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`bool ExtendLineEffectsToBeatEnd { get; set; } = false`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`var extendLineEffectsToBeatEnd: Boolean = false`}</CodeBlock>
+</TabItem>
+</Tabs>
 
-### Default Value
-
-`false`
-
-### Type
-
-<CodeBadge type="js" name="boolean" link={"https://mdn.io/boolean"} />
-<CodeBadge type="net" name="bool" />
-<CodeBadge type="android" name="Boolean" />

@@ -6,30 +6,32 @@ sidebar_custom_props:
   category: Display
   since: 1.4.0
 ---
-import { CodeBadge } from '@site/src/components/CodeBadge';
-
-import { SinceBadge } from '@site/src/components/SinceBadge';
-
-import { SettingsHeader } from '@site/src/components/SettingsHeader';
-
-<SettingsHeader />
 
 import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
 import CodeBlock from '@theme/CodeBlock';
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
 
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
+
+<SettingsHeader />
 
 ### Description
 The left padding applied between the left line and the first glyph in the first staff in a system.
 
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`firstStaffPaddingLeft : number = 6;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`double FirstStaffPaddingLeft { get; set; } = 6`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`var firstStaffPaddingLeft: Double = 6`}</CodeBlock>
+</TabItem>
+</Tabs>
 
-### Default Value
-
-`6`
-
-### Type
-
-<CodeBadge type="js" name="number" link={"https://mdn.io/number"} />
-<CodeBadge type="net" name="double" />
-<CodeBadge type="android" name="Double" />

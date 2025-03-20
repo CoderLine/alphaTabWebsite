@@ -6,19 +6,19 @@ sidebar_custom_props:
   category: Player
   since: 0.9.6
 ---
-import { CodeBadge } from '@site/src/components/CodeBadge';
-
-import { SinceBadge } from '@site/src/components/SinceBadge';
-
-import { SettingsHeader } from '@site/src/components/SettingsHeader';
-
-<SettingsHeader />
 
 import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
 import CodeBlock from '@theme/CodeBlock';
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
 
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
+
+<SettingsHeader />
 
 ### Description
 The slide settings allow control how the different slide types are generated for audio. AlphaTab supports various types of slides which can be grouped into 3 types:
@@ -42,13 +42,19 @@ as there is no mechanism yet in alphaTab to play pick slides to make them sound 
 For the first group only the duration or start point of the slide can be configured while for the second group
 the duration/start-point and the pitch offset can be configured.
 
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`readonly slide : SlidePlaybackSettings;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`AlphaTab.SlidePlaybackSettings Slide { get; }`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`val slide: alphaTab.SlidePlaybackSettings`}</CodeBlock>
+</TabItem>
+</Tabs>
+
 
 import ManualDocs from './_slide.mdx';
 
 <ManualDocs />
-
-## Type: [`SlidePlaybackSettings`](/docs/reference/types/slideplaybacksettings/index.mdx)
-
-import PropTypeDocs from '@site/docs/reference/types/slideplaybacksettings/index.mdx';
-
-<PropTypeDocs inlined={true} />

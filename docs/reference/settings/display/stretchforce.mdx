@@ -6,19 +6,19 @@ sidebar_custom_props:
   category: Display
   since: 0.9.6
 ---
-import { CodeBadge } from '@site/src/components/CodeBadge';
-
-import { SinceBadge } from '@site/src/components/SinceBadge';
-
-import { SettingsHeader } from '@site/src/components/SettingsHeader';
-
-<SettingsHeader />
 
 import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
 import CodeBlock from '@theme/CodeBlock';
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
 
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
+
+<SettingsHeader />
 
 ### Description
 The default stretch force to use for layouting. The stretch force is a setting that controls the spacing of the music notation. AlphaTab uses a varaint of the Gourlay algorithm for spacing which has springs and rods for
@@ -28,13 +28,15 @@ aligning elements. This setting controls the "strength" of the springs. The stro
 |--------------------------------------------------------------|-------------------------------------------------------|
 | ![Default](/img/reference/property/stretchforce-default.png) | ![0.5](/img/reference/property/stretchforce-half.png) |
 
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`stretchForce : number = 1;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`double StretchForce { get; set; } = 1`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`var stretchForce: Double = 1`}</CodeBlock>
+</TabItem>
+</Tabs>
 
-### Default Value
-
-`1`
-
-### Type
-
-<CodeBadge type="js" name="number" link={"https://mdn.io/number"} />
-<CodeBadge type="net" name="double" />
-<CodeBadge type="android" name="Double" />

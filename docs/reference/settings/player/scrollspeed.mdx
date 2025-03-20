@@ -5,32 +5,34 @@ sidebar_custom_props:
   category: Player
   since: 0.9.6
 ---
-import { CodeBadge } from '@site/src/components/CodeBadge';
-
-import { SinceBadge } from '@site/src/components/SinceBadge';
-
-import { SettingsHeader } from '@site/src/components/SettingsHeader';
-
-<SettingsHeader />
 
 import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
 import CodeBlock from '@theme/CodeBlock';
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
 
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
+
+<SettingsHeader />
 
 ### Description
 How fast the scrolling to the new position should happen. If possible from the platform, alphaTab will try to do a smooth scrolling to the played bar.
 This setting defines the speed of scrolling in milliseconds.
 Note that [`nativeBrowserSmoothScroll`](/docs/reference/settings/player/nativebrowsersmoothscroll) must be set to `false` for this to have an effect.
 
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`scrollSpeed : number = 300;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`double ScrollSpeed { get; set; } = 300`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`var scrollSpeed: Double = 300`}</CodeBlock>
+</TabItem>
+</Tabs>
 
-### Default Value
-
-`300`
-
-### Type
-
-<CodeBadge type="js" name="number" link={"https://mdn.io/number"} />
-<CodeBadge type="net" name="double" />
-<CodeBadge type="android" name="Double" />

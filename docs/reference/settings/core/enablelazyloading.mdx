@@ -7,19 +7,19 @@ sidebar_custom_props:
   category: Core - JavaScript Specific
   since: 0.9.6
 ---
-import { CodeBadge } from '@site/src/components/CodeBadge';
-
-import { SinceBadge } from '@site/src/components/SinceBadge';
-
-import { SettingsHeader } from '@site/src/components/SettingsHeader';
-
-<SettingsHeader />
 
 import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
 import CodeBlock from '@theme/CodeBlock';
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
 
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
+
+<SettingsHeader />
 
 ### Description
 Enables lazy loading of the rendered music sheet chunks. AlphaTab renders the music sheet in smaller sub-chunks to have fast UI feedback. Not all of those sub-chunks are immediately
@@ -27,10 +27,5 @@ appended to the DOM due to performance reasons. AlphaTab tries to detect which e
 appends those elements to the DOM. This reduces the load of the browser heavily but is not working for all layouts and use cases.
 This setting set to false, ensures that all rendered items are instantly appended to the DOM.
 
-
-### Default Value
-
-`true`
-
-## Type: [`boolean`](https://mdn.io/boolean)
+<CodeBlock language="ts">{`enableLazyLoading : boolean = true;`}</CodeBlock>
 

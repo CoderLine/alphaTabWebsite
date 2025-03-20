@@ -7,19 +7,19 @@ sidebar_custom_props:
   category: Core - JavaScript Specific
   since: 0.9.6
 ---
-import { CodeBadge } from '@site/src/components/CodeBadge';
-
-import { SinceBadge } from '@site/src/components/SinceBadge';
-
-import { SettingsHeader } from '@site/src/components/SettingsHeader';
-
-<SettingsHeader />
 
 import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
 import CodeBlock from '@theme/CodeBlock';
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
 
+import { SettingsHeader } from '@site/src/components/SettingsHeader';
+
+<SettingsHeader />
 
 ### Description
 The full URL to the alphaTab JavaScript file. AlphaTab needs to know the full URL to the script file it is contained in to launch the web workers. AlphaTab will do its best to auto-detect
@@ -28,10 +28,5 @@ be defined before initializing. Please be aware that bundling alphaTab together 
 in case those scripts are not suitable for web workers. e.g. if there is a script bundled together with alphaTab that accesses the DOM,
 this will cause an error when alphaTab starts this script as worker.
 
-
-### Default Value
-
-Absolute url to JavaScript file containing alphaTab. (auto detected)
-
-## Type: [`string | null`](https://mdn.io/string)
+<CodeBlock language="ts">{`scriptFile : string | null = /* Absolute url to JavaScript file containing alphaTab. (auto detected) */;`}</CodeBlock>
 
