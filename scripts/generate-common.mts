@@ -514,11 +514,15 @@ function getDeclarationReferenceUrl(
     case ts.SyntaxKind.SetAccessor:
     case ts.SyntaxKind.PropertyDeclaration:
     case ts.SyntaxKind.PropertySignature:
+      let page = (element as ts.ClassElement).name!.getText().toLowerCase();
+      if(page === "index") {
+        page = "index_";
+      }
       return (
         getDeclarationReferenceUrl(
           context,
           element.parent as ts.ClassDeclaration | ts.InterfaceDeclaration,
-        ) + (element as ts.ClassElement).name!.getText().toLowerCase()
+        ) + page
       );
     case ts.SyntaxKind.EnumMember:
       return (
