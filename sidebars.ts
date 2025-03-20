@@ -84,6 +84,7 @@ const sidebars: SidebarsConfig = {
       {
         type: "category",
         label: "All Types",
+        className: "types-item",
         link: {
           type: "doc",
           id: "reference/types",

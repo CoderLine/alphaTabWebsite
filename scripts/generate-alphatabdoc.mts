@@ -2,10 +2,9 @@ import path from "path";
 import url from "url";
 import ts, { JSDocParsingMode } from "typescript";
 import { generateSettings } from "./generate-settings.mjs";
-import { generateTypeScript } from "./generate-typescript.mjs";
-import { generateReferenceApi } from "./generate-referenceapi.mjs";
 import { GenerateContext } from "./typeschema";
 import { generateTypeDocs } from "./generate-typedocs.mjs";
+import { cconsole } from "./generate-common.mjs";
 
 const alphaTabEntryFile = url.fileURLToPath(
   import.meta.resolve("@coderline/alphatab")
@@ -44,7 +43,7 @@ function walkModuleDeclaration(
   ) => void
 ) {
   if (!d.body || !ts.isModuleBlock(d.body)) {
-    console.warn("Unsupported module declaration", exportedName);
+    cconsole.warn("Unsupported module declaration", exportedName);
     return;
   }
 
@@ -73,11 +72,11 @@ function walkModuleDeclaration(
             handler
           );
         } else {
-          console.warn("Unresolved export", typeName, "in", exportedName);
+          cconsole.warn("Unresolved export", typeName, "in", exportedName);
         }
       }
     } else {
-      console.warn(
+      cconsole.warn(
         "Unsupported statement",
         ts.SyntaxKind[s.kind],
         "in",
@@ -138,7 +137,8 @@ for (const { d, identifier } of exports) {
     if (
       ts.isEnumDeclaration(d) ||
       ts.isClassDeclaration(d) ||
-      ts.isInterfaceDeclaration(d)
+      ts.isInterfaceDeclaration(d) ||
+      ts.isTypeAliasDeclaration(d) 
     ) {
       context.flatExports.set(e, d);
       context.nameToExportName.set(i, e);
@@ -149,18 +149,5 @@ for (const { d, identifier } of exports) {
 context.settings = context.flatExports.get(
   "alphaTab.Settings"
 ) as ts.ClassDeclaration;
-await generateTypeScript(context);
 await generateSettings(context);
 await generateTypeDocs(context);
-
-
-// await generateReferenceApi(context, "api", [
-//   "alphaTab.AlphaTabApiBase",
-//   "alphaTab.AlphaTabApi",
-// ]);
-// await generateReferenceApi(context, "alphasynth", [
-//   "alphaTab.synth.IAlphaSynth",
-// ]);
-// await generateReferenceApi(context, "scorerenderer", [
-//   "alphaTab.rendering.IScoreRenderer",
-// ]);

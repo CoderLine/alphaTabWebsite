@@ -1,16 +1,15 @@
-import path, { basename } from "path";
+import path from "path";
 import fs from "fs";
 import ts from "typescript";
 import {
   GenerateContext,
   getTypeWithNullableInfo,
-  hasFlag,
-  isNumberType,
-  isPrimitiveType,
   TypeWithNullableInfo,
   valueOrFirstDeclarationInDts,
 } from "./typeschema";
 import { toPascalCase } from "@site/src/names";
+import { styleText } from "util";
+import { FileStream } from "./util";
 
 export { toPascalCase } from "@site/src/names";
 
@@ -29,7 +28,7 @@ export function collectExamples(
 ): { key: string; title: string; markdown: string }[] {
   const examples: { key: string; title: string; markdown: string }[] = [];
 
-  for (const tag of ts.getJSDocTags(node)) {
+  for (const tag of getJSDocTags(context, node)) {
     if (tag.tagName.text === "example") {
       const [title, ...markdown] = jsDocCommentToMarkdown(
         context,
@@ -46,26 +45,194 @@ export function collectExamples(
   return examples;
 }
 
-export function isJsonOnParent(node: ts.Node): boolean {
-  return !!ts
-    .getJSDocTags(node)
-    .find((t) => t.tagName.text === "json_on_parent");
+export function isJsonOnParent(
+  context: GenerateContext,
+  node: ts.Node
+): boolean {
+  return !!getJSDocTags(context, node).find(
+    (t) => t.tagName.text === "json_on_parent"
+  );
 }
 
-export function isEvent(node: ts.Node): boolean {
-  return !!ts
-    .getJSDocTags(node)
-    .find((t) => t.tagName.text === "eventProperty");
+export function isEvent(context: GenerateContext, node: ts.Node): boolean {
+  return !!getJSDocTags(context, node).find(
+    (t) => t.tagName.text === "eventProperty"
+  );
 }
 
-export function isTargetWeb(node: ts.Node): boolean {
-  return !!ts
-    .getJSDocTags(node)
-    .find((t) => t.tagName.text === "target" && t.comment === "web");
+export function isTargetWeb(context: GenerateContext, node: ts.Node): boolean {
+  return !!getJSDocTags(context, node).find(
+    (t) => t.tagName.text === "target" && t.comment === "web"
+  );
 }
 
-export function isDomWildcard(node: ts.Node): boolean {
-  return !!ts.getJSDocTags(node).find((t) => t.tagName.text === "domWildcard");
+export function isDomWildcard(
+  context: GenerateContext,
+  node: ts.Node
+): boolean {
+  return !!getJSDocTags(context, node).find(
+    (t) => t.tagName.text === "domWildcard"
+  );
+}
+
+export function getCategory(
+  context: GenerateContext,
+  node: ts.Node,
+  fallbackCategory: string
+): string {
+  const category = getJsDocTagText(context, node, "category");
+  if (category) {
+    return category;
+  }
+
+  if (isEvent(context, node)) {
+    return "Events" + fallbackCategory;
+  }
+  switch (node.kind) {
+    case ts.SyntaxKind.PropertyDeclaration:
+    case ts.SyntaxKind.PropertySignature:
+    case ts.SyntaxKind.GetAccessor:
+      return "Properties" + fallbackCategory;
+    case ts.SyntaxKind.MethodSignature:
+    case ts.SyntaxKind.MethodDeclaration:
+      return "Methods" + fallbackCategory;
+  }
+
+  cconsole.warn("Unknown category for kind", ts.SyntaxKind[node.kind]);
+  return "General";
+}
+
+function hasJSDocInheritDocTag(node: ts.Node) {
+  return ts
+    .getJSDocTags(node)
+    .some(
+      (tag) =>
+        tag.tagName.text === "inheritDoc" || tag.tagName.text === "inheritdoc"
+    );
+}
+
+function getBaseTypeList(
+  context: GenerateContext,
+  node: ts.ClassDeclaration | ts.InterfaceDeclaration
+): (ts.ClassDeclaration | ts.InterfaceDeclaration)[] {
+  let baseTypes: (ts.ClassDeclaration | ts.InterfaceDeclaration)[] = [];
+  switch (node.kind) {
+    case ts.SyntaxKind.ClassDeclaration:
+    case ts.SyntaxKind.InterfaceDeclaration:
+      const clauses = node.heritageClauses;
+      if (clauses) {
+        for (const h of clauses) {
+          for (const t of h.types) {
+            const type = context.checker.getTypeAtLocation(t);
+            if (type.symbol) {
+              const decl = valueOrFirstDeclarationInDts(context, type.symbol);
+              if (
+                decl &&
+                (ts.isClassDeclaration(decl) || ts.isInterfaceDeclaration(decl))
+              ) {
+                baseTypes.push(decl);
+              }
+            }
+          }
+        }
+      }
+      break;
+  }
+  return baseTypes;
+}
+function findBaseOfDeclaration<T>(
+  context: GenerateContext,
+  node: ts.Node,
+  selector: (baseNode: ts.Node) => T | undefined
+): T | undefined {
+  let baseTypes: (ts.ClassDeclaration | ts.InterfaceDeclaration)[];
+
+  switch (node.kind) {
+    case ts.SyntaxKind.ClassDeclaration:
+    case ts.SyntaxKind.InterfaceDeclaration:
+      baseTypes = getBaseTypeList(
+        context,
+        node as ts.ClassDeclaration | ts.InterfaceDeclaration
+      );
+
+      for (const t of baseTypes) {
+        const v = selector(t);
+        if (v !== undefined) {
+          return v;
+        }
+      }
+      return undefined;
+
+    case ts.SyntaxKind.MethodSignature:
+    case ts.SyntaxKind.MethodDeclaration:
+    case ts.SyntaxKind.PropertyDeclaration:
+    case ts.SyntaxKind.PropertySignature:
+    case ts.SyntaxKind.GetAccessor:
+    case ts.SyntaxKind.SetAccessor:
+      baseTypes = getBaseTypeList(
+        context,
+        node.parent as ts.ClassDeclaration | ts.InterfaceDeclaration
+      );
+
+      for (const t of baseTypes) {
+        const member = t.members.find(
+          (m) =>
+            m.name?.getText() ===
+            (node as ts.ClassElement | ts.TypeElement).name?.getText()
+        );
+        if (member) {
+          const v = selector(member);
+          if (v !== undefined) {
+            return v;
+          }
+        }
+      }
+
+      break;
+  }
+
+  return undefined;
+}
+
+export function getJSDocCommentsAndTags(
+  context: GenerateContext,
+  node: ts.Node
+) {
+  if (hasJSDocInheritDocTag(node)) {
+    const base = findBaseOfDeclaration(context, node, (baseNode) => {
+      if (hasJSDocInheritDocTag(baseNode)) {
+        return undefined;
+      }
+      const docs = ts.getJSDocCommentsAndTags(baseNode);
+      if (docs.length === 0) {
+        return undefined;
+      }
+      return docs;
+    });
+    if (base) {
+      return base;
+    }
+  }
+  return ts.getJSDocCommentsAndTags(node);
+}
+
+export function getJSDocTags(context: GenerateContext, node: ts.Node) {
+  if (hasJSDocInheritDocTag(node)) {
+    const base = findBaseOfDeclaration(context, node, (baseNode) => {
+      if (hasJSDocInheritDocTag(baseNode)) {
+        return undefined;
+      }
+      const tags = ts.getJSDocTags(baseNode);
+      if (tags.length > 0) {
+        return tags;
+      }
+      return undefined;
+    });
+    if (base) {
+      return base;
+    }
+  }
+  return ts.getJSDocTags(node);
 }
 
 export function getJsDocTagText(
@@ -75,7 +242,7 @@ export function getJsDocTagText(
 ): string {
   return jsDocCommentToMarkdown(
     context,
-    ts.getJSDocTags(node).find((t) => t.tagName.text === tagName)?.comment
+    getJSDocTags(context, node).find((t) => t.tagName.text === tagName)?.comment
   );
 }
 
@@ -85,7 +252,7 @@ export function getSummary(
   resolveLinks: boolean,
   shorten: boolean = true
 ): string {
-  const jsDoc = ts.getJSDocCommentsAndTags(node);
+  const jsDoc = getJSDocCommentsAndTags(context, node);
   if ((jsDoc.length > 1 && ts.isJSDoc(jsDoc[0])) || jsDoc.length === 1) {
     const text = jsDocCommentToMarkdown(
       context,
@@ -107,6 +274,15 @@ export function getSummary(
   return "";
 }
 
+let warnOnMissingDescription = false;
+export function enableWarningsOnMissingDocs() {
+  warnOnMissingDescription = true;
+}
+
+export function disableWarningsOnMissingDocs() {
+  warnOnMissingDescription = false;
+}
+
 export function getFullDescription(context: GenerateContext, node: ts.Node) {
   const description = `${getSummary(
     context,
@@ -116,6 +292,37 @@ export function getFullDescription(context: GenerateContext, node: ts.Node) {
   )} ${getJsDocTagText(context, node, "remarks")}`.trim();
 
   if (!description) {
+    const isOwn =
+      path.basename(node.getSourceFile().fileName) ===
+      path.basename(context.dts);
+    if (isOwn && warnOnMissingDescription) {
+      let name =
+        "name" in node ? (node.name as ts.Node).getText() : node.getText();
+
+      if (ts.isParameter(node)) {
+        name =
+          (node.parent.parent as ts.NamedDeclaration).name!.getText() +
+          "." +
+          node.parent.name!.getText() +
+          "(" +
+          name +
+          ")";
+      } else if (
+        ts.isClassDeclaration(node.parent) ||
+        ts.isInterfaceDeclaration(node.parent)
+      ) {
+        name = node.parent.name!.getText() + "." + name;
+      }
+
+      cconsole.warn(
+        "Missing description for",
+        name,
+        "at",
+        node.getSourceFile().fileName,
+        node.getSourceFile().getLineAndCharacterOfPosition(node.pos)
+      );
+    }
+
     return "(no description)";
   }
 
@@ -183,9 +390,9 @@ export function jsDocCommentToMarkdown(
               if (symbol) {
                 linkUrl =
                   tryGetSettingsLink(context, symbol) ??
-                  tryGetReferenceLink(context, symbol, comment.name);
+                  tryGetReferenceLink(context, symbol);
               } else {
-                console.error(
+                cconsole.error(
                   `Could not resolve tsdoc link ${comment.name.getText()} at `,
                   comment
                     .getSourceFile()
@@ -236,7 +443,7 @@ function tryGetSettingsLink(
           .name!.getText()
           .toLowerCase()}/${symbol.name.toLowerCase()}`;
       } else {
-        console.warn(
+        cconsole.warn(
           "Could not find a property of type ",
           parentSymbol.name,
           " in Settings"
@@ -258,35 +465,64 @@ function tryGetSettingsLink(
 
 export function tryGetReferenceLink(
   context: GenerateContext,
-  symbolOrNode: ts.Symbol | ts.Node | undefined,
-  referenceNode: ts.Node
+  element:
+    | TypeWithNullableInfo
+    | ts.Symbol
+    | ts.ClassElement
+    | ts.TypeElement
+    | ts.EnumMember
+    | ts.TypeParameterDeclaration
+    | ts.ClassDeclaration
+    | ts.InterfaceDeclaration
+    | ts.TypeAliasDeclaration
+    | ts.EnumDeclaration,
+  warnOnMissingReference: boolean = true
 ): string {
-  if (!symbolOrNode) {
-    return "";
-  }
+  // TODO: better generation of type references, we can have multiple links e.g. Map<NoteElement, Beat> where
+  // all identifiers get their own links.
 
-  if ("kind" in symbolOrNode) {
-    if (
-      path.basename(symbolOrNode.getSourceFile().fileName) !==
-      path.basename(context.dts)
-    ) {
+  if ("kind" in element) {
+    const fileName = element.getSourceFile().fileName;
+
+    if (path.basename(fileName) !== path.basename(context.dts)) {
+      // mdn.io
+      if (
+        fileName.includes("typescript") &&
+        fileName.includes("lib") &&
+        fileName.includes("d.ts")
+      ) {
+        const symbol =
+          context.checker.getSymbolAtLocation(element) ??
+          context.checker.getTypeAtLocation(element).symbol;
+        if (symbol) {
+          return "https://mdn.io/" + symbol.name;
+        }
+      }
+
       return "";
     }
 
-    switch (symbolOrNode.kind) {
+    switch (element.kind) {
       case ts.SyntaxKind.ClassDeclaration:
       case ts.SyntaxKind.EnumDeclaration:
       case ts.SyntaxKind.InterfaceDeclaration:
-        let name = (symbolOrNode as ts.DeclarationStatement)
-          .name!.getText()
-          .toLowerCase();
+      case ts.SyntaxKind.TypeAliasDeclaration:
+        let name = (element as ts.DeclarationStatement).name!.getText();
         if (context.nameToExportName.has(name)) {
           name = context.nameToExportName.get(name)!;
+          if (name.startsWith("alphaTab.")) {
+            name = name.substring(9);
+          }
+        } else {
+          cconsole.warn(
+            `Type ${name} is not exported, no documentation generated and cross reference not linked`
+          );
+          return "";
         }
 
         return `/docs/reference/types/${name
           .replaceAll(".", "/")
-          .toLowerCase()}.mdx`;
+          .toLowerCase()}/index.mdx`;
 
       case ts.SyntaxKind.MethodDeclaration:
       case ts.SyntaxKind.MethodSignature:
@@ -295,419 +531,175 @@ export function tryGetReferenceLink(
       case ts.SyntaxKind.SetAccessor:
       case ts.SyntaxKind.PropertyDeclaration:
       case ts.SyntaxKind.PropertySignature:
+        return tryGetReferenceLink(
+          context,
+          element.parent as ts.ClassDeclaration | ts.InterfaceDeclaration
+        ).replace(
+          "index.mdx",
+          (element as ts.ClassElement).name!.getText().toLowerCase() + ".mdx"
+        );
       case ts.SyntaxKind.EnumMember:
         return (
-          tryGetReferenceLink(context, symbolOrNode.parent, referenceNode) +
+          tryGetReferenceLink(context, element.parent as ts.EnumDeclaration) +
           "#" +
-          (symbolOrNode as ts.ClassElement).name!.getText().toLowerCase()
+          (element as ts.EnumMember).name!.getText().toLowerCase()
         );
+      case ts.SyntaxKind.TypeParameter:
+        return "";
       default:
-        console.error(
+        cconsole.error(
           "Unhandled node kind",
-          ts.SyntaxKind[symbolOrNode.kind],
+          ts.SyntaxKind[element.kind],
           "at",
-          symbolOrNode.getSourceFile().fileName,
-          symbolOrNode
-            .getSourceFile()
-            .getLineAndCharacterOfPosition(symbolOrNode.pos),
-          symbolOrNode.getText()
+          element.getSourceFile().fileName,
+          element.getSourceFile().getLineAndCharacterOfPosition(element.pos),
+          element.getText()
         );
+    }
+  } else if ("isOwnType" in element) {
+    if (element.fullString === "any" || element.fullString === "unknown") {
+      return "";
+    } else if (element.isPrimitiveType || element.isTypedArray) {
+      return "https://mdn.io/" + element.ownTypeAsString;
+    } else if (element.isArray) {
+      return tryGetReferenceLink(context, element.arrayItemType!);
+    } else if (element.isFunctionType) {
+      return "";
+    } else if (element.isTypeLiteral) {
+      return "";
+    } else if (element.isOwnType) {
+      let declaration = valueOrFirstDeclarationInDts(context, element.symbol!);
+      if (declaration) {
+        return tryGetReferenceLink(context, declaration as any);
+      }
+    } else if (element.typeArguments) {
+      // currently we mostly have one own type in generics (e.g. maps, sets etc.)
+      for (const a of element.typeArguments) {
+        if (a.isOwnType || a.isUnionType) {
+          const reference = tryGetReferenceLink(context, a, false);
+          if (reference) {
+            return reference;
+          }
+        }
+      }
+
+      // there are maps with only primitives
+      return "";
+    } else if (element.isUnionType) {
+      for (const a of element.unionTypes!) {
+        const reference = tryGetReferenceLink(context, a, false);
+        if (reference) {
+          return reference;
+        }
+      }
+    } else {
+      let declaration = valueOrFirstDeclarationInDts(context, element.symbol!);
+      if (declaration) {
+        return tryGetReferenceLink(context, declaration as any);
+      }
     }
   } else {
-    let declaration = valueOrFirstDeclarationInDts(
-      context,
-      symbolOrNode,
-      referenceNode,
-      false
-    );
+    let declaration = valueOrFirstDeclarationInDts(context, element);
     if (declaration) {
-      return tryGetReferenceLink(context, declaration, referenceNode);
+      return tryGetReferenceLink(context, declaration as any);
     }
-
-    const type = context.checker.getDeclaredTypeOfSymbol(symbolOrNode);
-    declaration = valueOrFirstDeclarationInDts(
-      context,
-      type.symbol,
-      referenceNode,
-      true
-    );
-    return tryGetReferenceLink(context, declaration!, referenceNode);
   }
 
+  if (warnOnMissingReference) {
+    cconsole.error("Failed to resolve reference link for ", element);
+  }
   return "";
 }
 
-function enumTypeToInlineMarkdown(
-  context: GenerateContext,
-  typeInfo: TypeWithNullableInfo,
-  onlyJsEnum: boolean
-): string[] {
-  const lines: string[] = [];
-
-  const exportedType = context.nameToExportName.get(typeInfo.typeAsString);
-  if (
-    typeInfo.isEnumType &&
-    exportedType &&
-    context.flatExports.has(exportedType)
-  ) {
-    const enumDeclaration = context.flatExports.get(
-      exportedType
-    ) as ts.EnumDeclaration;
-    lines.push(
-      "",
-      `### [${exportedType}](${tryGetReferenceLink(
-        context,
-        enumDeclaration,
-        enumDeclaration
-      )})`,
-      "<TypeTable>",
-      `  <TypeRow type="${onlyJsEnum ? "all" : "js"}" name=${JSON.stringify(
-        exportedType
-      )}>`,
-      ...enumDeclaration.members.map(
-        (member, i, a) =>
-          `    \`${member.name.getText()}\` - ${getSummary(
-            context,
-            member,
-            true
-          )}${i < a.length - 1 ? "<br />" : ""}`
-      ),
-      `  </TypeRow>`
-    );
-    if (!onlyJsEnum) {
-      lines.push(
-        `  <TypeRow type="json-js-html" name="string">`,
-        ...enumDeclaration.members.map(
-          (member, i, a) =>
-            `    \`${member.name.getText().toLowerCase()}\`${
-              i < a.length - 1 ? "<br />" : ""
-            }`
-        ),
-        `  </TypeRow>`,
-
-        `  <TypeRow type="json-js-html" name="int">`,
-        ...enumDeclaration.members.map(
-          (member, i, a) =>
-            `    \`${getEnumValue(
-              context,
-              member
-            )}\` - ${member.name.getText()} ${i < a.length - 1 ? "<br />" : ""}`
-        ),
-        `  </TypeRow>`,
-
-        `  <TypeRow type="net" name=${JSON.stringify(
-          toPascalCase(exportedType)
-        )}>`,
-        ...enumDeclaration.members.map(
-          (member, i, a) =>
-            `    \`${member.name.getText()}\`${
-              i < a.length - 1 ? "<br />" : ""
-            }`
-        ),
-        `  </TypeRow>`,
-
-        `  <TypeRow type="android" name=${JSON.stringify(exportedType)}>`,
-        ...enumDeclaration.members.map(
-          (member, i, a) =>
-            `    \`${member.name.getText()}\`${
-              i < a.length - 1 ? "<br />" : ""
-            }`
-        ),
-        `  </TypeRow>`
-      );
-    }
-    lines.push("</TypeTable>");
-  }
-
-  return lines;
-}
-
-export function typeNameAndUrl(
-  context: GenerateContext,
-  type: ts.Type,
-  referenceNode: ts.Node
-): {
-  fullName: string;
-  simpleName: string;
-  referenceUrl: string;
-  settingsUrl: string | undefined;
-  typeInfo: TypeWithNullableInfo;
-} {
-  const typeInfo = getTypeWithNullableInfo(
-    context,
-    type,
-    true,
-    false,
-    undefined,
-    referenceNode
-  );
-
-  const simpleName = typeInfo.isArray
-    ? typeInfo.arrayItemType!.typeAsString
-    : typeInfo.typeAsString;
-  let typeString = simpleName;
-  if(typeInfo.isOwnType) {
-    if (context.nameToExportName.has(typeString)) {
-      typeString = context.nameToExportName.get(typeString)!;
-    } else {
-      debugger;
-    }
-  }
-  
-
-  const settingsUrl = tryGetSettingsLink(context, type.symbol);
-  const referenceUrl = tryGetReferenceLink(context, type.symbol, referenceNode);
-
-  if (context.nameToExportName.has(typeString)) {
-    typeString = context.nameToExportName.get(typeString)!;
-  }
-
-  return {
-    fullName: typeString,
-    simpleName,
-    settingsUrl,
-    referenceUrl,
-    typeInfo,
-  };
-}
-
-export function typeToMarkdown(
-  context: GenerateContext,
-  type: ts.Type,
-  node: ts.Node,
-  isOptionalFromDeclaration: boolean
-): string {
-  const typeInfo = getTypeWithNullableInfo(
-    context,
-    type,
-    true,
-    isOptionalFromDeclaration,
-    undefined,
-    node
-  );
-  let typeString = context.checker.typeToString(type);
-
-  const lines: string[] = [];
-
-  if (typeInfo.isOwnType) {
-    const linkUrl =
-      tryGetSettingsLink(context, type.symbol) ??
-      tryGetReferenceLink(context, type.symbol, node);
-    if (context.nameToExportName.has(typeString)) {
-      typeString = context.nameToExportName.get(typeString)!;
-    }
-
-    lines.push(
-      "<TypeTable>",
-      `    <TypeRow name={${JSON.stringify(typeString)}} url={${JSON.stringify(
-        linkUrl
-      )}}/>`,
-      "</TypeTable>",
-      ...enumTypeToInlineMarkdown(context, typeInfo, false)
-    );
-  } else {
-    lines.push(
-      "<TypeTable>",
-      `    <TypeRow name={${JSON.stringify(typeString)}} />`,
-      "</TypeTable>"
-    );
-  }
-
-  if (typeInfo.typeArguments) {
-    for (const t of typeInfo.typeArguments) {
-      if (t.isOwnType) {
-        lines.push(...enumTypeToInlineMarkdown(context, t, true));
-      }
-    }
-  }
-
-  if (typeInfo.arrayItemType) {
-    if (typeInfo.arrayItemType.isOwnType) {
-      lines.push(
-        ...enumTypeToInlineMarkdown(context, typeInfo.arrayItemType, true)
-      );
-    }
-  }
-
-  // TODO: Nicer named C#/Kotlin types?
-  return lines.join("\n");
-}
-
-function getEnumValue(context: GenerateContext, m: ts.EnumMember) {
-  if (m.initializer) {
-    return m.initializer.getText();
-  }
-  return context.checker.getConstantValue(m);
-}
-
-export function writeExamples(
-  fileStream: fs.WriteStream,
+export async function writeExamples(
+  fileStream: FileStream,
   context: GenerateContext,
   element: ts.Node
 ) {
   const examples = collectExamples(context, element);
   if (examples.length === 1) {
-    fileStream.write(`\n## Example - ${examples[0].title}\n\n`);
-    fileStream.write(`${examples[0].markdown}\n`);
+    await fileStream.write(`\n## Example - ${examples[0].title}\n\n`);
+    await fileStream.write(`${examples[0].markdown}\n`);
   } else if (examples.length > 1) {
-    fileStream.write(`\n## Examples\n\n`);
-    fileStream.write('import ExampleTabs from "@theme/Tabs";\n');
-    fileStream.write('import ExampleTabItem from "@theme/TabItem";\n\n');
-    fileStream.write("<ExampleTabs\n");
-    fileStream.write(`    defaultValue=${JSON.stringify(examples[0].key)}\n`);
-    fileStream.write(`    values={[\n`);
+    await fileStream.write(`\n## Examples\n\n`);
+    await fileStream.write('import ExampleTabs from "@theme/Tabs";\n');
+    await fileStream.write('import ExampleTabItem from "@theme/TabItem";\n\n');
+    await fileStream.write("<ExampleTabs\n");
+    await fileStream.write(
+      `    defaultValue=${JSON.stringify(examples[0].key)}\n`
+    );
+    await fileStream.write(`    values={[\n`);
 
     for (let i = 0; i < examples.length; i++) {
-      fileStream.write(
+      await fileStream.write(
         `      { label: ${JSON.stringify(
           examples[i].title
         )}, value: ${JSON.stringify(examples[i].key)}}`
       );
       if (i < examples.length - 1) {
-        fileStream.write(`,\n`);
+        await fileStream.write(`,\n`);
       } else {
-        fileStream.write(`\n`);
+        await fileStream.write(`\n`);
       }
     }
 
-    fileStream.write(`    ]}\n`);
-    fileStream.write(`>\n`);
+    await fileStream.write(`    ]}\n`);
+    await fileStream.write(`>\n`);
 
     for (const example of examples) {
-      fileStream.write(
+      await fileStream.write(
         `<ExampleTabItem value=${JSON.stringify(example.key)}>\n`
       );
 
-      fileStream.write(`${example.markdown}\n`);
+      await fileStream.write(`${example.markdown}\n`);
 
-      fileStream.write(`</ExampleTabItem>\n`);
+      await fileStream.write(`</ExampleTabItem>\n`);
     }
 
-    fileStream.write(`</ExampleTabs>\n`);
+    await fileStream.write(`</ExampleTabs>\n`);
   }
 }
 
 export function toJsTypeName(
   context: GenerateContext,
-  type: ts.Type | TypeWithNullableInfo,
-  isOptional: boolean,
-  referenceNode: ts.Node
+  type: TypeWithNullableInfo
 ): string {
-  if (!("isOwnType" in type)) {
-    return toJsTypeName(
-      context,
-      getTypeWithNullableInfo(
-        context,
-        type,
-        true,
-        isOptional,
-        undefined,
-        referenceNode
-      ),
-      false,
-      referenceNode
-    );
-  }
-
-  if (isOptional) {
-    return toJsTypeName(context, type, false, referenceNode) + "?";
-  } else if (type.isNullable || type.isOptional) {
-    return (
-      toJsTypeName(
-        context,
-        {
-          ...type,
-          isNullable: false,
-          isOptional: false,
-        },
-        false,
-        referenceNode
-      ) + "?"
-    );
-  }
-
-  if (type.isPrimitiveType) {
-    return type.typeAsString;
-  }
-
-  if (type.isArray) {
-    return (
-      toJsTypeName(context, type.arrayItemType!, false, referenceNode) + "[]"
-    );
-  }
-
-  if (context.nameToExportName.has(type.typeAsString)) {
-    return context.nameToExportName.get(type.typeAsString)!;
-  }
-
-  return type.typeAsString;
+  return type.fullString;
 }
 
 export function toDotNetTypeName(
   context: GenerateContext,
-  type: ts.Type | TypeWithNullableInfo,
-  isOptional: boolean,
-  referenceNode: ts.Node
+  type: TypeWithNullableInfo
 ): string {
-  if (!("isOwnType" in type)) {
-    return toDotNetTypeName(
-      context,
-      getTypeWithNullableInfo(
-        context,
-        type,
-        false,
-        isOptional,
-        undefined,
-        referenceNode
-      ),
-      false,
-      referenceNode
-    );
-  }
-
-  if (isOptional) {
-    return toDotNetTypeName(context, type, false, referenceNode) + "?";
-  } else if (type.isNullable || type.isOptional) {
-    return (
-      toDotNetTypeName(
-        context,
-        {
-          ...type,
-          isNullable: false,
-          isOptional: false,
-        },
-        false,
-        referenceNode
-      ) + "?"
-    );
-  }
+  const nullableSuffix = type.isNullable || type.isOptional ? "?" : "";
 
   if (type.isPrimitiveType) {
-    switch (type.typeAsString) {
+    switch (type.ownTypeAsString) {
       case "number":
-        return "double";
+        return "double" + nullableSuffix;
       case "string":
-        return "string";
+        return "string" + nullableSuffix;
       case "boolean":
-        return "bool";
+        return "bool" + nullableSuffix;
       case "BigInt":
-        return "long";
+        return "long" + nullableSuffix;
       case "unknown":
-        return "object";
+        return "object" + nullableSuffix;
     }
   }
 
   if (type.isArray) {
     return (
       "IList<" +
-      toDotNetTypeName(context, type.arrayItemType!, false, referenceNode) +
-      ">"
+      toDotNetTypeName(context, type.arrayItemType!) +
+      ">" +
+      nullableSuffix
     );
   }
 
-  let baseName: string = type.typeAsString;
+  let baseName: string = type.ownTypeAsString;
 
-  switch (type.typeAsString) {
+  switch (baseName) {
     case "void":
       return "void";
     case "Error":
@@ -726,120 +718,99 @@ export function toDotNetTypeName(
   if (type.typeArguments && type.typeArguments.length > 0) {
     baseName += "<";
     baseName += type.typeArguments
-      .map((a) => toDotNetTypeName(context, a, false, referenceNode))
+      .map((a) => toDotNetTypeName(context, a))
       .join(", ");
     baseName += ">";
   }
 
-  return baseName;
+  return baseName + nullableSuffix;
 }
 
 export function toKotlinTypeName(
   context: GenerateContext,
-  type: ts.Type | TypeWithNullableInfo,
-  isOptional: boolean,
-  referenceNode: ts.Node
+  type: TypeWithNullableInfo
 ): string {
-  if (!("isOwnType" in type)) {
-    return toKotlinTypeName(
-      context,
-      getTypeWithNullableInfo(
-        context,
-        type,
-        false,
-        isOptional,
-        undefined,
-        referenceNode
-      ),
-      false,
-      referenceNode
-    );
-  }
-
-  if (isOptional) {
-    return toKotlinTypeName(context, type, false, referenceNode) + "?";
-  } else if (type.isNullable || type.isOptional) {
-    return (
-      toKotlinTypeName(
-        context,
-        {
-          ...type,
-          isNullable: false,
-          isOptional: false,
-        },
-        false,
-        referenceNode
-      ) + "?"
-    );
-  }
+  const nullableSuffix = type.isNullable || type.isOptional ? "?" : "";
 
   if (type.isPrimitiveType) {
-    switch (type.typeAsString) {
+    switch (type.ownTypeAsString) {
       case "number":
-        return "Double";
+        return "Double" + nullableSuffix;
       case "string":
-        return "String";
+        return "String" + nullableSuffix;
       case "boolean":
-        return "Boolean";
+        return "Boolean" + nullableSuffix;
       case "BigInt":
-        return "Long";
+        return "Long" + nullableSuffix;
       case "unknown":
-        return "Any";
+        return "Any" + nullableSuffix;
     }
   }
 
   if (type.isArray) {
-    // TODO: strong typed arrays
+    if (type.arrayItemType!.isPrimitiveType) {
+      switch (type.arrayItemType!.ownTypeAsString) {
+        case "boolean":
+          return "alphaTab.collections.BooleanList";
+        case "number":
+          return "alphaTab.collections.DoubleList";
+      }
+    }
+
     return (
       "alphaTab.collections.List<" +
-      toKotlinTypeName(context, type.arrayItemType!, false, referenceNode) +
-      ">"
+      toKotlinTypeName(context, type.arrayItemType!) +
+      ">" +
+      nullableSuffix
     );
   }
 
-  if (type.typeAsString === "Error") {
-    return "kotlin.Throwable";
-  }
+  let baseName: string = type.ownTypeAsString;
 
-  switch (type.typeAsString) {
+  switch (baseName) {
     case "void":
       return "Unit";
     case "Error":
       return "kotlin.Throwable";
   }
 
-  let baseName: string;
-
-  if (context.nameToExportName.has(type.typeAsString)) {
-    baseName = context.nameToExportName.get(type.typeAsString)!;
-  } else {
-    baseName = type.typeAsString;
+  if (context.nameToExportName.has(baseName)) {
+    baseName = context.nameToExportName.get(baseName)!;
   }
 
   if (type.typeArguments && type.typeArguments.length > 0) {
-    if (type.typeAsString === "Promise") {
-      return toKotlinTypeName(
-        context,
-        type.typeArguments[0],
-        false,
-        referenceNode
-      );
+    if (baseName === "Promise") {
+      return toKotlinTypeName(context, type.typeArguments[0]);
+    } else if (
+      baseName === "Map" &&
+      (type.typeArguments[0].isPrimitiveType ||
+        type.typeArguments[1].isPrimitiveType)
+    ) {
+      const keyPart = type.typeArguments[0].isPrimitiveType
+        ? toKotlinTypeName(context, type.typeArguments[0])
+        : "Object";
+
+      const valuePart = type.typeArguments[1].isPrimitiveType
+        ? toKotlinTypeName(context, type.typeArguments[1])
+        : "Object";
+
+      return "alphaTab.collections." + keyPart + valuePart + "Map";
     } else {
       baseName += "<";
       baseName += type.typeArguments
-        .map((a) => toKotlinTypeName(context, a, false, referenceNode))
+        .map((a) => toKotlinTypeName(context, a))
         .join(", ");
       baseName += ">";
     }
-  } else if (type.typeAsString === "Promise") {
+  } else if (baseName === "Promise") {
     baseName = "Unit";
   }
 
-  return baseName;
+  return baseName + nullableSuffix;
 }
 
-export function isOverride(node: ts.Node) {
-  const tags = ts.getJSDocTags(node);
+export function isOverride(context: GenerateContext, node: ts.Node) {
+  const tags = getJSDocTags(context, node);
 
   if (tags.find((t) => t.tagName.text === "inheritdoc")) {
     return true;
@@ -848,12 +819,405 @@ export function isOverride(node: ts.Node) {
   return false;
 }
 
-export function isInternal(node: ts.Node) {
-  const tags = ts.getJSDocTags(node);
+export function isInternal(context: GenerateContext, node: ts.Node) {
+  const tags = getJSDocTags(context, node);
 
   if (tags.find((t) => t.tagName.text === "internal")) {
     return true;
   }
 
   return false;
+}
+
+export async function writeEventDetails(
+  context: GenerateContext,
+  fileStream: FileStream,
+  member:
+    | ts.PropertySignature
+    | ts.PropertyDeclaration
+    | ts.GetAccessorDeclaration
+) {
+  await writeCommonDescription(context, fileStream, member);
+
+  await writeExamples(fileStream, context, member);
+}
+
+export async function writeMethodDetails(
+  context: GenerateContext,
+  fileStream: FileStream,
+  member: ts.MethodDeclaration | ts.MethodSignature
+) {
+  await writeCommonDescription(context, fileStream, member);
+
+  await writeMethodSignatures(context, fileStream, member);
+  await writeMethodParameters(context, fileStream, member);
+  await writeMethodReturn(context, fileStream, member);
+
+  await writeExamples(fileStream, context, member);
+}
+
+export async function writeMethodReturn(
+  context: GenerateContext,
+  fileStream: FileStream,
+  m: ts.MethodDeclaration | ts.MethodSignature
+) {
+  const returnsDoc = getJsDocTagText(context, m, "returns");
+  if (returnsDoc) {
+    fileStream.write(`### Returns \n`);
+    fileStream.write(`${returnsDoc} \n\n`);
+  }
+}
+
+export async function writeMethodParameters(
+  context: GenerateContext,
+  fileStream: FileStream,
+  m: ts.MethodDeclaration | ts.MethodSignature
+) {
+  fileStream.write(`### Parameters \n`);
+  if (m.parameters.length > 0) {
+    fileStream.write(`\n<ParameterTable>\n`);
+
+    for (let i = 0; i < m.parameters.length; i++) {
+      fileStream.write(
+        `    <ParameterRow platform="js" name="${m.parameters[
+          i
+        ].name.getText()}" type="${toJsTypeName(
+          context,
+          getTypeWithNullableInfo(
+            context,
+            m.parameters[i].type,
+            false,
+            !!m.parameters[i].questionToken
+          )
+        )}">\n`
+      );
+
+      for (const line of getFullDescription(context, m.parameters[i]).split(
+        "\n"
+      )) {
+        fileStream.write(`        ${line}\n`);
+      }
+
+      fileStream.write(`    </ParameterRow>\n`);
+
+      const isWebOnly = isTargetWeb(context, m);
+      if (!isWebOnly) {
+        fileStream.write(
+          `    <ParameterRow platform="net" name="${m.parameters[
+            i
+          ].name.getText()}" type="${toDotNetTypeName(
+            context,
+            getTypeWithNullableInfo(
+              context,
+              m.parameters[i].type,
+              false,
+              !!m.parameters[i].questionToken
+            )
+          )}">\n`
+        );
+
+        for (const line of getFullDescription(context, m.parameters[i]).split(
+          "\n"
+        )) {
+          fileStream.write(`        ${line}\n`);
+        }
+
+        fileStream.write(`    </ParameterRow>\n`);
+
+        fileStream.write(
+          `    <ParameterRow platform="android" name="${m.parameters[
+            i
+          ].name.getText()}" type="${toKotlinTypeName(
+            context,
+            getTypeWithNullableInfo(
+              context,
+              m.parameters[i].type,
+              false,
+              !!m.parameters[i].questionToken
+            )
+          )}">\n`
+        );
+
+        for (const line of getFullDescription(context, m.parameters[i]).split(
+          "\n"
+        )) {
+          fileStream.write(`        ${line}\n`);
+        }
+
+        fileStream.write(`    </ParameterRow>\n`);
+      }
+    }
+    fileStream.write(`</ParameterTable>\n\n`);
+  } else {
+    fileStream.write(`None \n\n`);
+  }
+}
+
+export async function writeMethodSignatures(
+  context: GenerateContext,
+  fileStream: FileStream,
+  m: ts.MethodDeclaration | ts.MethodSignature
+) {
+  fileStream.write(`## Signatures\n\n`);
+
+  fileStream.write(
+    `<CodeBlock language="ts" metastring={"title=JavaScript"}>{\`${m.getText()}\`}" />\n`
+  );
+
+  const isWebOnly = isTargetWeb(context, m);
+  if (!isWebOnly) {
+    fileStream.write(`    <CodeBlock type="csharp" title="C#">{\``);
+
+    fileStream.write(
+      toDotNetTypeName(
+        context,
+        getTypeWithNullableInfo(context, m.type, false, false)
+      )
+    );
+
+    fileStream.write(` ${toPascalCase(m.name!.getText())}(`);
+
+    for (let i = 0; i < m.parameters.length; i++) {
+      if (i > 0) {
+        fileStream.write(", ");
+      }
+
+      fileStream.write(
+        toDotNetTypeName(
+          context,
+          getTypeWithNullableInfo(context, m.parameters[i].type, false, false)
+        )
+      );
+      fileStream.write(` ${m.parameters[i].name.getText()}`);
+    }
+
+    fileStream.write(`)\`}</CodeBlock>\n`);
+
+    const fun = m.type!.getText().startsWith("Promise<")
+      ? "suspend fun"
+      : "fun";
+
+    fileStream.write(`    <CodeBlock type="kotlin" title="Kotlin">{\``);
+    fileStream.write(`${fun} ${m.name!.getText()}(`);
+
+    for (let i = 0; i < m.parameters.length; i++) {
+      if (i > 0) {
+        fileStream.write(", ");
+      }
+
+      fileStream.write(`${m.parameters[i].name.getText()}: `);
+      fileStream.write(
+        toKotlinTypeName(
+          context,
+          getTypeWithNullableInfo(
+            context,
+            m.parameters[i].type,
+            false,
+            !!m.parameters[i].questionToken
+          )
+        )
+      );
+    }
+
+    fileStream.write(
+      `): ${toKotlinTypeName(
+        context,
+        getTypeWithNullableInfo(context, m.type, false, false)
+      )}"\`}</CodeBlock/>\n`
+    );
+  }
+}
+
+async function writeCommonDescription(
+  context: GenerateContext,
+  fileStream: FileStream,
+  member: ts.TypeElement | ts.ClassElement
+) {
+  await fileStream.write(`\n### Description\n`);
+  await fileStream.write(`${getFullDescription(context, member)}\n\n`);
+
+  try {
+    const importFile = path.join(
+      path.dirname(fileStream.path),
+      "_" + member.name!.getText().toLowerCase() + ".mdx"
+    );
+    await fs.promises.access(importFile, fs.constants.R_OK);
+
+    await fileStream.write(
+      `\nimport ManualDocs from './_${member
+        .name!.getText()
+        .toLowerCase()}.mdx';\n`
+    );
+    await fileStream.write("\n");
+    await fileStream.write(`<ManualDocs />\n`);
+  } catch (e) {
+    // ignore
+  }
+}
+
+export async function writePropertyDetails(
+  context: GenerateContext,
+  fileStream: FileStream,
+  member:
+    | ts.PropertySignature
+    | ts.PropertyDeclaration
+    | ts.GetAccessorDeclaration
+) {
+  await writeCommonDescription(context, fileStream, member);
+
+  const defaultValue = getJsDocTagText(context, member, "defaultValue");
+  if (defaultValue) {
+    await fileStream.write(`\n### Default Value\n\n`);
+    await fileStream.write(`${defaultValue}\n`);
+  }
+
+  const typeInfo = getTypeWithNullableInfo(context, member.type, true, false);
+
+  const referenceUrl = tryGetReferenceLink(context, typeInfo);
+
+  const isWebOnly = isTargetWeb(context, member);
+
+  if (!referenceUrl) {
+    if (isWebOnly) {
+      await fileStream.write(
+        `\n### Type: \`${toJsTypeName(context, typeInfo)}\`\n\n`
+      );
+    } else {
+      await fileStream.write(`\n### Type\n\n`);
+      await fileStream.write(
+        `<CodeBadge type="js" name="${toJsTypeName(context, typeInfo)}" />`
+      );
+      await fileStream.write(
+        `<CodeBadge type="net" name="${toDotNetTypeName(context, typeInfo)}" />`
+      );
+      await fileStream.write(
+        `<CodeBadge type="android" name="${toKotlinTypeName(context, typeInfo)}" />`
+      );
+    }
+  } else {
+    if (isWebOnly) {
+      await fileStream.write(
+        `\n## Type: [\`${toJsTypeName(context, typeInfo)}\`](${referenceUrl})\n\n`
+      );
+    } else {
+      await fileStream.write(`\n### Type\n\n`);
+      // TODO: link on JS
+      await fileStream.write(
+        `<CodeBadge type="js" name="${toJsTypeName(context, typeInfo)}" />`
+      );
+      await fileStream.write(
+        `<CodeBadge type="net" name="${toDotNetTypeName(context, typeInfo)}" />`
+      );
+      await fileStream.write(
+        `<CodeBadge type="android" name="${toKotlinTypeName(context, typeInfo)}" />`
+      );
+    }
+
+    if (!referenceUrl.startsWith("http")) {
+      await fileStream.write(
+        `import ${typeInfo.ownTypeAsString}Docs from '@site${referenceUrl}';\n\n<${typeInfo.ownTypeAsString}Docs inlined={true} />`
+      );
+    }
+  }
+
+  await writeExamples(fileStream, context, member);
+}
+
+export const cconsole = {
+  log: (...args) => {
+    console.log(...args);
+  },
+  debug: (...args) => {
+    console.log(
+      ...args.map((a) => (typeof a === "string" ? styleText(["dim"], a) : a))
+    );
+  },
+
+  info: (...args) => {
+    console.log(
+      ...args.map((a) => (typeof a === "string" ? styleText(["blue"], a) : a))
+    );
+  },
+
+  warn: (...args) => {
+    console.log(
+      ...args.map((a) => (typeof a === "string" ? styleText(["yellow"], a) : a))
+    );
+  },
+
+  error: (...args) => {
+    console.log(
+      ...args.map((a) => (typeof a === "string" ? styleText(["red"], a) : a))
+    );
+  },
+};
+
+function shouldGenerateMember(
+  context: GenerateContext,
+  m: ts.TypeElement | ts.ClassElement
+) {
+  if (!m.name) {
+    // e.g. constructors
+    return false;
+  }
+
+  // private
+  if (
+    ts.canHaveModifiers(m) &&
+    m.modifiers?.some(
+      (mod) =>
+        mod.kind == ts.SyntaxKind.PrivateKeyword ||
+        mod.kind === ts.SyntaxKind.ProtectedKeyword
+    )
+  ) {
+    return false;
+  }
+
+  if (isInternal(context, m) || ts.isSetAccessor(m)) {
+    return false;
+  }
+
+  return true;
+}
+
+export function collectMembers(
+  context: GenerateContext,
+  members: Map<string, ts.ClassElement | ts.TypeElement>,
+  exportedType: ts.ClassDeclaration | ts.InterfaceDeclaration
+) {
+  for (const m of exportedType.members) {
+    if (shouldGenerateMember(context, m) && !members.has(m.name!.getText())) {
+      members.set(m.name!.getText(), m);
+    }
+  }
+
+  const extendsClause = exportedType.heritageClauses?.find(
+    (c) => c.token === ts.SyntaxKind.ExtendsKeyword
+  );
+  if (extendsClause) {
+    const symbol = context.checker.getTypeAtLocation(
+      extendsClause.types[0]
+    ).symbol;
+    const baseType = valueOrFirstDeclarationInDts(context, symbol);
+    if (
+      baseType &&
+      (ts.isClassDeclaration(baseType) || ts.isInterfaceDeclaration(baseType))
+    ) {
+      collectMembers(context, members, baseType);
+    } else if (symbol.members) {
+      for (const [_, member] of symbol.members) {
+        const decl = valueOrFirstDeclarationInDts(context, member);
+        if (decl) {
+          if (ts.isClassElement(decl) || ts.isTypeElement(decl)) {
+            if (
+              shouldGenerateMember(context, decl) &&
+              !members.has(decl.name!.getText())
+            ) {
+              members.set(decl.name!.getText(), decl);
+            }
+          }
+        }
+      }
+    }
+  }
 }

@@ -16,6 +16,7 @@ export type GenerateContext = {
 };
 
 export type TypeWithNullableInfo = {
+  readonly symbol: ts.Symbol | undefined;
   readonly isNullable: boolean;
   readonly isOptional: boolean;
   readonly isUnionType: boolean;
@@ -23,25 +24,23 @@ export type TypeWithNullableInfo = {
   readonly isEnumType: boolean;
   readonly isOwnType: boolean;
   readonly isTypedArray: boolean;
-  readonly typeAsString: string;
-  readonly modulePath: string;
-  readonly isCloneable: boolean;
-  readonly isJsonImmutable: boolean;
-  readonly isNumberType: boolean;
-  readonly isMap: boolean;
-  readonly isSet: boolean;
+  readonly ownTypeAsString: string;
+  readonly fullString: string;
   readonly isArray: boolean;
+  readonly isTypeLiteral: boolean;
+  readonly isFunctionType: boolean;
   readonly arrayItemType?: TypeWithNullableInfo;
   readonly typeArguments?: readonly TypeWithNullableInfo[];
   readonly unionTypes?: readonly TypeWithNullableInfo[];
-  readonly jsDocTags?: readonly ts.JSDocTag[];
 };
 
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
-function findModule(type: ts.Type) {
-  if (type.symbol && type.symbol.declarations) {
-    for (const decl of type.symbol.declarations) {
+export function findModule(type: ts.Type) {
+  const symbol = type.getSymbol() ?? type.aliasSymbol;
+
+  if (symbol && symbol.declarations) {
+    for (const decl of symbol.declarations) {
       const file = decl.getSourceFile();
       if (file) {
         const relative = path.relative(
@@ -52,7 +51,7 @@ function findModule(type: ts.Type) {
       }
     }
 
-    return "./" + type.symbol.name;
+    return "./" + symbol.name;
   }
 
   return "";
@@ -60,12 +59,28 @@ function findModule(type: ts.Type) {
 
 export function getTypeWithNullableInfo(
   context: GenerateContext,
-  node: ts.TypeNode | ts.Type,
+  node: ts.TypeNode | ts.ExpressionWithTypeArguments | undefined,
   allowUnion: boolean,
-  isOptionalFromDeclaration: boolean,
-  typeArgumentMapping: Map<string, ts.Type> | undefined,
-  referenceNode: ts.Node
+  isOptionalFromDeclaration: boolean
 ): TypeWithNullableInfo {
+  if (!node) {
+    return {
+      isNullable: false,
+      isOptional: isOptionalFromDeclaration,
+      isUnionType: false,
+      isPrimitiveType: false,
+      isEnumType: false,
+      isTypedArray: false,
+      isOwnType: false,
+      fullString: "unknown",
+      ownTypeAsString: "unknown",
+      isArray: false,
+      symbol: context.checker.getUnknownType().getSymbol(),
+      isTypeLiteral: false,
+      isFunctionType: false,
+    };
+  }
+
   let typeInfo: Writeable<TypeWithNullableInfo> = {
     isNullable: false,
     isOptional: isOptionalFromDeclaration,
@@ -74,87 +89,60 @@ export function getTypeWithNullableInfo(
     isEnumType: false,
     isTypedArray: false,
     isOwnType: false,
-    typeAsString: "",
-    modulePath: "",
-    isJsonImmutable: false,
-    isNumberType: false,
-    isMap: false,
-    isSet: false,
+    fullString: node.getText(),
+    ownTypeAsString: "",
     isArray: false,
-    isCloneable: false,
+    symbol: null!,
+    isTypeLiteral: false,
+    isFunctionType: false,
   };
-  let mainType: ts.Type | undefined;
   let mainTypeNode: ts.TypeNode | undefined;
 
-  const fillBaseInfoFrom = (
-    tsType: ts.Type,
-    tsTypeNode: ts.TypeNode | null
-  ) => {
-    const valueDeclaration = valueOrFirstDeclarationInDts(
-      context,
-      tsType.symbol,
-      referenceNode,
-      false
-    );
-    mainType = tsType;
+  const fillBaseInfoFrom = (typeNode: ts.TypeNode) => {
+    const type = context.checker.getTypeFromTypeNode(typeNode);
+    typeInfo.symbol = type.getSymbol() ?? type.aliasSymbol;
+    typeInfo.ownTypeAsString = typeNode.getText();
 
-    typeInfo.typeAsString = context.checker.typeToString(
-      tsType,
-      undefined,
-      undefined
-    );
-    typeInfo.modulePath = findModule(tsType);
+    const modulePath = findModule(type);
     typeInfo.isOwnType =
-      !!typeInfo.modulePath &&
-      typeInfo.modulePath.includes("@coderline") &&
-      typeInfo.modulePath.includes("alphatab") &&
-      !!valueDeclaration;
+      !!modulePath && path.basename(modulePath) === path.basename(context.dts);
 
-    if (isEnumType(tsType)) {
-      typeInfo.isEnumType = true;
-    } else if (isPrimitiveType(tsType)) {
-      typeInfo.isNumberType = isNumberType(tsType);
-      typeInfo.isPrimitiveType = true;
-    } else if (typeInfo.isOwnType) {
-      typeInfo.jsDocTags = valueDeclaration
-        ? ts.getJSDocTags(valueDeclaration)
-        : undefined;
-      if (typeInfo.jsDocTags) {
-        typeInfo.isJsonImmutable = !!typeInfo.jsDocTags.find(
-          (t) => t.tagName.text === "json_immutable"
-        );
-        typeInfo.isCloneable = !!typeInfo.jsDocTags.find(
-          (t) => t.tagName.text === "cloneable"
-        );
-      }
+    typeInfo.isTypeLiteral = ts.isTypeLiteralNode(typeNode);
+    typeInfo.isFunctionType = ts.isFunctionTypeNode(typeNode);
 
-      if ("typeArguments" in tsType) {
-        typeInfo.typeArguments = (
-          tsType as ts.TypeReference
-        ).typeArguments?.map((p) =>
-          getTypeWithNullableInfo(
-            context,
-            p,
-            allowUnion,
-            false,
-            typeArgumentMapping,
-            referenceNode
-          )
-        );
-      }
-    } else if (context.checker.isArrayType(tsType)) {
-      typeInfo.isArray = true;
-      typeInfo.arrayItemType = getTypeWithNullableInfo(
-        context,
-        (tsType as ts.TypeReference).typeArguments![0],
-        allowUnion,
-        false,
-        typeArgumentMapping,
-        referenceNode
+    if (ts.isTypeReferenceNode(typeNode) && typeNode.typeArguments) {
+      typeInfo.typeArguments = typeNode.typeArguments.map((p) =>
+        getTypeWithNullableInfo(context, p, allowUnion, false)
       );
-    } else if (tsType.symbol) {
-      typeInfo.typeAsString = tsType.symbol.name;
-      switch (tsType.symbol.name) {
+
+      // cut off generics on name
+      const genericsStart = typeInfo.ownTypeAsString.indexOf("<");
+      if (genericsStart >= 0) {
+        typeInfo.ownTypeAsString = typeInfo.ownTypeAsString
+          .substring(0, genericsStart)
+          .trim();
+      }
+    }
+
+    if (isEnumType(type)) {
+      typeInfo.isEnumType = true;
+    } else if (isPrimitiveType(type)) {
+      typeInfo.isPrimitiveType = true;
+    } else if (context.checker.isArrayType(type)) {
+      typeInfo.isArray = true;
+
+      if (typeInfo.typeArguments) {
+        typeInfo.arrayItemType = typeInfo.typeArguments[0];
+      } else if (ts.isArrayTypeNode(typeNode)) {
+        typeInfo.arrayItemType = getTypeWithNullableInfo(
+          context,
+          typeNode.elementType,
+          allowUnion,
+          false
+        );
+      }
+    } else if (typeInfo.symbol) {
+      switch (typeInfo.symbol.name) {
         case "Uint8Array":
         case "Uint16Array":
         case "Uint32Array":
@@ -165,227 +153,83 @@ export function getTypeWithNullableInfo(
         case "Float64Array":
           typeInfo.isTypedArray = true;
           typeInfo.arrayItemType = {
+            fullString: "number",
+            isArray: false,
+            isEnumType: false,
             isNullable: false,
             isOptional: false,
-            isUnionType: false,
-            isPrimitiveType: true,
-            isEnumType: false,
             isOwnType: false,
-            isTypedArray: false,
-            typeAsString: "number",
-            modulePath: "",
-            isCloneable: false,
-            isJsonImmutable: false,
-            isNumberType: true,
-            isMap: false,
-            isSet: false,
-            isArray: false,
+            isPrimitiveType: false,
+            isTypedArray: true,
+            isUnionType: false,
+            ownTypeAsString: "number",
+            symbol: context.checker.getNumberType().getSymbol(),
+            isTypeLiteral: false,
+            isFunctionType: false
           };
-          break;
-        case "Map":
-          typeInfo.isMap = true;
-          typeInfo.typeArguments =
-            tsTypeNode &&
-            ts.isTypeReferenceNode(tsTypeNode) &&
-            tsTypeNode.typeArguments
-              ? tsTypeNode.typeArguments.map((p) =>
-                  getTypeWithNullableInfo(
-                    context,
-                    p,
-                    allowUnion,
-                    false,
-                    typeArgumentMapping,
-                    referenceNode
-                  )
-                )
-              : (tsType as ts.TypeReference).typeArguments!.map((p) =>
-                  getTypeWithNullableInfo(
-                    context,
-                    p,
-                    allowUnion,
-                    false,
-                    typeArgumentMapping,
-                    referenceNode
-                  )
-                );
-          break;
-        case "Set":
-          typeInfo.isSet = true;
-          typeInfo.typeArguments =
-            tsTypeNode &&
-            ts.isTypeReferenceNode(tsTypeNode) &&
-            tsTypeNode.typeArguments
-              ? tsTypeNode.typeArguments.map((p) =>
-                  getTypeWithNullableInfo(
-                    context,
-                    p,
-                    allowUnion,
-                    false,
-                    typeArgumentMapping,
-                    referenceNode
-                  )
-                )
-              : (tsType as ts.TypeReference).typeArguments!.map((p) =>
-                  getTypeWithNullableInfo(
-                    context,
-                    p,
-                    allowUnion,
-                    false,
-                    typeArgumentMapping,
-                    referenceNode
-                  )
-                );
-          break;
-        default:
-          if (tsType.isTypeParameter()) {
-            if (typeArgumentMapping?.has(typeInfo.typeAsString)) {
-              typeInfo = getTypeWithNullableInfo(
-                context,
-                typeArgumentMapping.get(typeInfo.typeAsString)!,
-                allowUnion,
-                false,
-                typeArgumentMapping,
-                referenceNode
-              );
-            } else {
-              throw new Error(
-                "Unresolved type parameters " + typeInfo.typeAsString
-              );
-            }
-          } else if (
-            "typeArguments" in tsType &&
-            (tsType as any).typeArguments
-          ) {
-            typeInfo.typeArguments =
-              tsTypeNode &&
-              ts.isTypeReferenceNode(tsTypeNode) &&
-              tsTypeNode.typeArguments
-                ? tsTypeNode.typeArguments.map((p) =>
-                    getTypeWithNullableInfo(
-                      context,
-                      p,
-                      allowUnion,
-                      false,
-                      typeArgumentMapping,
-                      referenceNode
-                    )
-                  )
-                : (tsType as ts.TypeReference).typeArguments!.map((p) =>
-                    getTypeWithNullableInfo(
-                      context,
-                      p,
-                      allowUnion,
-                      false,
-                      typeArgumentMapping,
-                      referenceNode
-                    )
-                  );
-          }
           break;
       }
     }
   };
 
-  if ("kind" in node) {
-    if (ts.isUnionTypeNode(node)) {
-      for (const t of node.types) {
-        if (t.kind === ts.SyntaxKind.NullKeyword) {
-          typeInfo.isNullable = true;
-        } else if (
-          ts.isLiteralTypeNode(t) &&
-          t.literal.kind === ts.SyntaxKind.NullKeyword
-        ) {
-          typeInfo.isNullable = true;
-        } else if (t.kind === ts.SyntaxKind.UndefinedKeyword) {
-          typeInfo.isOptional = true;
-        } else if (
-          ts.isLiteralTypeNode(t) &&
-          t.literal.kind === ts.SyntaxKind.UndefinedKeyword
-        ) {
-          typeInfo.isOptional = true;
-        } else if (!mainType) {
-          mainType = context.checker.getTypeFromTypeNode(t);
-          mainTypeNode = t;
-        } else if (allowUnion) {
-          if (!typeInfo.unionTypes) {
-            typeInfo.unionTypes = [
-              getTypeWithNullableInfo(
-                context,
-                mainType,
-                false,
-                false,
-                typeArgumentMapping,
-                referenceNode
-              ),
-            ];
-          }
-
-          (typeInfo.unionTypes as TypeWithNullableInfo[]).push(
-            getTypeWithNullableInfo(
-              context,
-              t,
-              false,
-              false,
-              typeArgumentMapping,
-              referenceNode
-            )
-          );
-        } else {
-          throw new Error(
-            "Multi union types on not supported at this location: " +
-              node.getSourceFile().fileName +
-              ":" +
-              node.getText()
-          );
+  if (ts.isUnionTypeNode(node)) {
+    for (const t of node.types) {
+      if (t.kind === ts.SyntaxKind.NullKeyword) {
+        typeInfo.isNullable = true;
+      } else if (
+        ts.isLiteralTypeNode(t) &&
+        t.literal.kind === ts.SyntaxKind.NullKeyword
+      ) {
+        typeInfo.isNullable = true;
+      } else if (t.kind === ts.SyntaxKind.UndefinedKeyword) {
+        typeInfo.isOptional = true;
+      } else if (
+        ts.isLiteralTypeNode(t) &&
+        t.literal.kind === ts.SyntaxKind.UndefinedKeyword
+      ) {
+        typeInfo.isOptional = true;
+      } else if (!mainTypeNode) {
+        mainTypeNode = t;
+      } else if (allowUnion) {
+        if (!typeInfo.unionTypes) {
+          typeInfo.unionTypes = [
+            getTypeWithNullableInfo(context, mainTypeNode!, false, false),
+          ];
         }
-      }
 
-      if (!typeInfo.unionTypes && mainType) {
-        fillBaseInfoFrom(mainType, mainTypeNode!);
+        typeInfo.isUnionType = true;
+
+        (typeInfo.unionTypes as TypeWithNullableInfo[]).push(
+          getTypeWithNullableInfo(context, t, false, false)
+        );
+      } else {
+        throw new Error(
+          "Multi union types on not supported at this location: " +
+            node.getSourceFile().fileName +
+            ":" +
+            node.getText()
+        );
       }
-    } else {
-      fillBaseInfoFrom(context.checker.getTypeFromTypeNode(node), node);
     }
+
+    if (!typeInfo.unionTypes && mainTypeNode) {
+      fillBaseInfoFrom(mainTypeNode);
+    }
+  } else if (ts.isExpressionWithTypeArguments(node)) {
+    const type = context.checker.getTypeAtLocation(node);
+    typeInfo.symbol = type.getSymbol();
+    typeInfo.ownTypeAsString = node.expression.getText();
+    const modulePath = findModule(type);
+    typeInfo.isOwnType =
+      !!modulePath && path.basename(modulePath) === path.basename(context.dts);
   } else {
-    // use typeArgumentMapping
-    if (isPrimitiveType(node) || isEnumType(node)) {
-      fillBaseInfoFrom(node, null);
-    } else if (node.isUnion()) {
-      for (const t of node.types) {
-        if ((t.flags & ts.TypeFlags.Null) !== 0) {
-          typeInfo.isNullable = true;
-        } else if ((t.flags & ts.TypeFlags.Undefined) !== 0) {
-          typeInfo.isOptional = true;
-        } else if (!mainType) {
-          fillBaseInfoFrom(t, null);
-        } else if (allowUnion) {
-          typeInfo.unionTypes ??= [];
-          (typeInfo.unionTypes as TypeWithNullableInfo[]).push(
-            getTypeWithNullableInfo(
-              context,
-              t,
-              false,
-              false,
-              typeArgumentMapping,
-              referenceNode
-            )
-          );
-        } else {
-          throw new Error(
-            "Multi union types on not supported at this location: " +
-              typeInfo.typeAsString
-          );
-        }
-      }
-    } else {
-      fillBaseInfoFrom(node, null);
-    }
+    fillBaseInfoFrom(node);
   }
 
   return typeInfo;
 }
 
-export function isEnumType(type: ts.Type) {
+function isEnumType(type: ts.Type) {
   // if for some reason this returns true...
   if (hasFlag(type, ts.TypeFlags.Enum)) return true;
   // it's not an enum type if it's an enum literal type
@@ -400,11 +244,11 @@ export function isEnumType(type: ts.Type) {
   );
 }
 
-export function hasFlag(type: ts.Type, flag: ts.TypeFlags): boolean {
+function hasFlag(type: ts.Type, flag: ts.TypeFlags): boolean {
   return (type.flags & flag) === flag;
 }
 
-export function isPrimitiveType(type: ts.Type | null) {
+function isPrimitiveType(type: ts.Type | null) {
   if (!type) {
     return false;
   }
@@ -428,7 +272,7 @@ export function isPrimitiveType(type: ts.Type | null) {
   return false;
 }
 
-export function isNumberType(type: ts.Type | null) {
+function isNumberType(type: ts.Type | null) {
   if (!type) {
     return false;
   }
@@ -442,9 +286,17 @@ export function isNumberType(type: ts.Type | null) {
 
 export function valueOrFirstDeclarationInDts(
   context: GenerateContext,
+  s: ts.Symbol,
+  errorNode: ts.Node
+): ts.Declaration;
+export function valueOrFirstDeclarationInDts(
+  context: GenerateContext,
+  s: ts.Symbol
+): ts.Declaration | undefined;
+export function valueOrFirstDeclarationInDts(
+  context: GenerateContext,
   s: ts.Symbol | undefined,
-  referenceNode: ts.Node,
-  throwError: boolean
+  errorNode?: ts.Node
 ) {
   if (!s) {
     return undefined;
@@ -462,16 +314,14 @@ export function valueOrFirstDeclarationInDts(
     return d;
   }
 
-  if (throwError) {
+  if (errorNode) {
     throw new Error(
       "Could not resolve declarataion of symbol " +
         s.name +
         " at " +
-        referenceNode.getSourceFile().fileName +
+        errorNode.getSourceFile().fileName +
         ":" +
-        referenceNode
-          .getSourceFile()
-          .getLineAndCharacterOfPosition(referenceNode.pos)
+        errorNode.getSourceFile().getLineAndCharacterOfPosition(errorNode.pos)
     );
   }
 

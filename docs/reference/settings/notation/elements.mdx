@@ -28,7 +28,9 @@ the key is the element to configure and the value is a boolean value whether it 
 
 ### Type
 
-<CodeBadge type="js" name="Map" /><CodeBadge type="net" name="Map<AlphaTab.NotationElement, bool>" /><CodeBadge type="android" name="Map<alphaTab.NotationElement, Boolean>" />
+<CodeBadge type="js" name="Map<NotationElement, boolean>" /><CodeBadge type="net" name="Map<AlphaTab.NotationElement, bool>" /><CodeBadge type="android" name="alphaTab.collections.ObjectBooleanMap" />import MapDocs from '@site/docs/reference/types/notationelement/index.mdx';
+
+<MapDocs inlined={true} />
 ## Examples
 
 import ExampleTabs from "@theme/Tabs";
@@ -38,13 +40,12 @@ import ExampleTabItem from "@theme/TabItem";
     defaultValue="javascript"
     values={[
       { label: "JavaScript", value: "javascript"},
-      { label: "HTML", value: "html"},
       { label: "C#", value: "csharp"},
       { label: "Android", value: "android"}
     ]}
 >
 <ExampleTabItem value="javascript">
-Internally the setting is a [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) where the key must be a [`NotationElement`](/docs/reference/types/notationelement.mdx) enumeration value.
+Internally the setting is a [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) where the key must be a [`NotationElement`](/docs/reference/types/notationelement/index.mdx) enumeration value.
 For JSON input the usual enumeration serialization applies where also the names can be used. The names
 are case insensitive.
 
@@ -58,12 +59,6 @@ const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'), {
     }
 });
 api.settings.notation.elements.set(alphaTab.NotationElement.EffectWhammyBar, false);
-```
-</ExampleTabItem>
-<ExampleTabItem value="html">
-For data attributes currently a full object must be embedded in the attribute value.
-```html
-<div id="alphaTab" data-notation-elements='{"ScoreTitle": false, "TrackNames": false}'></div>
 ```
 </ExampleTabItem>
 <ExampleTabItem value="csharp">
