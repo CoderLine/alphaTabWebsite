@@ -505,7 +505,7 @@ function getDeclarationReferenceUrl(
 
       return `/docs/reference/types/${name
         .replaceAll(".", "/")
-        .toLowerCase()}/`;
+        .toLowerCase()}`;
 
     case ts.SyntaxKind.MethodDeclaration:
     case ts.SyntaxKind.MethodSignature:
@@ -522,7 +522,7 @@ function getDeclarationReferenceUrl(
         getDeclarationReferenceUrl(
           context,
           element.parent as ts.ClassDeclaration | ts.InterfaceDeclaration,
-        ) + page
+        ) + '/' + page
       );
     case ts.SyntaxKind.EnumMember:
       return (
