@@ -1,0 +1,69 @@
+---
+title: player
+description: "The alphaSynth player used for playback."
+sidebar_custom_props:
+  kind: property
+  category: Properties - Player
+  since: 0.9.4
+---
+
+import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
+
+<SinceBadge since="0.9.4" />
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+
+<PropertyDescription />
+
+### Description
+The alphaSynth player used for playback. This is the low-level API to the Midi synthesizer used for playback.
+Gets access to the underling [`IAlphaSynth`](/docs/reference/types/synth/ialphasynth/) that is used for the audio playback.
+
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`player : IAlphaSynth | null;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`AlphaTab.Synth.IAlphaSynth? Player { get; set; }`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`var player: alphaTab.synth.IAlphaSynth?`}</CodeBlock>
+</TabItem>
+</Tabs>
+
+
+## Examples
+
+<Tabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<TabItem value="javascript">
+```js
+const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
+setupPlayerEvents(api.settings);
+```
+</TabItem>
+<TabItem value="csharp">
+```cs
+var api = new AlphaTabApi<MyControl>(...);
+SetupPlayerEvents(api.Player);
+```
+</TabItem>
+<TabItem value="android">
+```kotlin
+val api = AlphaTabApi<MyControl>(...)
+setupPlayerEvents(api.player)
+```
+</TabItem>
+</Tabs>

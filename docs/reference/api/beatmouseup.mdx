@@ -1,0 +1,73 @@
+---
+title: beatMouseUp
+description: "This event is fired whenever the user releases the mouse after a mouse press on a beat."
+sidebar_custom_props:
+  kind: event
+  category: Events - Player
+  since: 0.9.7
+---
+
+import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
+
+<SinceBadge since="0.9.7" />
+
+### Description
+This event is fired whenever the user releases the mouse after a mouse press on a beat. This event is fired regardless of whether the mouse was released on a beat.
+The parameter is null if the mouse was released somewhere beside the beat.
+
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`beatMouseUp : IEventEmitterOfT<Beat | null>;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`AlphaTab.IEventEmitterOfT<AlphaTab.Model.Beat?> BeatMouseUp { get; set; }`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`var beatMouseUp: alphaTab.IEventEmitterOfT<alphaTab.model.Beat?>`}</CodeBlock>
+</TabItem>
+</Tabs>
+
+
+## Examples
+
+<Tabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<TabItem value="javascript">
+```js
+const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
+api.beatMouseUp.on((beat) => {
+    hideSelection(beat);
+});
+```
+</TabItem>
+<TabItem value="csharp">
+```cs
+var api = new AlphaTabApi<MyControl>(...);
+api.BeatMouseUp.On(beat =>
+{
+    HideSelection(beat);
+});
+```
+</TabItem>
+<TabItem value="android">
+```kotlin
+val api = AlphaTabApi<MyControl>(...)
+api.beatMouseUp.on { beat ->
+    hideSelection(beat)
+}
+```
+</TabItem>
+</Tabs>

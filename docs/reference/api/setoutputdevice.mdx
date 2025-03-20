@@ -1,0 +1,90 @@
+---
+title: setOutputDevice
+description: "Changes the output device which should be used for playing the audio (player must be enabled)."
+sidebar_custom_props:
+  kind: method
+  category: Methods - Player
+  since: 1.5.0
+---
+
+import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
+
+<SinceBadge since="1.5.0" />
+
+### Description
+Changes the output device which should be used for playing the audio (player must be enabled). Use [`enumerateOutputDevices`](/docs/reference/types/alphatabapibase/enumerateoutputdevices) to load the list of available devices.
+
+In the web version this functionality relies on experimental APIs and might not yet be available in all browsers. https://caniuse.com/mdn-api_audiocontext_sinkid
+
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`setOutputDevice(device: ISynthOutputDevice | null): Promise<void>;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`Task<void> SetOutputDevice(AlphaTab.Synth.ISynthOutputDevice? device)`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`suspend fun setOutputDevice(device: alphaTab.synth.ISynthOutputDevice?): Unit`}</CodeBlock>
+</TabItem>
+</Tabs>
+
+
+<ParameterTable>
+    <ParameterRow platform="all" name="device">
+        The output device to use, or null to switch to the default device.
+    </ParameterRow>
+</ParameterTable>
+
+
+## Examples
+
+<Tabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<TabItem value="javascript">
+```js
+const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
+const devices = await api.enumerateOutputDevices();
+
+buildDeviceSelector(devices, async selectedDevice => {
+  await api.setOutputDevice(selectedDevice);
+});
+```
+</TabItem>
+<TabItem value="csharp">
+```cs
+var api = new AlphaTabApi<MyControl>(...);
+var devices = await api.EnumerateOutputDevices();
+
+BuildDeviceSelector(devices, async selectedDevice => {
+  await api.SetOutputDevice(selectedDevice);
+});
+```
+</TabItem>
+<TabItem value="android">
+```kotlin
+fun init() = kotlinx.coroutines.runBlocking {
+  val api = AlphaTabApi<MyControl>(...)
+  val devices = api.enumerateOutputDevices().await()
+
+  buildDeviceSelector(devices, fun (selectedDevice) {
+    suspend {
+      await api.setOutputDevice(selectedDevice)
+    }
+  });
+}
+```
+</TabItem>
+</Tabs>

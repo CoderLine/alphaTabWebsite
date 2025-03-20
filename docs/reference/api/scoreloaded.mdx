@@ -1,0 +1,74 @@
+---
+title: scoreLoaded
+description: "This event is fired whenever a new song is loaded."
+sidebar_custom_props:
+  kind: event
+  category: Events - Core
+  since: 0.9.4
+---
+
+import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
+
+<SinceBadge since="0.9.4" />
+
+### Description
+This event is fired whenever a new song is loaded. This event is fired whenever a new song is loaded or changing due to [`renderScore`](/docs/reference/types/alphatabapibase/renderscore) or [`renderTracks`](/docs/reference/types/alphatabapibase/rendertracks) calls.
+It is fired after the transposition midi pitches from the settings were applied, but before any midi is generated or rendering is started.
+This allows any modification of the score before further processing.
+
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`scoreLoaded : IEventEmitterOfT<Score>;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`AlphaTab.IEventEmitterOfT<AlphaTab.Model.Score> ScoreLoaded { get; set; }`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`var scoreLoaded: alphaTab.IEventEmitterOfT<alphaTab.model.Score>`}</CodeBlock>
+</TabItem>
+</Tabs>
+
+
+## Examples
+
+<Tabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<TabItem value="javascript">
+```js
+const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
+api.scoreLoaded.on((score) => {
+    updateSongInformationInUi(score);
+});
+```
+</TabItem>
+<TabItem value="csharp">
+```cs
+var api = new AlphaTabApi<MyControl>(...);
+api.ScoreLoaded.On(score =>
+{
+    UpdateSongInformationInUi(score);
+});
+```
+</TabItem>
+<TabItem value="android">
+```kotlin
+val api = AlphaTabApi<MyControl>(...)
+api.scoreLoaded.on { score ->
+    updateSongInformationInUi(score)
+}
+```
+</TabItem>
+</Tabs>

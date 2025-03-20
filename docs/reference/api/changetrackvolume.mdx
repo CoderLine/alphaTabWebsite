@@ -1,0 +1,79 @@
+---
+title: changeTrackVolume
+description: "Changes the volume of the given tracks."
+sidebar_custom_props:
+  kind: method
+  category: Methods - Player
+  since: 0.9.4
+---
+
+import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
+
+<SinceBadge since="0.9.4" />
+
+### Description
+Changes the volume of the given tracks. This will result in a volume change of the primary and secondary midi channel that the track uses for playback.
+If the track shares the channels with another track, all related tracks will be changed as they cannot be distinguished.
+
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`changeTrackVolume(tracks: Track[], volume: number): void;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`void ChangeTrackVolume(IList<AlphaTab.Model.Track> tracks, double volume)`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`fun changeTrackVolume(tracks: alphaTab.collections.List<alphaTab.model.Track>, volume: Double): Unit`}</CodeBlock>
+</TabItem>
+</Tabs>
+
+
+<ParameterTable>
+    <ParameterRow platform="all" name="tracks">
+        The tracks for which the volume should be changed.
+    </ParameterRow>
+    <ParameterRow platform="all" name="volume">
+        The volume to set for all tracks in percent (0-1)
+    </ParameterRow>
+</ParameterTable>
+
+
+## Examples
+
+<Tabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<TabItem value="javascript">
+```js
+const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
+api.changeTrackVolume([api.score.tracks[0], api.score.tracks[1]], 1.5);
+api.changeTrackVolume([api.score.tracks[2]], 0.5);
+```
+</TabItem>
+<TabItem value="csharp">
+```cs
+var api = new AlphaTabApi<MyControl>(...);
+api.ChangeTrackVolume(new Track[] { api.Score.Tracks[0], api.Score.Tracks[1] }, 1.5);
+api.ChangeTrackVolume(new Track[] { api.Score.Tracks[2] }, 0.5);
+```
+</TabItem>
+<TabItem value="android">
+```kotlin
+val api = AlphaTabApi<MyControl>(...);
+api.changeTrackVolume(alphaTab.collections.List<alphaTab.model.Track>(api.score.tracks[0], api.score.tracks[1]), 1.5);
+api.changeTrackVolume(alphaTab.collections.List<alphaTab.model.Track>(api.score.tracks[2]), 0.5);
+```
+</TabItem>
+</Tabs>

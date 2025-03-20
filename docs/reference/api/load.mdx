@@ -1,0 +1,85 @@
+---
+title: load
+description: "Initiates a load of the score using the given data."
+sidebar_custom_props:
+  kind: method
+  category: Methods - Player
+  since: 0.9.4
+---
+
+import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
+
+<SinceBadge since="0.9.4" />
+
+### Description
+Initiates a load of the score using the given data.
+
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`load(scoreData: unknown, trackIndexes?: number[]): boolean;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`bool Load(object scoreData, IList<double>? trackIndexes)`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`fun load(scoreData: Any, trackIndexes: alphaTab.collections.DoubleList): Boolean`}</CodeBlock>
+</TabItem>
+</Tabs>
+
+
+<ParameterTable>
+    <ParameterRow platform="all" name="scoreData">
+        The data container supported by [`IUiFacade`](/docs/reference/types/platform/iuifacade/).  The supported types is depending on the platform:
+        
+        * A `alphaTab.model.Score` instance (all platforms)
+        * A `ArrayBuffer` or `Uint8Array` containing one of the supported file formats (all platforms, native byte array or input streams on other platforms)
+        * A url from where to download the binary data of one of the supported file formats (browser only)
+    </ParameterRow>
+    <ParameterRow platform="all" name="trackIndexes">
+        The indexes of the tracks from the song that should be rendered. If not provided, the first track of the
+        song will be shown.
+    </ParameterRow>
+</ParameterTable>
+
+### Returns 
+true if the data object is supported and a load was initiated, otherwise false 
+
+
+## Examples
+
+<Tabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<TabItem value="javascript">
+```js
+const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
+api.load('/assets/MyFile.gp');
+```
+</TabItem>
+<TabItem value="csharp">
+```cs
+var api = new AlphaTabApi<MyControl>(...);
+api.Load(System.IO.File.OpenRead("MyFile.gp"));
+```
+</TabItem>
+<TabItem value="android">
+```kotlin
+val api = AlphaTabApi<MyControl>(...)
+contentResolver.openInputStream(uri).use {
+    api.load(it)
+}
+```
+</TabItem>
+</Tabs>

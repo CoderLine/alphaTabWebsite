@@ -1,0 +1,38 @@
+---
+title: canvasElement
+description: "The UI container that will hold all rendered results."
+sidebar_custom_props:
+  kind: property
+  category: Properties - Core
+  since: 0.9.4
+---
+
+import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
+
+<SinceBadge since="0.9.4" />
+import { PropertyDescription } from '@site/src/components/PropertyDescription';
+
+<PropertyDescription />
+
+### Description
+The UI container that will hold all rendered results.
+
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`readonly canvasElement : IContainer;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`AlphaTab.Platform.IContainer CanvasElement { get; }`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`val canvasElement: alphaTab.platform.IContainer`}</CodeBlock>
+</TabItem>
+</Tabs>
+

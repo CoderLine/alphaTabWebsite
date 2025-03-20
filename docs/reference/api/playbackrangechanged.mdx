@@ -1,0 +1,88 @@
+---
+title: playbackRangeChanged
+description: "This event is fired when the playback range changed."
+sidebar_custom_props:
+  kind: event
+  category: Events - Player
+  since: 1.2.3
+---
+
+import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
+
+<SinceBadge since="1.2.3" />
+
+### Description
+This event is fired when the playback range changed.
+
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`playbackRangeChanged : IEventEmitterOfT<PlaybackRangeChangedEventArgs>;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`AlphaTab.IEventEmitterOfT<AlphaTab.Synth.PlaybackRangeChangedEventArgs> PlaybackRangeChanged { get; set; }`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`var playbackRangeChanged: alphaTab.IEventEmitterOfT<alphaTab.synth.PlaybackRangeChangedEventArgs>`}</CodeBlock>
+</TabItem>
+</Tabs>
+
+
+## Examples
+
+<Tabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<TabItem value="javascript">
+```js
+const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
+api.playbackRangeChanged.on((args) => {
+    if (args.playbackRange) {
+        highlightRangeInProgressBar(args.playbackRange.startTick, args.playbackRange.endTick);
+    } else {
+        clearHighlightInProgressBar();
+    }
+});
+```
+</TabItem>
+<TabItem value="csharp">
+```cs
+var api = new AlphaTabApi<MyControl>(...);
+api.PlaybackRangeChanged.On(args =>
+{
+    if (args.PlaybackRange != null)
+    {
+        HighlightRangeInProgressBar(args.PlaybackRange.StartTick, args.PlaybackRange.EndTick);
+    }
+    else
+    {
+        ClearHighlightInProgressBar();
+    }
+});
+```
+</TabItem>
+<TabItem value="android">
+```kotlin
+val api = AlphaTabApi<MyControl>(...)
+api.playbackRangeChanged.on { args ->
+    val playbackRange = args.playbackRange
+    if (playbackRange != null) {
+        highlightRangeInProgressBar(playbackRange.startTick, playbackRange.endTick)
+    } else {
+        clearHighlightInProgressBar()
+    }
+}
+```
+</TabItem>
+</Tabs>

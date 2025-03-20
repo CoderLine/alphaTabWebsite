@@ -1,0 +1,42 @@
+---
+title: downloadMidi
+description: "Generates an SMF1.0 file and downloads it"
+sidebar_custom_props:
+  kind: method
+  javaScriptOnly: true
+  category: Methods - Core
+  since: 1.3.0
+---
+
+import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
+
+<SinceBadge since="1.3.0" />
+
+### Description
+Generates an SMF1.0 file and downloads it Generates a SMF1.0 compliant MIDI file of the currently loaded song and starts the download of it.
+Please be aware that SMF1.0 does not support bends per note which might result in wrong bend effects
+in case multiple bends are applied on the same beat (e.g. two notes bending or vibrato + bends).
+
+<CodeBlock language="ts">{`downloadMidi(format?: MidiFileFormat): void;`}</CodeBlock>
+
+
+<ParameterTable>
+    <ParameterRow platform="all" name="format">
+        (no description)
+    </ParameterRow>
+</ParameterTable>
+
+
+## Example - JavaScript
+
+```js
+const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
+api.downloadMidi();
+```

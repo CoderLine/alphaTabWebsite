@@ -1,0 +1,76 @@
+---
+title: postRenderFinished
+description: "This event is fired when the rendering of the whole music sheet is finished, and all handlers of `renderFinished` ran."
+sidebar_custom_props:
+  kind: event
+  category: Events - Core
+  since: 0.9.4
+---
+
+import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
+
+<SinceBadge since="0.9.4" />
+
+### Description
+This event is fired when the rendering of the whole music sheet is finished, and all handlers of `renderFinished` ran. If [`CoreSettings.enableLazyLoading`](/docs/reference/settings/core/enablelazyloading) is enabled not all partial images of the music sheet might be rendered.
+In this case the `renderFinished` event rather represents that the whole music sheet has been layouted and arranged
+and every partial image can be requested for rendering. If you neeed more fine-grained access
+to the actual layouting and rendering progress, you need to look at the low-level apis [`IScoreRenderer.partialLayoutFinished`](/docs/reference/types/rendering/iscorerenderer/partiallayoutfinished) and
+[`IScoreRenderer.partialRenderFinished`](/docs/reference/types/rendering/iscorerenderer/partialrenderfinished) accessible via [`renderer`](/docs/reference/types/alphatabapibase/renderer).
+
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`postRenderFinished : IEventEmitter;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`AlphaTab.IEventEmitter PostRenderFinished { get; set; }`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`var postRenderFinished: alphaTab.IEventEmitter`}</CodeBlock>
+</TabItem>
+</Tabs>
+
+
+## Examples
+
+<Tabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<TabItem value="javascript">
+```js
+const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
+api.postRenderFinished.on(() => {
+    hideLoadingIndicator();
+});
+```
+</TabItem>
+<TabItem value="csharp">
+```cs
+var api = new AlphaTabApi<MyControl>(...);
+api.PostRenderFinished.On(() =>
+{
+    HideLoadingIndicator();
+});
+```
+</TabItem>
+<TabItem value="android">
+```kotlin
+val api = AlphaTabApi<MyControl>(...)
+api.postRenderFinished.on {
+    hideLoadingIndicator();
+}
+```
+</TabItem>
+</Tabs>

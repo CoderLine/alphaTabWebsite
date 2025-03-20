@@ -1,0 +1,75 @@
+---
+title: playNote
+description: "Triggers the play of the given note."
+sidebar_custom_props:
+  kind: method
+  category: Methods - Player
+  since: 1.1.0
+---
+
+import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
+
+<SinceBadge since="1.1.0" />
+
+### Description
+Triggers the play of the given note. This will stop the any other current ongoing playback.
+This method can be used in applications when individual notes need to be played for lesson or editor style purposes.
+The player will not report any change in state or playback position during the playback of the requested note.
+It is a playback of audio separate to the main song playback.
+
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`playNote(note: Note): void;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`void PlayNote(AlphaTab.Model.Note note)`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`fun playNote(note: alphaTab.model.Note): Unit`}</CodeBlock>
+</TabItem>
+</Tabs>
+
+
+<ParameterTable>
+    <ParameterRow platform="all" name="note">
+        the single note to play
+    </ParameterRow>
+</ParameterTable>
+
+
+## Examples
+
+<Tabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<TabItem value="javascript">
+```js
+const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
+api.playNote(api.score.tracks[0].staves[0].bars[0].voices[0].beats[0].notes[0]);
+```
+</TabItem>
+<TabItem value="csharp">
+```cs
+var api = new AlphaTabApi<MyControl>(...);
+api.PlayNote(api.Score.Tracks[0].Staves[0].Bars[0].Voices[0].Beats[0].Notes[0]);
+```
+</TabItem>
+<TabItem value="android">
+```kotlin
+val api = AlphaTabApi<MyControl>(...)
+api.playNote(api.score.tracks[0].staves[0].bars[0].voices[0].beats[0].notes[0]);
+```
+</TabItem>
+</Tabs>

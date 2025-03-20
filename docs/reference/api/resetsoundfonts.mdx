@@ -1,0 +1,79 @@
+---
+title: resetSoundFonts
+description: "Unloads all presets from previously loaded SoundFonts."
+sidebar_custom_props:
+  kind: method
+  category: Methods - Player
+  since: 0.9.4
+---
+
+import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
+
+<SinceBadge since="0.9.4" />
+
+### Description
+Unloads all presets from previously loaded SoundFonts. This function resets the player internally to not have any SoundFont loaded anymore. This allows you to reduce the memory usage of the page
+if multiple partial SoundFonts are loaded via `loadSoundFont(..., true)`. Depending on the workflow you might also just want to use `loadSoundFont(..., false)` once
+instead of unloading the previous SoundFonts.
+
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`resetSoundFonts(): void;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`void ResetSoundFonts()`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`fun resetSoundFonts(): Unit`}</CodeBlock>
+</TabItem>
+</Tabs>
+
+
+## Examples
+
+<Tabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<TabItem value="javascript">
+```js
+const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
+api.loadSoundFont('/assets/guitars.sf2', true);
+api.loadSoundFont('/assets/pianos.sf2', true);
+// ..
+api.resetSoundFonts();
+api.loadSoundFont('/assets/synths.sf2', true);
+```
+</TabItem>
+<TabItem value="csharp">
+```cs
+var api = new AlphaTabApi<MyControl>(...);
+api.LoadSoundFont(System.IO.File.OpenRead("guitars.sf2"), true);
+api.LoadSoundFont(System.IO.File.OpenRead("pianos.sf2"), true);
+...
+api.ResetSoundFonts();
+api.LoadSoundFont(System.IO.File.OpenRead("synths.sf2"), true);
+```
+</TabItem>
+<TabItem value="android">
+```kotlin
+val api = AlphaTabApi<MyControl>(...)
+api.loadSoundFont(readResource("guitars.sf2"), true)
+api.loadSoundFont(readResource("pianos.sf2"), true)
+...
+api.resetSoundFonts()
+api.loadSoundFont(readResource("synths.sf2"), true)
+```
+</TabItem>
+</Tabs>

@@ -1,0 +1,78 @@
+---
+title: renderTracks
+description: "Renders the given list of tracks."
+sidebar_custom_props:
+  kind: method
+  category: Methods - Core
+  since: 0.9.4
+---
+
+import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
+
+<SinceBadge since="0.9.4" />
+
+### Description
+Renders the given list of tracks.
+
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`renderTracks(tracks: Track[]): void;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`void RenderTracks(IList<AlphaTab.Model.Track> tracks)`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`fun renderTracks(tracks: alphaTab.collections.List<alphaTab.model.Track>): Unit`}</CodeBlock>
+</TabItem>
+</Tabs>
+
+
+<ParameterTable>
+    <ParameterRow platform="all" name="tracks">
+        The tracks to render. They must all belong to the same score.
+    </ParameterRow>
+</ParameterTable>
+
+
+## Examples
+
+<Tabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<TabItem value="javascript">
+```js
+const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
+api.renderTracks([api.score.tracks[0], api.score.tracks[1]]);
+```
+</TabItem>
+<TabItem value="csharp">
+```cs
+var api = new AlphaTabApi<MyControl>(...);
+api.RenderTracks(new []{
+    api.Score.Tracks[2],
+    api.Score.Tracks[3]
+});
+```
+</TabItem>
+<TabItem value="android">
+```kotlin
+val api = AlphaTabApi<MyControl>(...)
+api.renderTracks(alphaTab.collections.List(
+    api.score.tracks[2],
+    api.score.tracks[3]
+}
+```
+</TabItem>
+</Tabs>

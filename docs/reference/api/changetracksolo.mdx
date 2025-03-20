@@ -1,0 +1,77 @@
+---
+title: changeTrackSolo
+description: "Changes the given tracks to be played solo or not."
+sidebar_custom_props:
+  kind: method
+  category: Methods - Player
+  since: 0.9.4
+---
+
+import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import { CodeBadge } from '@site/src/components/CodeBadge';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+import DynHeading from '@site/src/components/DynHeading';
+import Link from '@docusaurus/Link';
+
+<SinceBadge since="0.9.4" />
+
+### Description
+Changes the given tracks to be played solo or not. If any track is set to solo, all other tracks are muted, unless they are also flagged as solo.
+This will result in a solo playback of the primary and secondary midi channel that the track uses for playback.
+If the track shares the channels with another track, all related tracks will be played as they cannot be distinguished.
+
+<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
+<TabItem value="js">
+<CodeBlock language="ts">{`changeTrackSolo(tracks: Track[], solo: boolean): void;`}</CodeBlock>
+</TabItem>
+<TabItem value="cs">
+<CodeBlock language="csharp">{`void ChangeTrackSolo(IList<AlphaTab.Model.Track> tracks, bool solo)`}</CodeBlock>
+</TabItem>
+<TabItem value="kt">
+<CodeBlock language="kotlin">{`fun changeTrackSolo(tracks: alphaTab.collections.List<alphaTab.model.Track>, solo: Boolean): Unit`}</CodeBlock>
+</TabItem>
+</Tabs>
+
+
+<ParameterTable>
+    <ParameterRow platform="all" name="tracks">
+        The list of tracks to play solo or not.
+    </ParameterRow>
+    <ParameterRow platform="all" name="solo">
+        If set to true, the tracks will be added to the solo list. If false, they are removed.
+    </ParameterRow>
+</ParameterTable>
+
+
+## Examples
+
+<Tabs
+    defaultValue="javascript"
+    values={[
+      { label: "JavaScript", value: "javascript"},
+      { label: "C#", value: "csharp"},
+      { label: "Android", value: "android"}
+    ]}
+>
+<TabItem value="javascript">
+```js
+const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'));
+api.changeTrackSolo([api.score.tracks[0], api.score.tracks[1]], true);
+```
+</TabItem>
+<TabItem value="csharp">
+```cs
+var api = new AlphaTabApi<MyControl>(...);
+api.ChangeTrackSolo(new Track[] { api.Score.Tracks[0], api.Score.Tracks[1] }, true);
+```
+</TabItem>
+<TabItem value="android">
+```kotlin
+val api = AlphaTabApi<MyControl>(...)
+api.changeTrackSolo(alphaTab.collections.List<alphaTab.model.Track>(api.score.tracks[0], api.score.tracks[1]), true);
+```
+</TabItem>
+</Tabs>
