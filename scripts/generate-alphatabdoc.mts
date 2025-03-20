@@ -2,7 +2,7 @@ import path from "path";
 import url from "url";
 import ts, { JSDocParsingMode } from "typescript";
 import { generateSettings } from "./generate-settings.mjs";
-import { GenerateContext } from "./typeschema";
+import { GenerateContext } from "./typeschema.mjs";
 import { generateTypeDocs } from "./generate-typedocs.mjs";
 import { cconsole } from "./generate-common.mjs";
 import { generateApiDocs } from "./generate-api.mjs";

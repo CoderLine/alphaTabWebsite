@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-import { GenerateContext, repositoryRoot } from "./typeschema";
+import { GenerateContext, repositoryRoot } from "./typeschema.mjs";
 import {
   collectMembers,
   getCategory,
@@ -14,7 +14,7 @@ import {
   writePropertyDetails,
 } from "./generate-common.mjs";
 import ts from "typescript";
-import { FileStream, openFileStream } from "./util";
+import { FileStream, openFileStream } from "./util.mjs";
 
 export async function generateApiDocs(context: GenerateContext) {
   const basePath = path.join(repositoryRoot, "docs", "reference", "api");

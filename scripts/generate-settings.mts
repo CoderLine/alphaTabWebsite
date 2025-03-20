@@ -14,8 +14,8 @@ import {
   writeCommonImports,
   writePropertyDetails,
 } from "./generate-common.mjs";
-import { GenerateContext } from "./typeschema";
-import { openFileStream } from "./util";
+import { GenerateContext } from "./typeschema.mjs";
+import { openFileStream } from "./util.mjs";
 
 export async function generateSettings(context: GenerateContext) {
   enableWarningsOnMissingDocs();

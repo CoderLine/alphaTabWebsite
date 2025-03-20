@@ -4,7 +4,7 @@ import {
   GenerateContext,
   getTypeWithNullableInfo,
   repositoryRoot,
-} from "./typeschema";
+} from "./typeschema.mjs";
 import {
   collectMembers,
   getFullDescription,
@@ -18,7 +18,7 @@ import {
   TypeReferencedCodeBuilder,
 } from "./generate-common.mjs";
 import ts from "typescript";
-import { FileStream, openFileStream } from "./util";
+import { FileStream, openFileStream } from "./util.mjs";
 
 export async function generateTypeDocs(context: GenerateContext) {
   for (const [exportedName, exportedType] of context.flatExports) {

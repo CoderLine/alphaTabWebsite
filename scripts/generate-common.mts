@@ -7,12 +7,9 @@ import {
   getTypeWithNullableInfo,
   TypeWithNullableInfo,
   valueOrFirstDeclarationInDts,
-} from "./typeschema";
-import { toPascalCase } from "@site/src/names";
+} from "./typeschema.mjs";
 import { styleText } from "util";
-import { FileStream } from "./util";
-
-export { toPascalCase } from "@site/src/names";
+import { FileStream, toPascalCase } from "./util.mjs";
 
 function toExampleKey(title: string) {
   return title
@@ -21,7 +18,7 @@ function toExampleKey(title: string) {
     .replaceAll(/[^a-z0-9]/g, "-");
 }
 
-export { repositoryRoot } from "./typeschema";
+export { repositoryRoot } from "./typeschema.mjs";
 
 export function collectExamples(
   context: GenerateContext,
