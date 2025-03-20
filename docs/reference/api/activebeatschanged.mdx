@@ -19,17 +19,17 @@ import Link from '@docusaurus/Link';
 <SinceBadge since="1.2.3" />
 
 ### Description
-This event is fired when the currently active beats across all tracks change. Unlike the [`playedBeatChanged`](/docs/reference/types/alphatabapibase/playedbeatchanged) event this event contains the beats of all tracks and voices independent of them being rendered.
+This event is fired when the currently active beats across all tracks change. Unlike the <code style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}><Link style={{"color":"#36acaa"}} to={"/docs/reference/types/alphatabapibase/playedbeatchanged"}>{"playedBeatChanged"}</Link></code> event this event contains the beats of all tracks and voices independent of them being rendered.
 
 <Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
 <TabItem value="js">
-<CodeBlock language="ts">{`activeBeatsChanged : IEventEmitterOfT<ActiveBeatsChangedEventArgs>;`}</CodeBlock>
+<div className="codeBlockContainer"><div className="codeBlockContent"><pre className="codeBlock"><code className="codeBlockLines" style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}><span style={{"color":"#36acaa"}}>{"activeBeatsChanged"}</span><span style={{"color":"#393A34"}}>{":"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><Link style={{"color":"#36acaa"}} to={"/docs/reference/types/ieventemitteroft/"}>{"IEventEmitterOfT"}</Link><span style={{"color":"#393A34"}}>{"<"}</span><Link style={{"color":"#36acaa"}} to={"/docs/reference/types/synth/activebeatschangedeventargs/"}>{"ActiveBeatsChangedEventArgs"}</Link><span style={{"color":"#393A34"}}>{">"}</span><span style={{"color":"#393A34"}}>{";"}</span></code></pre></div></div>
 </TabItem>
 <TabItem value="cs">
-<CodeBlock language="csharp">{`AlphaTab.IEventEmitterOfT<AlphaTab.Synth.ActiveBeatsChangedEventArgs> ActiveBeatsChanged { get; set; }`}</CodeBlock>
+<div className="codeBlockContainer"><div className="codeBlockContent"><pre className="codeBlock"><code className="codeBlockLines" style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}><Link style={{"color":"#36acaa"}} to={"/docs/reference/types/ieventemitteroft/"}>{"IEventEmitterOfT"}</Link><span style={{"color":"#393A34"}}>{"<"}</span><Link style={{"color":"#36acaa"}} to={"/docs/reference/types/synth/activebeatschangedeventargs/"}>{"ActiveBeatsChangedEventArgs"}</Link><span style={{"color":"#393A34"}}>{">"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><span style={{"color":"#36acaa"}}>{"ActiveBeatsChanged"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><span style={{"color":"#393A34"}}>{"{"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><span style={{"color":"#00009f"}}>{"get"}</span><span style={{"color":"#393A34"}}>{";"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><span style={{"color":"#00009f"}}>{"set"}</span><span style={{"color":"#393A34"}}>{";"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><span style={{"color":"#393A34"}}>{"}"}</span></code></pre></div></div>
 </TabItem>
 <TabItem value="kt">
-<CodeBlock language="kotlin">{`var activeBeatsChanged: alphaTab.IEventEmitterOfT<alphaTab.synth.ActiveBeatsChangedEventArgs>`}</CodeBlock>
+<div className="codeBlockContainer"><div className="codeBlockContent"><pre className="codeBlock"><code className="codeBlockLines" style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}><span style={{"color":"#00009f"}}>{"var"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><span style={{"color":"#36acaa"}}>{"activeBeatsChanged"}</span><span style={{"color":"#393A34"}}>{":"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><Link style={{"color":"#36acaa"}} to={"/docs/reference/types/ieventemitteroft/"}>{"IEventEmitterOfT"}</Link><span style={{"color":"#393A34"}}>{"<"}</span><Link style={{"color":"#36acaa"}} to={"/docs/reference/types/synth/activebeatschangedeventargs/"}>{"ActiveBeatsChangedEventArgs"}</Link><span style={{"color":"#393A34"}}>{">"}</span></code></pre></div></div>
 </TabItem>
 </Tabs>
 

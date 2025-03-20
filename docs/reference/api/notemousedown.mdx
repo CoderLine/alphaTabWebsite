@@ -20,18 +20,18 @@ import Link from '@docusaurus/Link';
 
 ### Description
 This event is fired whenever a the user presses the mouse button on a note head/number. This event is fired whenever a the user presses the mouse button on a note.
-It is only fired if [`CoreSettings.includeNoteBounds`](/docs/reference/settings/core/includenotebounds) was set to `true` because
-only then this hit detection can be done. A click on a note is considered if the note head or the note number on tabs are clicked as documented in [`boundsLookup`](/docs/reference/types/alphatabapibase/boundslookup).
+It is only fired if <code style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}><Link style={{"color":"#36acaa"}} to={"/docs/reference/settings/core/includenotebounds"}>{"CoreSettings.includeNoteBounds"}</Link></code> was set to `true` because
+only then this hit detection can be done. A click on a note is considered if the note head or the note number on tabs are clicked as documented in <code style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}><Link style={{"color":"#36acaa"}} to={"/docs/reference/types/alphatabapibase/boundslookup"}>{"boundsLookup"}</Link></code>.
 
 <Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
 <TabItem value="js">
-<CodeBlock language="ts">{`noteMouseDown : IEventEmitterOfT<Note>;`}</CodeBlock>
+<div className="codeBlockContainer"><div className="codeBlockContent"><pre className="codeBlock"><code className="codeBlockLines" style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}><span style={{"color":"#36acaa"}}>{"noteMouseDown"}</span><span style={{"color":"#393A34"}}>{":"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><Link style={{"color":"#36acaa"}} to={"/docs/reference/types/ieventemitteroft/"}>{"IEventEmitterOfT"}</Link><span style={{"color":"#393A34"}}>{"<"}</span><Link style={{"color":"#36acaa"}} to={"/docs/reference/types/model/note/"}>{"Note"}</Link><span style={{"color":"#393A34"}}>{">"}</span><span style={{"color":"#393A34"}}>{";"}</span></code></pre></div></div>
 </TabItem>
 <TabItem value="cs">
-<CodeBlock language="csharp">{`AlphaTab.IEventEmitterOfT<AlphaTab.Model.Note> NoteMouseDown { get; set; }`}</CodeBlock>
+<div className="codeBlockContainer"><div className="codeBlockContent"><pre className="codeBlock"><code className="codeBlockLines" style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}><Link style={{"color":"#36acaa"}} to={"/docs/reference/types/ieventemitteroft/"}>{"IEventEmitterOfT"}</Link><span style={{"color":"#393A34"}}>{"<"}</span><Link style={{"color":"#36acaa"}} to={"/docs/reference/types/model/note/"}>{"Note"}</Link><span style={{"color":"#393A34"}}>{">"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><span style={{"color":"#36acaa"}}>{"NoteMouseDown"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><span style={{"color":"#393A34"}}>{"{"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><span style={{"color":"#00009f"}}>{"get"}</span><span style={{"color":"#393A34"}}>{";"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><span style={{"color":"#00009f"}}>{"set"}</span><span style={{"color":"#393A34"}}>{";"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><span style={{"color":"#393A34"}}>{"}"}</span></code></pre></div></div>
 </TabItem>
 <TabItem value="kt">
-<CodeBlock language="kotlin">{`var noteMouseDown: alphaTab.IEventEmitterOfT<alphaTab.model.Note>`}</CodeBlock>
+<div className="codeBlockContainer"><div className="codeBlockContent"><pre className="codeBlock"><code className="codeBlockLines" style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}><span style={{"color":"#00009f"}}>{"var"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><span style={{"color":"#36acaa"}}>{"noteMouseDown"}</span><span style={{"color":"#393A34"}}>{":"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><Link style={{"color":"#36acaa"}} to={"/docs/reference/types/ieventemitteroft/"}>{"IEventEmitterOfT"}</Link><span style={{"color":"#393A34"}}>{"<"}</span><Link style={{"color":"#36acaa"}} to={"/docs/reference/types/model/note/"}>{"Note"}</Link><span style={{"color":"#393A34"}}>{">"}</span></code></pre></div></div>
 </TabItem>
 </Tabs>
 

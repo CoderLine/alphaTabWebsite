@@ -22,11 +22,11 @@ import { PropertyDescription } from '@site/src/components/PropertyDescription';
 <PropertyDescription />
 
 ### Description
-The tick cache allowing lookup of midi ticks to beats. In older versions of alphaTab you can access the `boundsLookup` via [`IScoreRenderer.boundsLookup`](/docs/reference/types/rendering/iscorerenderer/boundslookup) on [`renderer`](/docs/reference/types/alphatabapibase/renderer).
+The tick cache allowing lookup of midi ticks to beats. In older versions of alphaTab you can access the `boundsLookup` via <code style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}><Link style={{"color":"#36acaa"}} to={"/docs/reference/types/rendering/iscorerenderer/boundslookup"}>{"boundsLookup"}</Link></code> on <code style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}><Link style={{"color":"#36acaa"}} to={"/docs/reference/types/alphatabapibase/renderer"}>{"renderer"}</Link></code>.
 
 After the rendering completed alphaTab exposes via this lookup the location of the individual
 notation elements. The lookup provides fast access to the bars and beats at a given location.
-If the [`CoreSettings.includeNoteBounds`](/docs/reference/settings/core/includenotebounds) option was activated also the location of the individual notes can be obtained.
+If the <code style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}><Link style={{"color":"#36acaa"}} to={"/docs/reference/settings/core/includenotebounds"}>{"CoreSettings.includeNoteBounds"}</Link></code> option was activated also the location of the individual notes can be obtained.
 
 The property contains a `BoundsLookup` instance which follows a hierarchical structure that represents
 the tree of rendered elements.
@@ -49,13 +49,13 @@ You can check out the individual sizes and regions.
 
 <Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
 <TabItem value="js">
-<CodeBlock language="ts">{`readonly boundsLookup : BoundsLookup | null;`}</CodeBlock>
+<div className="codeBlockContainer"><div className="codeBlockContent"><pre className="codeBlock"><code className="codeBlockLines" style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}><span style={{"color":"#00009f"}}>{"readonly"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><span style={{"color":"#36acaa"}}>{"boundsLookup"}</span><span style={{"color":"#393A34"}}>{":"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><Link style={{"color":"#36acaa"}} to={"/docs/reference/types/rendering/boundslookup/"}>{"BoundsLookup"}</Link><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><span style={{"color":"#393A34"}}>{"|"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><span style={{"color":"#00009f"}}>{"null"}</span><span style={{"color":"#393A34"}}>{";"}</span></code></pre></div></div>
 </TabItem>
 <TabItem value="cs">
-<CodeBlock language="csharp">{`AlphaTab.Rendering.BoundsLookup? BoundsLookup { get; }`}</CodeBlock>
+<div className="codeBlockContainer"><div className="codeBlockContent"><pre className="codeBlock"><code className="codeBlockLines" style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}><Link style={{"color":"#36acaa"}} to={"/docs/reference/types/rendering/boundslookup/"}>{"BoundsLookup"}</Link><span style={{"color":"#393A34"}}>{"?"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><span style={{"color":"#36acaa"}}>{"BoundsLookup"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><span style={{"color":"#393A34"}}>{"{"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><span style={{"color":"#00009f"}}>{"get"}</span><span style={{"color":"#393A34"}}>{";"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><span style={{"color":"#393A34"}}>{"}"}</span></code></pre></div></div>
 </TabItem>
 <TabItem value="kt">
-<CodeBlock language="kotlin">{`val boundsLookup: alphaTab.rendering.BoundsLookup?`}</CodeBlock>
+<div className="codeBlockContainer"><div className="codeBlockContent"><pre className="codeBlock"><code className="codeBlockLines" style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}><span style={{"color":"#00009f"}}>{"val"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><span style={{"color":"#36acaa"}}>{"boundsLookup"}</span><span style={{"color":"#393A34"}}>{":"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><Link style={{"color":"#36acaa"}} to={"/docs/reference/types/rendering/boundslookup/"}>{"BoundsLookup"}</Link><span style={{"color":"#393A34"}}>{"?"}</span></code></pre></div></div>
 </TabItem>
 </Tabs>
 

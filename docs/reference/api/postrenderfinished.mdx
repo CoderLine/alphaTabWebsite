@@ -19,21 +19,21 @@ import Link from '@docusaurus/Link';
 <SinceBadge since="0.9.4" />
 
 ### Description
-This event is fired when the rendering of the whole music sheet is finished, and all handlers of `renderFinished` ran. If [`CoreSettings.enableLazyLoading`](/docs/reference/settings/core/enablelazyloading) is enabled not all partial images of the music sheet might be rendered.
+This event is fired when the rendering of the whole music sheet is finished, and all handlers of `renderFinished` ran. If <code style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}><Link style={{"color":"#36acaa"}} to={"/docs/reference/settings/core/enablelazyloading"}>{"CoreSettings.enableLazyLoading"}</Link></code> is enabled not all partial images of the music sheet might be rendered.
 In this case the `renderFinished` event rather represents that the whole music sheet has been layouted and arranged
 and every partial image can be requested for rendering. If you neeed more fine-grained access
-to the actual layouting and rendering progress, you need to look at the low-level apis [`IScoreRenderer.partialLayoutFinished`](/docs/reference/types/rendering/iscorerenderer/partiallayoutfinished) and
-[`IScoreRenderer.partialRenderFinished`](/docs/reference/types/rendering/iscorerenderer/partialrenderfinished) accessible via [`renderer`](/docs/reference/types/alphatabapibase/renderer).
+to the actual layouting and rendering progress, you need to look at the low-level apis <code style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}><Link style={{"color":"#36acaa"}} to={"/docs/reference/types/rendering/iscorerenderer/partiallayoutfinished"}>{"partialLayoutFinished"}</Link></code> and
+<code style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}><Link style={{"color":"#36acaa"}} to={"/docs/reference/types/rendering/iscorerenderer/partialrenderfinished"}>{"partialRenderFinished"}</Link></code> accessible via <code style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}><Link style={{"color":"#36acaa"}} to={"/docs/reference/types/alphatabapibase/renderer"}>{"renderer"}</Link></code>.
 
 <Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
 <TabItem value="js">
-<CodeBlock language="ts">{`postRenderFinished : IEventEmitter;`}</CodeBlock>
+<div className="codeBlockContainer"><div className="codeBlockContent"><pre className="codeBlock"><code className="codeBlockLines" style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}><span style={{"color":"#36acaa"}}>{"postRenderFinished"}</span><span style={{"color":"#393A34"}}>{":"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><Link style={{"color":"#36acaa"}} to={"/docs/reference/types/ieventemitter/"}>{"IEventEmitter"}</Link><span style={{"color":"#393A34"}}>{";"}</span></code></pre></div></div>
 </TabItem>
 <TabItem value="cs">
-<CodeBlock language="csharp">{`AlphaTab.IEventEmitter PostRenderFinished { get; set; }`}</CodeBlock>
+<div className="codeBlockContainer"><div className="codeBlockContent"><pre className="codeBlock"><code className="codeBlockLines" style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}><Link style={{"color":"#36acaa"}} to={"/docs/reference/types/ieventemitter/"}>{"IEventEmitter"}</Link><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><span style={{"color":"#36acaa"}}>{"PostRenderFinished"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><span style={{"color":"#393A34"}}>{"{"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><span style={{"color":"#00009f"}}>{"get"}</span><span style={{"color":"#393A34"}}>{";"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><span style={{"color":"#00009f"}}>{"set"}</span><span style={{"color":"#393A34"}}>{";"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><span style={{"color":"#393A34"}}>{"}"}</span></code></pre></div></div>
 </TabItem>
 <TabItem value="kt">
-<CodeBlock language="kotlin">{`var postRenderFinished: alphaTab.IEventEmitter`}</CodeBlock>
+<div className="codeBlockContainer"><div className="codeBlockContent"><pre className="codeBlock"><code className="codeBlockLines" style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}><span style={{"color":"#00009f"}}>{"var"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><span style={{"color":"#36acaa"}}>{"postRenderFinished"}</span><span style={{"color":"#393A34"}}>{":"}</span><span style={{"color":"#393A34","backgroundColor":"#f6f8fa"}}>{" "}</span><Link style={{"color":"#36acaa"}} to={"/docs/reference/types/ieventemitter/"}>{"IEventEmitter"}</Link></code></pre></div></div>
 </TabItem>
 </Tabs>
 
