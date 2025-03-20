@@ -13,6 +13,12 @@ import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
 <SettingsHeader />
 
+import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+
 ### Description
 Whether music notation elements are visible or not. AlphaTab has quite a set of notation elements that are usually shown by default or only shown when using
 the `SongBook` notation mode. This setting allows showing/hiding individual notation elements like the
@@ -26,17 +32,15 @@ the key is the element to configure and the value is a boolean value whether it 
 
 `[[NotationElement.ZerosOnDiveWhammys, false]]`
 
-### Type
+## Type: [`Map<NotationElement, boolean>`](/docs/reference/types/notationelement/index.mdx)
 
-<CodeBadge type="js" name="Map<NotationElement, boolean>" /><CodeBadge type="net" name="Map<AlphaTab.NotationElement, bool>" /><CodeBadge type="android" name="alphaTab.collections.ObjectBooleanMap" />import MapDocs from '@site/docs/reference/types/notationelement/index.mdx';
+import PropTypeDocs from '@site/docs/reference/types/notationelement/index.mdx';
 
-<MapDocs inlined={true} />
+<PropTypeDocs inlined={true} />
+
 ## Examples
 
-import ExampleTabs from "@theme/Tabs";
-import ExampleTabItem from "@theme/TabItem";
-
-<ExampleTabs
+<Tabs
     defaultValue="javascript"
     values={[
       { label: "JavaScript", value: "javascript"},
@@ -44,7 +48,7 @@ import ExampleTabItem from "@theme/TabItem";
       { label: "Android", value: "android"}
     ]}
 >
-<ExampleTabItem value="javascript">
+<TabItem value="javascript">
 Internally the setting is a [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) where the key must be a [`NotationElement`](/docs/reference/types/notationelement/index.mdx) enumeration value.
 For JSON input the usual enumeration serialization applies where also the names can be used. The names
 are case insensitive.
@@ -60,19 +64,19 @@ const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'), {
 });
 api.settings.notation.elements.set(alphaTab.NotationElement.EffectWhammyBar, false);
 ```
-</ExampleTabItem>
-<ExampleTabItem value="csharp">
+</TabItem>
+<TabItem value="csharp">
 ```cs
 var settings = new AlphaTab.Settings();
 settings.Notation.Elements[AlphaTab.NotationElement.ScoreTitle] = false;
 settings.Notation.Elements[AlphaTab.NotationElement.TrackNames] = false;
 ```
-</ExampleTabItem>
-<ExampleTabItem value="android">
+</TabItem>
+<TabItem value="android">
 ```kotlin
 val settings = AlphaTab.Settings();
 settings.notation.elements[alphaTab.NotationElement.ScoreTitle] = false;
 settings.notation.elements[alphaTab.NotationElement.TrackNames] = false;
 ```
-</ExampleTabItem>
-</ExampleTabs>
+</TabItem>
+</Tabs>

@@ -1,16 +1,7 @@
 import { CodeBadge } from '@site/src/components/CodeBadge';
 import { MarkdownString } from '@site/src/components/MarkdownString'
 
-import VibratoPlaybackSettings from '@site/src/alphatabdoc/VibratoPlaybackSettings'
-
-export var VibratoSettings = VibratoPlaybackSettings.members.map(m => {
-    return   {
-        name: m.name,
-        defaultValue: m.tsdoc.tags.defaultValue,
-        type: m.type,
-        description: m.tsdoc.doc
-    }
-});
+export const VibratoSettings = [];
 
 export function toPascalCase(v) {
     return v.substr(0, 1).toUpperCase() + v.substr(1);

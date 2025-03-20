@@ -13,6 +13,12 @@ import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
 <SettingsHeader />
 
+import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+
 ### Description
 The Vibrato settings allow control how the different vibrato types are generated for audio. AlphaTab supports 4 types of vibratos, for each vibrato the amplitude and the wavelength can be configured. The amplitude controls how many semitones
 the vibrato changes the pitch up and down while playback. The wavelength controls how many midi ticks it will take to complete one up and down vibrato.
@@ -28,8 +34,8 @@ import ManualDocs from './_vibrato.mdx';
 
 <ManualDocs />
 
-### Type
+## Type: [`VibratoPlaybackSettings`](/docs/reference/types/vibratoplaybacksettings/index.mdx)
 
-<CodeBadge type="js" name="VibratoPlaybackSettings" /><CodeBadge type="net" name="AlphaTab.VibratoPlaybackSettings" /><CodeBadge type="android" name="alphaTab.VibratoPlaybackSettings" />import VibratoPlaybackSettingsDocs from '@site/docs/reference/types/vibratoplaybacksettings/index.mdx';
+import PropTypeDocs from '@site/docs/reference/types/vibratoplaybacksettings/index.mdx';
 
-<VibratoPlaybackSettingsDocs inlined={true} />
+<PropTypeDocs inlined={true} />

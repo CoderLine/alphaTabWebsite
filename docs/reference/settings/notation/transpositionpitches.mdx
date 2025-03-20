@@ -13,6 +13,12 @@ import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
 <SettingsHeader />
 
+import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+
 ### Description
 The transposition pitch offsets for the individual tracks used for rendering and playback. This setting allows transposing of tracks for display and playback.
 The `transpositionPitches` setting allows defining an additional pitch offset per track, that is then considered when displaying the music sheet.
@@ -22,6 +28,5 @@ The `transpositionPitches` setting allows defining an additional pitch offset pe
 
 `[]`
 
-### Type
+## Type: [`number[]`](https://mdn.io/number)
 
-<CodeBadge type="js" name="number[]" /><CodeBadge type="net" name="IList<double>" /><CodeBadge type="android" name="alphaTab.collections.DoubleList" />

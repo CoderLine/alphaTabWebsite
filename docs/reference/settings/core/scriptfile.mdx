@@ -15,6 +15,12 @@ import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
 <SettingsHeader />
 
+import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+
 ### Description
 The full URL to the alphaTab JavaScript file. AlphaTab needs to know the full URL to the script file it is contained in to launch the web workers. AlphaTab will do its best to auto-detect
 this path but in case it fails, this setting can be used to explicitly define it. Altenatively also a global variable `ALPHATAB_ROOT` can

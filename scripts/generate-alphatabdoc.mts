@@ -5,6 +5,7 @@ import { generateSettings } from "./generate-settings.mjs";
 import { GenerateContext } from "./typeschema";
 import { generateTypeDocs } from "./generate-typedocs.mjs";
 import { cconsole } from "./generate-common.mjs";
+import { generateApiDocs } from "./generate-api.mjs";
 
 const alphaTabEntryFile = url.fileURLToPath(
   import.meta.resolve("@coderline/alphatab")
@@ -151,3 +152,4 @@ context.settings = context.flatExports.get(
 ) as ts.ClassDeclaration;
 await generateSettings(context);
 await generateTypeDocs(context);
+await generateApiDocs(context);

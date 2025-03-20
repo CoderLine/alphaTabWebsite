@@ -1,25 +1,10 @@
-import ResourcesType from '@site/src/alphatabdoc/RenderingResources'
 import { CodeBadge } from '@site/src/components/CodeBadge'
 import { SinceBadge }  from '@site/src/components/SinceBadge'
 import { MarkdownString } from '@site/src/components/MarkdownString'
 
-export var Resources = {
-    colors: ResourcesType.members.filter(m => m.type === 'Color').map(c => {
-        return {
-            name: c.name,
-            defaultValue: c.tsdoc?.tags?.defaultValue ?? '',
-            description: c.tsdoc?.doc,
-            since:  c.tsdoc?.tags?.since ?? "",
-        }
-    }),
-    fonts: ResourcesType.members.filter(m => m.type === 'Font').map(c => {
-        return {
-            name: c.name,
-            defaultValue: c.tsdoc?.tags?.defaultValue ?? '',
-            description: c.tsdoc?.doc,
-            since:  c.tsdoc?.tags?.since ?? "",
-        }
-    })
+export const Resources = {
+    colors:[],
+    fonts: []
 };
 
 

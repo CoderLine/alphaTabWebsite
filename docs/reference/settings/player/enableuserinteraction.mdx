@@ -13,6 +13,12 @@ import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
 <SettingsHeader />
 
+import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+
 ### Description
 Whether the default user interaction behavior should be active or not. This setting configures whether alphaTab provides the default user interaction features like selection of the playback range and "seek on click".
 By default users can select the desired playback range with the mouse and also jump to individual beats by click. This behavior can be contolled with this setting.
@@ -24,4 +30,6 @@ By default users can select the desired playback range with the mouse and also j
 
 ### Type
 
-<CodeBadge type="js" name="boolean" /><CodeBadge type="net" name="bool" /><CodeBadge type="android" name="Boolean" />
+<CodeBadge type="js" name="boolean" link={"https://mdn.io/boolean"} />
+<CodeBadge type="net" name="bool" />
+<CodeBadge type="android" name="Boolean" />

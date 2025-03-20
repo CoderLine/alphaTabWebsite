@@ -3,17 +3,10 @@
 import { PropertyDescription } from '@site/src/components/PropertyDescription';
 import { TypeTable, TypeRow } from '@site/src/components/TypeTable';
 import { CodeBadge } from '@site/src/components/CodeBadge';
-import SlidePlaybackSettings from '@site/src/alphatabdoc/SlidePlaybackSettings'
+// import SlidePlaybackSettings from '@site/src/alphatabdoc/SlidePlaybackSettings'
 import { MarkdownString } from '@site/src/components/MarkdownString'
 
-export var SlideSettings = SlidePlaybackSettings.members.map(m => {
-    return {
-        name: m.name,
-        defaultValue: m.tsdoc.tags.defaultValue,
-        type: m.type,
-        description: m.tsdoc.doc
-    }
-});
+export const SlideSettings = [];
 
 export function toPascalCase(v) {
     return v.substr(0, 1).toUpperCase() + v.substr(1);

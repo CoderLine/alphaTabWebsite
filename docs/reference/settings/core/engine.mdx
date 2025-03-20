@@ -14,6 +14,12 @@ import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
 <SettingsHeader />
 
+import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+
 ### Description
 The engine which should be used to render the the tablature. AlphaTab can use various render engines to draw the music notation. The available render engines is specific to the platform. Please refer to the table below to find out which engines are available on which platform.
 - `default`- Platform specific default engine
@@ -30,4 +36,6 @@ The engine which should be used to render the the tablature. AlphaTab can use va
 
 ### Type
 
-<CodeBadge type="js" name="string" /><CodeBadge type="net" name="string" /><CodeBadge type="android" name="String" />
+<CodeBadge type="js" name="string" link={"https://mdn.io/string"} />
+<CodeBadge type="net" name="string" />
+<CodeBadge type="android" name="String" />

@@ -15,6 +15,12 @@ import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
 <SettingsHeader />
 
+import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+
 ### Description
 Allows adjusting of the used fonts and colors for rendering. AlphaTab allows configuring the colors and fonts used for rendering via the rendering resources settings. Please note that as of today
 this is the primary way of changing the way how alphaTab styles elements. CSS styling in the browser cannot be guaranteed to work due to its flexibility.
@@ -56,8 +62,8 @@ import ManualDocs from './_resources.mdx';
 
 `false`
 
-### Type
+## Type: [`RenderingResources`](/docs/reference/types/renderingresources/index.mdx)
 
-<CodeBadge type="js" name="RenderingResources" /><CodeBadge type="net" name="AlphaTab.RenderingResources" /><CodeBadge type="android" name="alphaTab.RenderingResources" />import RenderingResourcesDocs from '@site/docs/reference/types/renderingresources/index.mdx';
+import PropTypeDocs from '@site/docs/reference/types/renderingresources/index.mdx';
 
-<RenderingResourcesDocs inlined={true} />
+<PropTypeDocs inlined={true} />

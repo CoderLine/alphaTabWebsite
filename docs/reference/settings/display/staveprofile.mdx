@@ -14,6 +14,12 @@ import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
 <SettingsHeader />
 
+import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+
 ### Description
 The stave profile defining which staves are shown for the music sheet. AlphaTab has various stave profiles that define which staves will be shown in for the rendered tracks. Its recommended
 to keep this on [`StaveProfile.Default`](/docs/reference/types/staveprofile/index.mdx#default) and rather rely on the options available ob [`Staff`](/docs/reference/types/model/staff/index.mdx) level
@@ -23,8 +29,8 @@ to keep this on [`StaveProfile.Default`](/docs/reference/types/staveprofile/inde
 
 `StaveProfile.Default`
 
-### Type
+## Type: [`StaveProfile`](/docs/reference/types/staveprofile/index.mdx)
 
-<CodeBadge type="js" name="StaveProfile" /><CodeBadge type="net" name="AlphaTab.StaveProfile" /><CodeBadge type="android" name="alphaTab.StaveProfile" />import StaveProfileDocs from '@site/docs/reference/types/staveprofile/index.mdx';
+import PropTypeDocs from '@site/docs/reference/types/staveprofile/index.mdx';
 
-<StaveProfileDocs inlined={true} />
+<PropTypeDocs inlined={true} />

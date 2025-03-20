@@ -14,7 +14,6 @@ function renderChild(child: React.ReactNode): React.ReactNode {
 export type ParameterRowProps = {
   children: React.ReactNode;
   platform: Platform;
-  type: string;
   name: string;
   since?: string;
 };
@@ -22,7 +21,6 @@ export type ParameterRowProps = {
 export const ParameterRow: React.FC<ParameterRowProps> = ({
   children,
   platform,
-  type,
   name,
   since,
 }) => {
@@ -30,9 +28,6 @@ export const ParameterRow: React.FC<ParameterRowProps> = ({
     <tr>
       <td>
         <CodeBadge type={platform} name={name} />
-      </td>
-      <td>
-        <code>{type}</code>
       </td>
       <td>
         {Array.isArray(children)
@@ -54,7 +49,6 @@ export const ParameterTable: React.FC<ParameterTableProps> = ({ children }) => {
       <thead>
         <tr>
           <th>Parameters</th>
-          <th>Type</th>
           <th>Summary</th>
         </tr>
       </thead>

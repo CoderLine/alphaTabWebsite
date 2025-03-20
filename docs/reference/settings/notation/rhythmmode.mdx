@@ -13,6 +13,12 @@ import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
 <SettingsHeader />
 
+import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+
 ### Description
 Controls how the rhythm notation is rendered for tab staves. This setting enables the display of rhythm notation on tab staffs. [Demo](/docs/showcase/guitar-tabs)
 <SinceBadge inline={true} since={"1.4.0"} /> its automatically detected whether rhythm notation should be shown on tabs (based on the visibility of other staves).
@@ -22,8 +28,8 @@ Controls how the rhythm notation is rendered for tab staves. This setting enable
 
 `TabRhythmMode.Automatic`
 
-### Type
+## Type: [`TabRhythmMode`](/docs/reference/types/tabrhythmmode/index.mdx)
 
-<CodeBadge type="js" name="TabRhythmMode" /><CodeBadge type="net" name="AlphaTab.TabRhythmMode" /><CodeBadge type="android" name="alphaTab.TabRhythmMode" />import TabRhythmModeDocs from '@site/docs/reference/types/tabrhythmmode/index.mdx';
+import PropTypeDocs from '@site/docs/reference/types/tabrhythmmode/index.mdx';
 
-<TabRhythmModeDocs inlined={true} />
+<PropTypeDocs inlined={true} />

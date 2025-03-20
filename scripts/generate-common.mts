@@ -61,9 +61,23 @@ export function isEvent(context: GenerateContext, node: ts.Node): boolean {
 }
 
 export function isTargetWeb(context: GenerateContext, node: ts.Node): boolean {
-  return !!getJSDocTags(context, node).find(
+  let isWebOnly = !!getJSDocTags(context, node).find(
     (t) => t.tagName.text === "target" && t.comment === "web"
   );
+
+  if (!isWebOnly) {
+    switch (node.kind) {
+      case ts.SyntaxKind.MethodSignature:
+      case ts.SyntaxKind.MethodDeclaration:
+      case ts.SyntaxKind.PropertySignature:
+      case ts.SyntaxKind.PropertyDeclaration:
+      case ts.SyntaxKind.EnumMember:
+        isWebOnly = isTargetWeb(context, node.parent);
+        break;
+    }
+  }
+
+  return isWebOnly;
 }
 
 export function isDomWildcard(
@@ -622,9 +636,7 @@ export async function writeExamples(
     await fileStream.write(`${examples[0].markdown}\n`);
   } else if (examples.length > 1) {
     await fileStream.write(`\n## Examples\n\n`);
-    await fileStream.write('import ExampleTabs from "@theme/Tabs";\n');
-    await fileStream.write('import ExampleTabItem from "@theme/TabItem";\n\n');
-    await fileStream.write("<ExampleTabs\n");
+    await fileStream.write("<Tabs\n");
     await fileStream.write(
       `    defaultValue=${JSON.stringify(examples[0].key)}\n`
     );
@@ -648,15 +660,15 @@ export async function writeExamples(
 
     for (const example of examples) {
       await fileStream.write(
-        `<ExampleTabItem value=${JSON.stringify(example.key)}>\n`
+        `<TabItem value=${JSON.stringify(example.key)}>\n`
       );
 
       await fileStream.write(`${example.markdown}\n`);
 
-      await fileStream.write(`</ExampleTabItem>\n`);
+      await fileStream.write(`</TabItem>\n`);
     }
 
-    await fileStream.write(`</ExampleTabs>\n`);
+    await fileStream.write(`</Tabs>\n`);
   }
 }
 
@@ -839,7 +851,37 @@ export async function writeEventDetails(
 ) {
   await writeCommonDescription(context, fileStream, member);
 
+  // TODO: Write signatures
+
+  await writeEventArg(context, fileStream, member);
+
   await writeExamples(fileStream, context, member);
+}
+
+export async function writeEventArg(
+  context: GenerateContext,
+  fileStream: FileStream,
+  member:
+    | ts.PropertySignature
+    | ts.PropertyDeclaration
+    | ts.GetAccessorDeclaration
+) {
+  const typeInfo = getTypeWithNullableInfo(context, member.type, true, false);
+  const referenceUrl = typeInfo.typeArguments
+    ? tryGetReferenceLink(context, typeInfo.typeArguments[0])
+    : undefined;
+
+  if (referenceUrl) {
+    await fileStream.write(
+      `\n## Event Args: [\`${toJsTypeName(context, typeInfo.typeArguments![0])}\`](${referenceUrl})\n\n`
+    );
+
+    // if (!referenceUrl.startsWith("http")) {
+    //   await fileStream.writeLine(
+    //     `import ${typeInfo.typeArguments![0].ownTypeAsString}Docs from '@site${referenceUrl}';\n\n<${typeInfo.typeArguments![0].ownTypeAsString}Docs inlined={true} />`
+    //   );
+    // }
+  }
 }
 
 export async function writeMethodDetails(
@@ -863,8 +905,8 @@ export async function writeMethodReturn(
 ) {
   const returnsDoc = getJsDocTagText(context, m, "returns");
   if (returnsDoc) {
-    fileStream.write(`### Returns \n`);
-    fileStream.write(`${returnsDoc} \n\n`);
+    await fileStream.write(`### Returns \n`);
+    await fileStream.write(`${returnsDoc} \n\n`);
   }
 }
 
@@ -873,83 +915,28 @@ export async function writeMethodParameters(
   fileStream: FileStream,
   m: ts.MethodDeclaration | ts.MethodSignature
 ) {
-  fileStream.write(`### Parameters \n`);
+  await fileStream.write(`### Parameters \n`);
   if (m.parameters.length > 0) {
-    fileStream.write(`\n<ParameterTable>\n`);
+    await fileStream.write(`\n<ParameterTable>\n`);
 
     for (let i = 0; i < m.parameters.length; i++) {
-      fileStream.write(
-        `    <ParameterRow platform="js" name="${m.parameters[
+      await fileStream.write(
+        `    <ParameterRow platform="all" name="${m.parameters[
           i
-        ].name.getText()}" type="${toJsTypeName(
-          context,
-          getTypeWithNullableInfo(
-            context,
-            m.parameters[i].type,
-            false,
-            !!m.parameters[i].questionToken
-          )
-        )}">\n`
+        ].name.getText()}">\n`
       );
 
       for (const line of getFullDescription(context, m.parameters[i]).split(
         "\n"
       )) {
-        fileStream.write(`        ${line}\n`);
+        await fileStream.write(`        ${line}\n`);
       }
 
-      fileStream.write(`    </ParameterRow>\n`);
-
-      const isWebOnly = isTargetWeb(context, m);
-      if (!isWebOnly) {
-        fileStream.write(
-          `    <ParameterRow platform="net" name="${m.parameters[
-            i
-          ].name.getText()}" type="${toDotNetTypeName(
-            context,
-            getTypeWithNullableInfo(
-              context,
-              m.parameters[i].type,
-              false,
-              !!m.parameters[i].questionToken
-            )
-          )}">\n`
-        );
-
-        for (const line of getFullDescription(context, m.parameters[i]).split(
-          "\n"
-        )) {
-          fileStream.write(`        ${line}\n`);
-        }
-
-        fileStream.write(`    </ParameterRow>\n`);
-
-        fileStream.write(
-          `    <ParameterRow platform="android" name="${m.parameters[
-            i
-          ].name.getText()}" type="${toKotlinTypeName(
-            context,
-            getTypeWithNullableInfo(
-              context,
-              m.parameters[i].type,
-              false,
-              !!m.parameters[i].questionToken
-            )
-          )}">\n`
-        );
-
-        for (const line of getFullDescription(context, m.parameters[i]).split(
-          "\n"
-        )) {
-          fileStream.write(`        ${line}\n`);
-        }
-
-        fileStream.write(`    </ParameterRow>\n`);
-      }
+      await fileStream.write(`    </ParameterRow>\n`);
     }
-    fileStream.write(`</ParameterTable>\n\n`);
+    await fileStream.write(`</ParameterTable>\n\n`);
   } else {
-    fileStream.write(`None \n\n`);
+    await fileStream.write(`None \n\n`);
   }
 }
 
@@ -958,55 +945,74 @@ export async function writeMethodSignatures(
   fileStream: FileStream,
   m: ts.MethodDeclaration | ts.MethodSignature
 ) {
-  fileStream.write(`## Signatures\n\n`);
-
-  fileStream.write(
-    `<CodeBlock language="ts" metastring={"title=JavaScript"}>{\`${m.getText()}\`}" />\n`
-  );
+  await fileStream.write(`## Signatures\n\n`);
 
   const isWebOnly = isTargetWeb(context, m);
-  if (!isWebOnly) {
-    fileStream.write(`    <CodeBlock type="csharp" title="C#">{\``);
 
-    fileStream.write(
+  if (!isWebOnly) {
+    await fileStream.writeLine(
+      `<Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>`
+    );
+    await fileStream.writeLine(`<TabItem value="js">`);
+  }
+
+  await fileStream.write(
+    `<CodeBlock language="ts">{\`${m.getText()}\`}</CodeBlock>\n`
+  );
+
+  if (!isWebOnly) {
+    await fileStream.writeLine(`</TabItem>`);
+    await fileStream.writeLine(`<TabItem value="cs">`);
+
+    await fileStream.write(`<CodeBlock language="csharp">{\``);
+
+    await fileStream.write(
       toDotNetTypeName(
         context,
         getTypeWithNullableInfo(context, m.type, false, false)
       )
     );
 
-    fileStream.write(` ${toPascalCase(m.name!.getText())}(`);
+    await fileStream.write(` ${toPascalCase(m.name!.getText())}(`);
 
     for (let i = 0; i < m.parameters.length; i++) {
       if (i > 0) {
-        fileStream.write(", ");
+        await fileStream.write(", ");
       }
 
-      fileStream.write(
+      await fileStream.write(
         toDotNetTypeName(
           context,
-          getTypeWithNullableInfo(context, m.parameters[i].type, false, false)
+          getTypeWithNullableInfo(
+            context,
+            m.parameters[i].type,
+            false,
+            !!m.parameters[i].questionToken
+          )
         )
       );
-      fileStream.write(` ${m.parameters[i].name.getText()}`);
+      await fileStream.write(` ${m.parameters[i].name.getText()}`);
     }
 
-    fileStream.write(`)\`}</CodeBlock>\n`);
+    await fileStream.write(`)\`}</CodeBlock>\n`);
+
+    await fileStream.writeLine(`</TabItem>`);
+    await fileStream.writeLine(`<TabItem value="kt">`);
 
     const fun = m.type!.getText().startsWith("Promise<")
       ? "suspend fun"
       : "fun";
 
-    fileStream.write(`    <CodeBlock type="kotlin" title="Kotlin">{\``);
-    fileStream.write(`${fun} ${m.name!.getText()}(`);
+    await fileStream.write(`<CodeBlock language="kotlin">{\``);
+    await fileStream.write(`${fun} ${m.name!.getText()}(`);
 
     for (let i = 0; i < m.parameters.length; i++) {
       if (i > 0) {
-        fileStream.write(", ");
+        await fileStream.write(", ");
       }
 
-      fileStream.write(`${m.parameters[i].name.getText()}: `);
-      fileStream.write(
+      await fileStream.write(`${m.parameters[i].name.getText()}: `);
+      await fileStream.write(
         toKotlinTypeName(
           context,
           getTypeWithNullableInfo(
@@ -1019,13 +1025,18 @@ export async function writeMethodSignatures(
       );
     }
 
-    fileStream.write(
+    await fileStream.write(
       `): ${toKotlinTypeName(
         context,
         getTypeWithNullableInfo(context, m.type, false, false)
-      )}"\`}</CodeBlock/>\n`
+      )}\`}</CodeBlock>\n`
     );
+
+    await fileStream.writeLine(`</TabItem>`);
+    await fileStream.writeLine(`</Tabs>`);
   }
+
+  await fileStream.writeLine();
 }
 
 async function writeCommonDescription(
@@ -1033,6 +1044,15 @@ async function writeCommonDescription(
   fileStream: FileStream,
   member: ts.TypeElement | ts.ClassElement
 ) {
+  await fileStream.writeLine();
+  await fileStream.writeLine(
+    "import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';"
+  );
+  await fileStream.writeLine("import CodeBlock from '@theme/CodeBlock';");
+  await fileStream.writeLine('import Tabs from "@theme/Tabs";');
+  await fileStream.writeLine('import TabItem from "@theme/TabItem";');
+  await fileStream.writeLine();
+
   await fileStream.write(`\n### Description\n`);
   await fileStream.write(`${getFullDescription(context, member)}\n\n`);
 
@@ -1071,6 +1091,8 @@ export async function writePropertyDetails(
     await fileStream.write(`${defaultValue}\n`);
   }
 
+  // TODO: Write types as signatures
+
   const typeInfo = getTypeWithNullableInfo(context, member.type, true, false);
 
   const referenceUrl = tryGetReferenceLink(context, typeInfo);
@@ -1084,40 +1106,43 @@ export async function writePropertyDetails(
       );
     } else {
       await fileStream.write(`\n### Type\n\n`);
-      await fileStream.write(
+      await fileStream.writeLine(
         `<CodeBadge type="js" name="${toJsTypeName(context, typeInfo)}" />`
       );
-      await fileStream.write(
+      await fileStream.writeLine(
         `<CodeBadge type="net" name="${toDotNetTypeName(context, typeInfo)}" />`
       );
-      await fileStream.write(
+      await fileStream.writeLine(
         `<CodeBadge type="android" name="${toKotlinTypeName(context, typeInfo)}" />`
       );
     }
-  } else {
+  } else if (typeInfo.isPrimitiveType) {
     if (isWebOnly) {
       await fileStream.write(
         `\n## Type: [\`${toJsTypeName(context, typeInfo)}\`](${referenceUrl})\n\n`
       );
     } else {
       await fileStream.write(`\n### Type\n\n`);
-      // TODO: link on JS
-      await fileStream.write(
-        `<CodeBadge type="js" name="${toJsTypeName(context, typeInfo)}" />`
+      await fileStream.writeLine(
+        `<CodeBadge type="js" name="${toJsTypeName(context, typeInfo)}" link={${JSON.stringify(referenceUrl)}} />`
       );
-      await fileStream.write(
+      await fileStream.writeLine(
         `<CodeBadge type="net" name="${toDotNetTypeName(context, typeInfo)}" />`
       );
-      await fileStream.write(
+      await fileStream.writeLine(
         `<CodeBadge type="android" name="${toKotlinTypeName(context, typeInfo)}" />`
       );
     }
+  } else {
+    await fileStream.write(
+      `\n## Type: [\`${toJsTypeName(context, typeInfo)}\`](${referenceUrl})\n\n`
+    );
 
-    if (!referenceUrl.startsWith("http")) {
-      await fileStream.write(
-        `import ${typeInfo.ownTypeAsString}Docs from '@site${referenceUrl}';\n\n<${typeInfo.ownTypeAsString}Docs inlined={true} />`
-      );
-    }
+    // if (!referenceUrl.startsWith("http")) {
+    //   await fileStream.writeLine(
+    //     `import PropTypeDocs from '@site${referenceUrl}';\n\n<PropTypeDocs inlined={true} />`
+    //   );
+    // }
   }
 
   await writeExamples(fileStream, context, member);

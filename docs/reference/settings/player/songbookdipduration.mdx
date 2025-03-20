@@ -13,6 +13,12 @@ import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
 <SettingsHeader />
 
+import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+
 ### Description
 The duration of whammy dips in milliseconds for songbook whammys. If the display mode `songbook` is enabled, this has an effect on the way whammy dips are played. For songbook dips the whammy is pressed very quickly at the start of the beat.
 This setting defines the play duration for those whammy bars in milliseconds. This duration is in milliseconds unlike some other settings which are in midi ticks. The reason is that on songbook dips,
@@ -25,4 +31,6 @@ the whammy should always be pressed in the same speed, regardless of the song te
 
 ### Type
 
-<CodeBadge type="js" name="number" /><CodeBadge type="net" name="double" /><CodeBadge type="android" name="Double" />
+<CodeBadge type="js" name="number" link={"https://mdn.io/number"} />
+<CodeBadge type="net" name="double" />
+<CodeBadge type="android" name="Double" />

@@ -49,8 +49,9 @@ export async function generateTypeDocs(context: GenerateContext) {
       "import { SinceBadge } from '@site/src/components/SinceBadge';\n"
     );
     await fileStream.write("import CodeBlock from '@theme/CodeBlock';\n\n");
+    await fileStream.write("import DynHeading from '@site/src/components/DynHeading';\n\n");
 
-    await fileStream.write(`\n### Description\n`);
+    await fileStream.write(`\n<DynHeading as="h3" inlined={props.inlined}>Description</DynHeading>\n\n`);
     await fileStream.write(`${getFullDescription(context, exportedType)}\n\n`);
 
     if (
@@ -207,10 +208,10 @@ async function writeProperties(
     return;
   }
 
-  await fileStream.write(`\n### Properties\n`);
+  await fileStream.write(`\n<DynHeading as="h3" inlined={props.inlined}>Properties</DynHeading>\n\n`);
 
   await fileStream.write(
-    `<table class="table table-striped table-condensed type-table">\n`
+    `<table className="table table-striped table-condensed type-table">\n`
   );
   await fileStream.write(`  <tbody>\n`);
 
@@ -259,10 +260,10 @@ async function writeMethods(
     return;
   }
 
-  await fileStream.write(`\n### Methods\n`);
+  await fileStream.write(`\n<DynHeading as="h3" inlined={props.inlined}>Methods</DynHeading>\n\n`);
 
   await fileStream.write(
-    `<table class="table table-striped table-condensed type-table">\n`
+    `<table className="table table-striped table-condensed type-table">\n`
   );
   await fileStream.write(`  <tbody>\n`);
 
@@ -313,10 +314,10 @@ async function writeEvents(
     return;
   }
 
-  await fileStream.write(`\n### Events\n`);
+  await fileStream.write(`\n<DynHeading as="h3" inlined={props.inlined}>Events</DynHeading>\n\n`);
 
   await fileStream.write(
-    `<table class="table table-striped table-condensed type-table">\n`
+    `<table className="table table-striped table-condensed type-table">\n`
   );
   await fileStream.write(`  <tbody>\n`);
 
@@ -354,9 +355,10 @@ async function writeEnumMembers(
   fileStream: FileStream,
   exportedType: ts.EnumDeclaration
 ) {
-  await fileStream.write(`\n### Enum Members\n`);
+  await fileStream.write(`\n<DynHeading as="h3" inlined={props.inlined}>Enum Members</DynHeading>\n\n`);
+
   await fileStream.write(
-    `<table class="table table-striped table-condensed type-table">\n`
+    `<table className="table table-striped table-condensed type-table">\n`
   );
   await fileStream.write(
     `  <thead><tr><th>Name</th><th>Numeric Value</th><th>Description</th></tr></thead>\n`
@@ -366,7 +368,7 @@ async function writeEnumMembers(
   for (const member of exportedType.members) {
     await fileStream.write(`    <tr>\n`);
 
-    await fileStream.write(`      <td>\`${member.name.getText()}\`</td>\n`);
+    await fileStream.write(`      <td id="${member.name.getText().toLowerCase()}">\`${member.name.getText()}\`</td>\n`);
 
     const numericValue = context.checker.getConstantValue(member);
     await fileStream.write(`      <td>\`${numericValue}\`</td>\n`);

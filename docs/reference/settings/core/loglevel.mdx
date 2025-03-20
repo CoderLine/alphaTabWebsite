@@ -14,6 +14,12 @@ import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
 <SettingsHeader />
 
+import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+
 ### Description
 The log level to use within alphaTab AlphaTab internally does quite a bit of logging for debugging and informational purposes. The log level of alphaTab can be controlled via this setting.
 
@@ -22,8 +28,8 @@ The log level to use within alphaTab AlphaTab internally does quite a bit of log
 
 `LogLevel.Info`
 
-### Type
+## Type: [`LogLevel`](/docs/reference/types/loglevel/index.mdx)
 
-<CodeBadge type="js" name="LogLevel" /><CodeBadge type="net" name="AlphaTab.LogLevel" /><CodeBadge type="android" name="alphaTab.LogLevel" />import LogLevelDocs from '@site/docs/reference/types/loglevel/index.mdx';
+import PropTypeDocs from '@site/docs/reference/types/loglevel/index.mdx';
 
-<LogLevelDocs inlined={true} />
+<PropTypeDocs inlined={true} />

@@ -13,6 +13,12 @@ import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
 <SettingsHeader />
 
+import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+
 ### Description
 The fingering mode to use. AlphaTab supports multiple modes on how to display fingering information in the music sheet. This setting controls how they should be displayed. The default behavior is to show the finger information
 directly in the score along the notes. For some use cases of training courses and for beginners this notation might be hard to read. The effect band mode allows to show a single finger information above the staff.
@@ -26,8 +32,8 @@ directly in the score along the notes. For some use cases of training courses an
 
 `FingeringMode.ScoreDefault`
 
-### Type
+## Type: [`FingeringMode`](/docs/reference/types/fingeringmode/index.mdx)
 
-<CodeBadge type="js" name="FingeringMode" /><CodeBadge type="net" name="AlphaTab.FingeringMode" /><CodeBadge type="android" name="alphaTab.FingeringMode" />import FingeringModeDocs from '@site/docs/reference/types/fingeringmode/index.mdx';
+import PropTypeDocs from '@site/docs/reference/types/fingeringmode/index.mdx';
 
-<FingeringModeDocs inlined={true} />
+<PropTypeDocs inlined={true} />

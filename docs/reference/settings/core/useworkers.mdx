@@ -14,6 +14,12 @@ import { SettingsHeader } from '@site/src/components/SettingsHeader';
 
 <SettingsHeader />
 
+import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+
 ### Description
 Whether the rendering should be done in a worker if possible. AlphaTab normally tries to render the music sheet asynchronously in a worker. This reduces the load on the UI side and avoids hanging. However sometimes it might be more desirable to have
 a synchronous rendering behavior. This setting can be set to false to synchronously render the music sheet on the UI side.
@@ -25,4 +31,6 @@ a synchronous rendering behavior. This setting can be set to false to synchronou
 
 ### Type
 
-<CodeBadge type="js" name="boolean" /><CodeBadge type="net" name="bool" /><CodeBadge type="android" name="Boolean" />
+<CodeBadge type="js" name="boolean" link={"https://mdn.io/boolean"} />
+<CodeBadge type="net" name="bool" />
+<CodeBadge type="android" name="Boolean" />
