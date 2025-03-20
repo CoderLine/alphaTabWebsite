@@ -165,7 +165,7 @@ export function getTypeWithNullableInfo(
             ownTypeAsString: "number",
             symbol: context.checker.getNumberType().getSymbol(),
             isTypeLiteral: false,
-            isFunctionType: false
+            isFunctionType: false,
           };
           break;
       }
@@ -222,6 +222,20 @@ export function getTypeWithNullableInfo(
     const modulePath = findModule(type);
     typeInfo.isOwnType =
       !!modulePath && path.basename(modulePath) === path.basename(context.dts);
+
+    if (node.typeArguments) {
+      typeInfo.typeArguments = node.typeArguments.map((p) =>
+        getTypeWithNullableInfo(context, p, allowUnion, false)
+      );
+
+      // cut off generics on name
+      const genericsStart = typeInfo.ownTypeAsString.indexOf("<");
+      if (genericsStart >= 0) {
+        typeInfo.ownTypeAsString = typeInfo.ownTypeAsString
+          .substring(0, genericsStart)
+          .trim();
+      }
+    }
   } else {
     fillBaseInfoFrom(node);
   }

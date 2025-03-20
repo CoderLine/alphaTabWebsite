@@ -153,3 +153,5 @@ context.settings = context.flatExports.get(
 await generateSettings(context);
 await generateTypeDocs(context);
 await generateApiDocs(context);
+
+// TODO: run prettier on MDX files

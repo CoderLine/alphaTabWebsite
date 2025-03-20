@@ -4,7 +4,6 @@ import {
   GenerateContext,
   getTypeWithNullableInfo,
   repositoryRoot,
-  TypeWithNullableInfo,
 } from "./typeschema";
 import {
   collectMembers,
@@ -12,12 +11,11 @@ import {
   getJsDocTagText,
   getSummary,
   isEvent,
-  toJsTypeName,
-  tryGetReferenceLink,
   writeCommonImports,
   writeEventDetails,
   writeMethodDetails,
   writePropertyDetails,
+  TypeReferencedCodeBuilder,
 } from "./generate-common.mjs";
 import ts from "typescript";
 import { FileStream, openFileStream } from "./util";
@@ -59,81 +57,78 @@ export async function generateTypeDocs(context: GenerateContext) {
       ts.isInterfaceDeclaration(exportedType) ||
       ts.isTypeAliasDeclaration(exportedType)
     ) {
-      const linkMap = new Map<string, string>();
-      let definition = "";
+      let definition = new TypeReferencedCodeBuilder(context);
       if (exportedType.modifiers) {
         for (const m of exportedType.modifiers) {
           switch (m.kind) {
             case ts.SyntaxKind.AbstractKeyword:
-              definition += " abstract";
+              definition.whitespace(" ");
+              definition.keyword("abstract");
               break;
           }
         }
       }
 
+      definition.whitespace(" ");
       if (ts.isClassDeclaration(exportedType)) {
-        definition += " class";
+        definition.keyword("class");
       } else if (ts.isInterfaceDeclaration(exportedType)) {
-        definition += " interface";
+        definition.keyword("interface");
       } else if (ts.isTypeAliasDeclaration(exportedType)) {
-        definition += " type";
+        definition.keyword("type");
       }
-      definition += " " + exportedType.name!.getText();
+      definition.whitespace(" ");
+      definition.identifier(exportedType.name!.getText());
 
       if (
         exportedType.typeParameters &&
         exportedType.typeParameters.length > 0
       ) {
-        definition += "<";
-        definition += exportedType.typeParameters
-          .map((p) => p.name.getText())
-          .join(", ");
-        definition += ">";
+        definition.token("<");
+
+        for (let i = 0; i < exportedType.typeParameters.length; i++) {
+          if (i > 0) {
+            definition.token(",");
+            definition.whitespace(" ");
+          }
+
+          definition.identifier(exportedType.typeParameters[i].name.getText());
+        }
+
+        definition.token(">");
       }
 
       if (ts.isTypeAliasDeclaration(exportedType)) {
-        definition += " = " + exportedType.type.getText();
-
-        walkTypeForLinks(
-          context,
-          linkMap,
+        definition.whitespace(" ");
+        definition.token("=");
+        definition.whitespace(" ");
+        definition.type(
           getTypeWithNullableInfo(context, exportedType.type, true, false)
         );
       } else if (exportedType.heritageClauses) {
         for (const clause of exportedType.heritageClauses) {
           switch (clause.token) {
             case ts.SyntaxKind.ExtendsKeyword:
-              definition += " extends";
+              definition.whitespace(" ");
+              definition.keyword("extends");
               break;
             case ts.SyntaxKind.ImplementsKeyword:
-              definition += " implements";
+              definition.whitespace(" ");
+              definition.keyword("implements");
               break;
           }
 
-          definition +=
-            " " +
-            clause.types
-              .map((t) => {
-                walkTypeForLinks(
-                  context,
-                  linkMap,
-                  getTypeWithNullableInfo(context, t, true, false)
-                );
-                return t.getText();
-              })
-              .join(", ");
+          definition.whitespace(" ");
+
+          for (const type of clause.types) {
+            definition.type(
+              getTypeWithNullableInfo(context, type, true, false)
+            );
+          }
         }
       }
 
-      const metaString = JSON.stringify(
-        Array.from(linkMap.entries())
-          .map((e) => `link${e[0]}="${e[1]}"`)
-          .join(" ")
-      );
-
-      await fileStream.write(
-        `<CodeBlock metastring={${metaString}} language="ts">{\`${definition.trim()}\`}</CodeBlock>\n`
-      );
+      await fileStream.writeLine(definition.toMdx("js", 'block'));
 
       const properties: (
         | ts.PropertyDeclaration
@@ -220,39 +215,33 @@ async function writeProperties(
   for (const member of properties) {
     await fileStream.write(`    <tr>\n`);
 
-    const referenceLink = tryGetReferenceLink(context, member);
-
-    if (referenceLink) {
-      await fileStream.write(
-        `      <td>[\`${member.name.getText()}\`](${referenceLink})</td>\n`
-      );
-    } else {
-      await fileStream.write(`      <td>\`${member.name.getText()}\`</td>\n`);
-    }
-
-    const typeInfo = getTypeWithNullableInfo(
-      context,
-      member.type,
-      true,
-      !!member.questionToken
+    const referenceBuilder = new TypeReferencedCodeBuilder(context);
+    referenceBuilder.declaration(member);
+    await fileStream.write(
+      `      <td>${referenceBuilder.toMdx("js", "inline")}</td>\n`
     );
-    const typeReferenceLink = tryGetReferenceLink(context, typeInfo);
 
-    if (typeReferenceLink) {
-      await fileStream.writeLine(
-        `      {props.detailed && (<td><Link to={${JSON.stringify(typeReferenceLink)}}><code>{${JSON.stringify(toJsTypeName(context, typeInfo))}}</code></Link></td>)}`
-      );
-    } else {
-      await fileStream.writeLine(
-        `      {props.detailed && (<td><code>{${JSON.stringify(toJsTypeName(context, typeInfo))}}</code></td>)}`
-      );
-    }
+    referenceBuilder.reset();
+    referenceBuilder.type(
+      getTypeWithNullableInfo(
+        context,
+        member.type,
+        true,
+        !!member.questionToken
+      )
+    );
+
+    await fileStream.writeLine(
+      `      {props.detailed && (<td>${referenceBuilder.toMdx("js", "inline")}</td>)}`
+    );
 
     let defaultValue = getJsDocTagText(context, member, "defaultValue");
-    if(!defaultValue) {
-      defaultValue = '(no default)';
+    if (!defaultValue) {
+      defaultValue = "(no default)";
     }
-    await fileStream.writeLine(`      {props.detailed && <td><code>{${JSON.stringify(defaultValue)}}</code></td>}`);
+    await fileStream.writeLine(
+      `      {props.detailed && <td><code>{${JSON.stringify(defaultValue)}}</code></td>}`
+    );
 
     let description =
       getSummary(context, member, true, true) +
@@ -516,8 +505,8 @@ function getInheritenceInfo(
   // inheritence info
   if (member.parent !== parent) {
     info += " (Inherited from ";
-    const referenceLink = tryGetReferenceLink(
-      context,
+    const builder = new TypeReferencedCodeBuilder(context);
+    builder.declaration(
       member.parent as ts.ClassDeclaration | ts.InterfaceDeclaration
     );
 
@@ -526,38 +515,9 @@ function getInheritenceInfo(
       name = context.nameToExportName.get(name)!;
     }
 
-    if (referenceLink) {
-      info += `[${name}](${referenceLink})`;
-    } else {
-      info += name;
-    }
+    info += builder.toMdx("js", "inline");
 
     info += ")";
   }
   return info;
-}
-
-function walkTypeForLinks(
-  context: GenerateContext,
-  linkMap: Map<string, string>,
-  type: TypeWithNullableInfo
-) {
-  if (type.isUnionType) {
-    for (const t of type.unionTypes!) {
-      walkTypeForLinks(context, linkMap, t);
-    }
-  } else {
-    if (type.isOwnType) {
-      const reference = tryGetReferenceLink(context, type);
-      if (reference) {
-        linkMap.set(type.symbol!.name, reference);
-      }
-    }
-
-    if (type.typeArguments) {
-      for (const t of type.typeArguments) {
-        walkTypeForLinks(context, linkMap, t);
-      }
-    }
-  }
 }

@@ -139,3 +139,40 @@ li.types-item .menu__link {
 }
 
 @import "react-tooltip/dist/react-tooltip.css";
+
+.codeBlockContainer {
+  border-radius: var(--ifm-code-border-radius);
+  box-shadow: var(--ifm-global-shadow-lw);
+  margin-bottom: var(--ifm-leading);
+  background: var(--prism-background-color);
+  color: var(--prism-color);
+
+  & .codeBlockContent {
+    border-radius: inherit;
+    direction: ltr;
+    position: relative;
+  }
+
+  & .codeBlock {
+    --ifm-pre-background: var(--prism-background-color);
+    margin: 0;
+    padding: 0;
+    scrollbar-width: thin;
+  }
+
+  & .codeBlockLines {
+    float: left;
+    font: inherit;
+    min-width: 100%;
+    padding: var(--ifm-pre-padding);
+
+    & a {
+      text-decoration: underline dotted;
+    }
+
+    
+    & a:hover {
+      text-decoration: underline;
+    }
+  }
+}
