@@ -1,7 +1,7 @@
 import { PrismThemeEntry, themes as prismThemes } from "prism-react-renderer";
 import path from "path";
-import fs, { link } from "fs";
-import ts, { LanguageServiceMode } from "typescript";
+import fs from "fs";
+import ts from "typescript";
 import {
   GenerateContext,
   getTypeWithNullableInfo,
@@ -11,7 +11,6 @@ import {
 import { toPascalCase } from "@site/src/names";
 import { styleText } from "util";
 import { FileStream } from "./util";
-import { scrypt } from "crypto";
 
 export { toPascalCase } from "@site/src/names";
 
