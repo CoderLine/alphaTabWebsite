@@ -16,7 +16,6 @@ export type MediaSyncEditorProps = {
 };
 
 type MasterBarMarker = {
-    label: string;
     syncTime: number;
 
     synthTime: number;
@@ -42,7 +41,7 @@ type SyncPointInfo = {
 
 // TODO: handle intermediate tempo changes and sync points
 
-function ticksToMillis(tick: number, bpm: number): number {
+function ticksToMilliseconds(tick: number, bpm: number): number {
     return (tick * 60000.0) / (bpm * 960);
 }
 
@@ -67,64 +66,268 @@ async function buildSyncPointInfo(api: alphaTab.AlphaTabApi, createInitialSyncPo
             : [buffer.getChannelData(0), buffer.getChannelData(1)];
 
     const sampleRate = audioContext.sampleRate;
-    const endTime = rawSamples[0].length / sampleRate;
+    const endTime = (rawSamples[0].length / sampleRate) * 1000;
 
     await audioContext.close();
 
-    return {
+    const state: SyncPointInfo = {
         endTick: api.tickCache.masterBars.at(-1)!.end,
-        masterBarMarkers: buildMasterBarMarkers(api, createInitialSyncPoints),
+        masterBarMarkers: [],
         sampleRate,
         leftSamples: rawSamples[0],
         rightSamples: rawSamples[1],
         endTime
     };
-}
-function buildMasterBarMarkers(api: alphaTab.AlphaTabApi, createInitialSyncPoints: boolean): MasterBarMarker[] {
-    const markers: MasterBarMarker[] = [];
 
     if (createInitialSyncPoints) {
         // create initial sync points for all tempo changes to ensure the song and the
         // backing track roughly align
-        let synthBpm = 0;
+        let synthBpm = api.tickCache!.masterBars[0].tempoChanges[0].tempo;
         let synthTimePosition = 0;
         let synthTickPosition = 0;
 
+        const syncPoints: MasterBarMarker[] = [];
+
+        // first create all changes not respecting the song start and end
         const occurences = new Map<number, number>();
         for (const masterBar of api.tickCache!.masterBars) {
             const occurence = occurences.get(masterBar.masterBar.index) ?? 0;
             occurences.set(masterBar.masterBar.index, occurence + 1);
 
+            // we are guaranteed to have a tempo change per master bar indicating its own tempo
+            // (even though its not a change)
             for (const changes of masterBar.tempoChanges) {
                 const absoluteTick = changes.tick;
                 const tickOffset = absoluteTick - synthTickPosition;
                 if (tickOffset > 0) {
-                    const timeOffset = ticksToMillis(tickOffset, synthBpm);
-
+                    const timeOffset = ticksToMilliseconds(tickOffset, synthBpm);
                     synthTickPosition = absoluteTick;
                     synthTimePosition += timeOffset;
                 }
 
-                if (changes.tempo !== synthBpm && changes.tick === masterBar.start) {
-                    const syncPoint = new alphaTab.model.Automation();
-                    syncPoint.ratioPosition = 0;
-                    syncPoint.type = alphaTab.model.AutomationType.SyncPoint;
-                    syncPoint.syncPointValue = new alphaTab.model.SyncPointData();
-                    syncPoint.syncPointValue.barOccurence = occurence;
-                    syncPoint.syncPointValue.millisecondOffset = synthTimePosition;
-                    syncPoint.syncPointValue.modifiedTempo = changes.tempo;
-                    masterBar.masterBar.addSyncPoint(syncPoint);
+                if (changes.tick === masterBar.start) {
+                    const marker: MasterBarMarker = {
+                        isStartMarker: masterBar.start === 0,
+                        isEndMarker: false,
+                        masterBarIndex: masterBar.masterBar.index,
+                        occurence,
+                        syncTime: synthTimePosition,
+                        synthBpm,
+                        synthTickDuration: masterBar.end - masterBar.start,
+                        synthTime: synthTimePosition,
+                        modifiedTempo: undefined
+                    };
+
+                    if (changes.tempo !== synthBpm || marker.isStartMarker) {
+                        syncPoints.push(marker);
+                        marker.modifiedTempo = changes.tempo;
+                    }
 
                     synthBpm = changes.tempo;
+
+                    state.masterBarMarkers.push(marker);
+                } else {
+                    // TOOD: other tempo changes
                 }
             }
 
             const tickOffset = masterBar.end - synthTickPosition;
-            const timeOffset = ticksToMillis(tickOffset, synthBpm);
+            const timeOffset = ticksToMilliseconds(tickOffset, synthBpm);
             synthTickPosition += tickOffset;
             synthTimePosition += timeOffset;
         }
+
+        // end marker
+        const lastMasterBar = api.tickCache!.masterBars.at(-1)!;
+        state.masterBarMarkers.push({
+            masterBarIndex: lastMasterBar.masterBar.index,
+            synthTickDuration: 0,
+            occurence: occurences.get(lastMasterBar.masterBar.index)!,
+            syncTime: synthTimePosition,
+            synthTime: synthTimePosition,
+            synthBpm,
+            modifiedTempo: synthBpm,
+            isStartMarker: false,
+            isEndMarker: true
+        });
+
+        // with the final durations known, we can "squeeze" together the song
+        // from start and end (keeping the relative positions)
+        // and the other bars will be adjusted accordingly
+        const [songStart, songEnd] = findAudioStartAndEnd(state);
+
+        const synthDuration = synthTimePosition;
+        const realDuration = songEnd - songStart;
+        const scaleFactor = realDuration / synthDuration;
+
+        // 1st Pass: shift all tempo change markers relatively and calculate BPM
+        let syncTime = songStart;
+        for (let i = 0; i < syncPoints.length; i++) {
+            const syncPoint = syncPoints[i];
+
+            syncPoint.syncTime = syncTime;
+
+            if (i < 0) {
+                const previousMarker = syncPoints[i - 1];
+                const synthDuration = syncPoint.synthTime - previousMarker.synthTime;
+                const syncedDuration = syncPoint.syncTime - previousMarker.syncTime;
+                const newBpm = (synthDuration / syncedDuration) * previousMarker.synthBpm;
+                previousMarker.modifiedTempo = newBpm;
+            }
+
+            const ownStart = syncPoint.synthTime;
+            const nextStart = i < syncPoints.length - 1 ? syncPoints[i + 1].synthTime : ownStart;
+
+            const oldDuration = nextStart - ownStart;
+            const newDuration = oldDuration * scaleFactor;
+
+            syncTime += newDuration;
+        }
+
+        // // 2nd Pass: adjust all in-between markers according to the new position
+        syncTime = songStart;
+        let syncedBpm = syncPoints[0].modifiedTempo!;
+        for (const marker of state.masterBarMarkers) {
+            marker.syncTime = syncTime;
+
+            if (marker.modifiedTempo) {
+                syncedBpm = marker.modifiedTempo;
+            }
+
+            syncTime += ticksToMilliseconds(marker.synthTickDuration, syncedBpm);
+        }
+    } else {
+        state.masterBarMarkers = buildMasterBarMarkers(api);
     }
+
+    return state;
+}
+
+function resetSyncPoints(api: alphaTab.AlphaTabApi, state: SyncPointInfo): SyncPointInfo {
+    for (const b of api.score!.masterBars) {
+        b.syncPoints = undefined;
+    }
+
+    return {
+        ...state,
+        // TODO: create initial ones
+        masterBarMarkers: buildMasterBarMarkers(api)
+    };
+}
+
+function findAudioStartAndEnd(state: SyncPointInfo): [number, number] {
+    // once we have 1s non-silent audio we consider it as start (or inverted for end)
+    const nonSilentSamplesThreshold = 1 * state.sampleRate;
+    // we accept 200ms of silence inbetween audible samples
+    const silentSamplesThreshold = 0.2 * state.sampleRate;
+    // there can always be a bit of a noise. we require some amplitude
+    // proper would be to consider the Frequency and calculate the
+    const nonSilentAmplitudeThreshold = 0.001;
+
+    // we limit the search to 10s (from start/end), proper audio should not exceed this
+    const searchThreshold = Math.min(10 * state.sampleRate, state.leftSamples.length * 0.1);
+
+    let songStart = searchThreshold;
+    let songEnd = state.leftSamples.length - searchThreshold;
+
+    // find start offset
+    let sampleIndex = 0;
+
+    let nonSilentSamplesInSection = 0;
+    let silentSamplesInSequence = 0;
+    let sectionStart = 0;
+
+    while (sampleIndex < songStart) {
+        if (
+            Math.abs(state.leftSamples[sampleIndex]) >= nonSilentAmplitudeThreshold ||
+            Math.abs(state.rightSamples[sampleIndex]) >= nonSilentAmplitudeThreshold
+        ) {
+            // the first audible sample marks the potential start
+            if (nonSilentSamplesInSection === 0) {
+                sectionStart = sampleIndex;
+            }
+            nonSilentSamplesInSection++;
+            silentSamplesInSequence = 0;
+        } else {
+            silentSamplesInSequence++;
+        }
+
+        // found more than X-samples silent, no start until here
+        if (silentSamplesInSequence > silentSamplesThreshold) {
+            // reset and start searching agian
+            sectionStart = sampleIndex + 1;
+            nonSilentSamplesInSection = 0;
+            silentSamplesInSequence = 0;
+        }
+        // found enough samples since section start which are audible, should be good
+        else if (nonSilentSamplesInSection > nonSilentSamplesThreshold) {
+            songStart = sectionStart;
+            break;
+        }
+
+        sampleIndex++;
+    }
+
+    // and same from the back
+    sampleIndex = state.leftSamples.length - 1;
+    nonSilentSamplesInSection = 0;
+    silentSamplesInSequence = 0;
+    sectionStart = sampleIndex;
+
+    while (sampleIndex >= songEnd) {
+        if (
+            Math.abs(state.leftSamples[sampleIndex]) >= nonSilentAmplitudeThreshold ||
+            Math.abs(state.rightSamples[sampleIndex]) >= nonSilentAmplitudeThreshold
+        ) {
+            if (nonSilentSamplesInSection === 0) {
+                sectionStart = sampleIndex;
+            }
+            nonSilentSamplesInSection++;
+            silentSamplesInSequence = 0;
+        } else {
+            silentSamplesInSequence++;
+        }
+
+        if (silentSamplesInSequence > silentSamplesThreshold) {
+            sectionStart = sampleIndex - 1;
+            nonSilentSamplesInSection = 0;
+            silentSamplesInSequence = 0;
+        } else if (nonSilentSamplesInSection > nonSilentSamplesThreshold) {
+            songEnd = sectionStart;
+            break;
+        }
+
+        sampleIndex--;
+    }
+
+    return [(songStart / state.sampleRate) * 1000, (songEnd / state.sampleRate) * 1000];
+}
+
+function cropToAudio(state: SyncPointInfo): SyncPointInfo {
+    const [songStart, songEnd] = findAudioStartAndEnd(state);
+    const newState: SyncPointInfo = {
+        ...state,
+        masterBarMarkers: [...state.masterBarMarkers]
+    };
+    // move first marker
+    newState.masterBarMarkers[0] = {
+        ...newState.masterBarMarkers[0],
+        syncTime: songStart
+    };
+    updateSyncPointsAfterModification(0, newState, false, true);
+
+    // move last marker
+    newState.masterBarMarkers[newState.masterBarMarkers.length - 1] = {
+        ...newState.masterBarMarkers[newState.masterBarMarkers.length - 1],
+        syncTime: songEnd
+    };
+    updateSyncPointsAfterModification(newState.masterBarMarkers.length - 1, newState, false, true);
+
+    return newState;
+}
+
+function buildMasterBarMarkers(api: alphaTab.AlphaTabApi): MasterBarMarker[] {
+    const markers: MasterBarMarker[] = [];
 
     const occurences = new Map<number, number>();
     let syncBpm = api.score!.tempo;
@@ -136,11 +339,12 @@ function buildMasterBarMarkers(api: alphaTab.AlphaTabApi, createInitialSyncPoint
     let synthTickPosition = 0;
 
     for (const masterBar of api.tickCache!.masterBars) {
-        const occurence = occurences.get(masterBar.masterBar.index) ?? 1;
+        const occurence = occurences.get(masterBar.masterBar.index) ?? 0;
         occurences.set(masterBar.masterBar.index, occurence + 1);
 
-        const occurenceLabel = occurence > 1 ? ` (${occurence})` : '';
-        const startSyncPoint = masterBar.masterBar.syncPoints?.find(m => m.ratioPosition === 0);
+        const startSyncPoint = masterBar.masterBar.syncPoints?.find(m => m.ratioPosition === 0 &&
+            m.syncPointValue!.barOccurence === occurence
+        );
 
         let syncedStartTime: number;
         if (startSyncPoint) {
@@ -150,17 +354,16 @@ function buildMasterBarMarkers(api: alphaTab.AlphaTabApi, createInitialSyncPoint
             syncLastTick = masterBar.start;
         } else {
             const tickOffset = masterBar.start - syncLastTick;
-            syncedStartTime = syncLastMillisecondOffset + ticksToMillis(tickOffset, syncBpm);
+            syncedStartTime = syncLastMillisecondOffset + ticksToMilliseconds(tickOffset, syncBpm);
         }
 
-        const isStartMarker = masterBar.masterBar.index === 0 && occurence === 1;
+        const isStartMarker = masterBar.masterBar.index === 0 && occurence === 0;
         const newMarker: MasterBarMarker = {
-            label: isStartMarker ? 'Start' : `${masterBar.masterBar.index + 1}${occurenceLabel}`,
             masterBarIndex: masterBar.masterBar.index,
             synthTickDuration: masterBar.end - masterBar.start,
             occurence: occurence,
-            syncTime: syncedStartTime / 1000,
-            synthTime: synthTimePosition / 1000,
+            syncTime: syncedStartTime,
+            synthTime: synthTimePosition,
             synthBpm: masterBar.tempoChanges.length > 0 ? masterBar.tempoChanges[0].tempo : synthBpm,
             modifiedTempo: startSyncPoint?.syncPointValue?.modifiedTempo,
             isStartMarker,
@@ -172,7 +375,7 @@ function buildMasterBarMarkers(api: alphaTab.AlphaTabApi, createInitialSyncPoint
             const absoluteTick = changes.tick;
             const tickOffset = absoluteTick - synthTickPosition;
             if (tickOffset > 0) {
-                const timeOffset = ticksToMillis(tickOffset, synthBpm);
+                const timeOffset = ticksToMilliseconds(tickOffset, synthBpm);
 
                 synthTickPosition = absoluteTick;
                 synthTimePosition += timeOffset;
@@ -182,7 +385,7 @@ function buildMasterBarMarkers(api: alphaTab.AlphaTabApi, createInitialSyncPoint
         }
 
         const tickOffset = masterBar.end - synthTickPosition;
-        const timeOffset = ticksToMillis(tickOffset, synthBpm);
+        const timeOffset = ticksToMilliseconds(tickOffset, synthBpm);
         synthTickPosition += tickOffset;
         synthTimePosition += timeOffset;
     }
@@ -194,15 +397,14 @@ function buildMasterBarMarkers(api: alphaTab.AlphaTabApi, createInitialSyncPoint
     const tickOffset = lastMasterBar.end - syncLastTick;
     const endSyncPointTime = endSyncPoint
         ? endSyncPoint.syncPointValue!.millisecondOffset
-        : syncLastMillisecondOffset + ticksToMillis(tickOffset, syncBpm);
+        : syncLastMillisecondOffset + ticksToMilliseconds(tickOffset, syncBpm);
 
     markers.push({
-        label: 'End',
         masterBarIndex: lastMasterBar.masterBar.index,
         synthTickDuration: 0,
         occurence: occurences.get(lastMasterBar.masterBar.index)!,
-        syncTime: endSyncPointTime / 1000,
-        synthTime: synthTimePosition / 1000,
+        syncTime: endSyncPointTime,
+        synthTime: synthTimePosition,
         synthBpm,
         modifiedTempo: endSyncPoint?.syncPointValue?.modifiedTempo ?? synthBpm,
         isStartMarker: false,
@@ -212,7 +414,7 @@ function buildMasterBarMarkers(api: alphaTab.AlphaTabApi, createInitialSyncPoint
     return markers;
 }
 
-const pixelPerSeconds = 100;
+const pixelPerMilliseconds = 100 / 1000 /* 100px per 1000ms */;
 const leftPadding = 15;
 const barNumberHeight = 20;
 const arrowHeight = 20;
@@ -227,8 +429,8 @@ const dragThreshold = 5;
 const scrollThresholdPercent = 0.2;
 
 function timePositionToX(timePosition: number, zoom: number): number {
-    const zoomedPixelPerSecond = pixelPerSeconds * zoom;
-    return timePosition * zoomedPixelPerSecond + leftPadding;
+    const zoomedPixelPerMilliseconds = pixelPerMilliseconds * zoom;
+    return timePosition * zoomedPixelPerMilliseconds + leftPadding;
 }
 
 type MarkerDragInfo = {
@@ -255,7 +457,12 @@ function computeMarkerInlineStyle(
     };
 }
 
-function updateSyncPointsAfterModification(modifiedIndex: number, s: SyncPointInfo, isDelete: boolean) {
+function updateSyncPointsAfterModification(
+    modifiedIndex: number,
+    s: SyncPointInfo,
+    isDelete: boolean,
+    cloneMarkers: boolean
+) {
     // find previous and next sync point (or start/end of the song)
     let startIndexForUpdate = Math.max(0, modifiedIndex - 1);
     while (startIndexForUpdate > 0 && !s.masterBarMarkers[startIndexForUpdate].modifiedTempo) {
@@ -274,7 +481,9 @@ function updateSyncPointsAfterModification(modifiedIndex: number, s: SyncPointIn
 
     // update from previous to current
     if (startIndexForUpdate < modifiedIndex) {
-        const previousMarker = { ...s.masterBarMarkers[startIndexForUpdate] };
+        const previousMarker = cloneMarkers
+            ? { ...s.masterBarMarkers[startIndexForUpdate] }
+            : s.masterBarMarkers[startIndexForUpdate];
         s.masterBarMarkers[startIndexForUpdate] = previousMarker;
         const synthDuration = modifiedMarker.synthTime - previousMarker.synthTime;
         const syncedDuration = modifiedMarker.syncTime - previousMarker.syncTime;
@@ -283,11 +492,11 @@ function updateSyncPointsAfterModification(modifiedIndex: number, s: SyncPointIn
 
         let syncedTimePosition = previousMarker.syncTime;
         for (let i = startIndexForUpdate; i < modifiedIndex; i++) {
-            const marker = { ...s.masterBarMarkers[i] };
+            const marker = cloneMarkers ? { ...s.masterBarMarkers[i] } : s.masterBarMarkers[i];
             s.masterBarMarkers[i] = marker;
 
             marker.syncTime = syncedTimePosition;
-            syncedTimePosition += ticksToMillis(marker.synthTickDuration, newBpmBefore) / 1000;
+            syncedTimePosition += ticksToMilliseconds(marker.synthTickDuration, newBpmBefore);
         }
     }
 
@@ -299,13 +508,13 @@ function updateSyncPointsAfterModification(modifiedIndex: number, s: SyncPointIn
         modifiedMarker.modifiedTempo = newBpmAfter;
 
         let syncedTimePosition =
-            modifiedMarker.syncTime + ticksToMillis(modifiedMarker.synthTickDuration, newBpmAfter) / 1000;
+            modifiedMarker.syncTime + ticksToMilliseconds(modifiedMarker.synthTickDuration, newBpmAfter);
         for (let i = modifiedIndex + 1; i < nextIndexForUpdate; i++) {
-            const marker = { ...s.masterBarMarkers[i] };
+            const marker = cloneMarkers ? { ...s.masterBarMarkers[i] } : s.masterBarMarkers[i];
             s.masterBarMarkers[i] = marker;
             marker.syncTime = syncedTimePosition;
 
-            syncedTimePosition += ticksToMillis(marker.synthTickDuration, newBpmAfter) / 1000;
+            syncedTimePosition += ticksToMilliseconds(marker.synthTickDuration, newBpmAfter);
         }
     }
 }
@@ -370,7 +579,7 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
             const scrollOffset = syncArea.current.scrollLeft;
 
             // is out of screen?
-            if (xPos < scrollOffset + threshold || (xPos - scrollOffset) > (canvasWidth - threshold)) {
+            if (xPos < scrollOffset + threshold || xPos - scrollOffset > canvasWidth - threshold) {
                 syncArea.current.scrollTo({
                     left: xPos - canvasWidth / 2,
                     behavior: 'smooth'
@@ -381,7 +590,7 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
 
     useEffect(() => {
         const updateWaveFormCursor = () => {
-            setPlaybackTime(audioElement!.currentTime);
+            setPlaybackTime(audioElement!.currentTime * 1000);
         };
 
         let timeUpdate: number = 0;
@@ -393,7 +602,7 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
             audioElement.addEventListener('seeked', updateWaveFormCursor);
             timeUpdate = window.setInterval(() => {
                 if (audioElement) {
-                    setPlaybackTime(audioElement.currentTime);
+                    setPlaybackTime(audioElement.currentTime * 1000);
                 }
             }, 50);
             updateWaveFormCursor();
@@ -436,8 +645,8 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
                 automation.type = alphaTab.model.AutomationType.SyncPoint;
                 automation.syncPointValue = new alphaTab.model.SyncPointData();
                 automation.syncPointValue.modifiedTempo = m.modifiedTempo;
-                automation.syncPointValue.millisecondOffset = m.syncTime * 1000;
-                automation.syncPointValue.barOccurence = m.occurence - 1;
+                automation.syncPointValue.millisecondOffset = m.syncTime;
+                automation.syncPointValue.barOccurence = m.occurence;
                 syncPoints.push(automation);
             }
         }
@@ -507,9 +716,9 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
             const newS = { ...s, masterBarMarkers: [...s.masterBarMarkers] };
             if (marker.modifiedTempo) {
                 newS.masterBarMarkers[markerIndex] = { ...marker, modifiedTempo: undefined };
-                updateSyncPointsAfterModification(markerIndex, newS, true);
+                updateSyncPointsAfterModification(markerIndex, newS, true, true);
             } else {
-                updateSyncPointsAfterModification(markerIndex, newS, false);
+                updateSyncPointsAfterModification(markerIndex, newS, false, true);
             }
 
             return newS;
@@ -533,8 +742,8 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
 
                         const markerIndex = s.masterBarMarkers.findIndex(m => m === draggingMarker);
 
-                        const zoomedPixelPerSecond = pixelPerSeconds * zoom;
-                        const deltaTime = deltaX / zoomedPixelPerSecond;
+                        const zoomedPixelPerMillisecond = pixelPerMilliseconds * zoom;
+                        const deltaTime = deltaX / zoomedPixelPerMillisecond;
 
                         const newTimePosition = draggingMarker.syncTime + deltaTime;
 
@@ -546,7 +755,7 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
                             syncTime: Math.max(0, newTimePosition)
                         };
 
-                        updateSyncPointsAfterModification(markerIndex, newS, false);
+                        updateSyncPointsAfterModification(markerIndex, newS, false, true);
                         return newS;
                     });
                     setDraggingMarker(null);
@@ -658,11 +867,11 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
 
         ctx.beginPath();
 
-        const startX = syncArea.current!.scrollLeft;
-        const endX = startX + can.width;
+        const startX = Math.max(syncArea.current!.scrollLeft - leftPadding, 0);
+        const endX = startX + can.width + leftPadding;
 
-        const zoomedPixelPerSecond = pixelPerSeconds * zoom;
-        const samplesPerPixel = syncPointInfo.sampleRate / zoomedPixelPerSecond;
+        const zoomedPixelPerMillisecond = pixelPerMilliseconds * zoom;
+        const samplesPerPixel = syncPointInfo.sampleRate / (zoomedPixelPerMillisecond * 1000);
 
         for (let x = startX; x < endX; x += barWidth) {
             const startSample = (x * samplesPerPixel) | 0;
@@ -671,11 +880,8 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
             let maxTop = 0;
             let maxBottom = 0;
             for (let sample = startSample; sample <= endSample; sample++) {
-                // TODO: a logarithmic scale would be better here to scale 0-1 better as visible waveform
-                // for now we multiply it for a good scale (unlikely we have a sound with 1 which is very loud)
-                const visibilityFactor = 5;
-                const magnitudeTop = Math.min(Math.abs(syncPointInfo.leftSamples[sample] * visibilityFactor || 0), 1);
-                const magnitudeBottom = Math.min(Math.abs(syncPointInfo.rightSamples[sample] * visibilityFactor || 0), 1);
+                const magnitudeTop = Math.abs(syncPointInfo.leftSamples[sample] || 0);
+                const magnitudeBottom = Math.abs(syncPointInfo.rightSamples[sample] || 0);
                 if (magnitudeTop > maxTop) {
                     maxTop = magnitudeTop;
                 }
@@ -684,10 +890,10 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
                 }
             }
 
-            const topBarHeight = Math.round(maxTop * halfHeight);
-            const bottomBarHeight = Math.round(maxBottom * halfHeight);
+            const topBarHeight = Math.min(halfHeight, Math.round(maxTop * halfHeight));
+            const bottomBarHeight = Math.min(halfHeight, Math.round(maxBottom * halfHeight));
             const barHeight = topBarHeight + bottomBarHeight || 1;
-            ctx.rect(x, waveFormY + (halfHeight - topBarHeight), barWidth, barHeight);
+            ctx.rect(x + leftPadding, waveFormY + (halfHeight - topBarHeight), barWidth, barHeight);
         }
 
         ctx.fillStyle = waveFormColor;
@@ -702,31 +908,35 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
         ctx.textBaseline = 'bottom';
 
         const timeAxisY = waveFormY + 2 * halfHeight;
-        const leftTime = Math.floor((startX - leftPadding) / zoomedPixelPerSecond);
-        const rightTime = Math.ceil(endX / zoomedPixelPerSecond);
+        const leftTimeSecond = Math.floor((startX - leftPadding) / zoomedPixelPerMillisecond / 1000);
+        const rightTimeSecond = Math.ceil(endX / zoomedPixelPerMillisecond / 1000);
+
+        const leftTime = leftTimeSecond * 1000;
+        const rightTime = rightTimeSecond * 1000;
 
         let time = leftTime;
         while (time <= rightTime) {
             const timeX = timePositionToX(time, zoom);
             ctx.fillRect(timeX, timeAxisY, 1, timeAxisHeight);
 
-            const minutes = Math.floor(time / 60);
-            const seconds = Math.floor(time - minutes * 60);
+            const totalSeconds = Math.abs(time / 1000);
 
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = Math.floor(totalSeconds - minutes * 60);
+
+            const sign = time < 0 ? '-' : '';
             const minutesText = minutes.toString().padStart(2, '0');
             const secondsText = seconds.toString().padStart(2, '0');
 
-            ctx.fillText(`${minutesText}:${secondsText}`, timeX + 3, timeAxisY + timeAxisHeight);
+            ctx.fillText(`${sign}${minutesText}:${secondsText}`, timeX + 3, timeAxisY + timeAxisHeight);
 
-            const nextSecond = time + 1;
+            const nextSecond = time + 1000;
             while (time < nextSecond) {
                 const subSecondX = timePositionToX(time, zoom);
                 ctx.fillRect(subSecondX, timeAxisY, 1, timeAxiSubSecondTickHeight);
 
-                time += 0.1;
+                time += 100;
             }
-
-            time = Math.floor(time + 0.5);
         }
 
         ctx.restore();
@@ -734,8 +944,12 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
     };
 
     useEffect(() => {
+        if (waveFormCanvas.current) {
+            waveFormCanvas.current.width = canvasSize[0];
+            waveFormCanvas.current.height = canvasSize[1];
+        }
         drawWaveform();
-    }, [canvasSize, virtualWidth]);
+    }, [waveFormCanvas, canvasSize]);
 
     useResizeObserver(syncArea, entry => {
         setCanvasSize(s => [entry.contentRect.width, entry.contentRect.height]);
@@ -743,7 +957,7 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
 
     useEffect(() => {
         if (syncPointInfo) {
-            setVirtualWidth(s => pixelPerSeconds * syncPointInfo.endTime * zoom);
+            setVirtualWidth(s => pixelPerMilliseconds * syncPointInfo.endTime * zoom);
         }
         drawWaveform();
     }, [markerCanvas, syncPointInfo, zoom]);
@@ -772,6 +986,7 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
                     score.backingTrack.rawAudioFile = new Uint8Array(e.target!.result as ArrayBuffer);
 
                     // create a fresh set of sync points upon load (start->end)
+                    setApplySyncPoints(true);
                     setCreateInitialSyncPoints(true);
                 };
                 reader.readAsArrayBuffer(input.files[0]);
@@ -781,6 +996,36 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
         input.click();
         document.body.removeChild(input);
     };
+
+    const onResetSyncPoints = () => {
+        setApplySyncPoints(true);
+        setStoreToUndo(true);
+        setSyncPointInfo(s => {
+            return s ? resetSyncPoints(api, s) : s;
+        });
+    };
+
+    const onCropToAudio = () => {
+        setApplySyncPoints(true);
+        setStoreToUndo(true);
+        setSyncPointInfo(s => {
+            return s ? cropToAudio(s) : s;
+        });
+    };
+
+    function buildMarkerLabel(m: MasterBarMarker): React.ReactNode {
+        if (m.isStartMarker) {
+            return 'Start';
+        }
+        if (m.isEndMarker) {
+            return 'End';
+        }
+
+        if (m.occurence > 0) {
+            return `${m.masterBarIndex + 1} (${m.occurence + 1})`;
+        }
+        return `${m.masterBarIndex + 1}`;
+    }
 
     return (
         <div className={styles['media-sync-editor']}>
@@ -808,18 +1053,27 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
                     </button>
                     <ul className={'dropdown__menu'}>
                         <li>
-                            <a className="dropdown__link" href="#reset-sync-points">
+                            <a
+                                className="dropdown__link"
+                                href="#reset-sync-points"
+                                onClick={e => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    onResetSyncPoints();
+                                }}>
                                 Reset Sync Points
                             </a>
                         </li>
                         <li>
-                            <a className="dropdown__link" href="#crop-to-audio">
-                                Automatic: Crop to Headable Audio
-                            </a>
-                        </li>
-                        <li>
-                            <a className="dropdown__link" href="#add-tempo-changes">
-                                Automatic: Add Tempo Changes
+                            <a
+                                className="dropdown__link"
+                                href="#crop-to-audio"
+                                onClick={e => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    onCropToAudio();
+                                }}>
+                                Crop to Headable Audio
                             </a>
                         </li>
                     </ul>
@@ -880,27 +1134,21 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
             </div>
             <div className={styles['sync-area']} ref={syncArea} onScroll={() => drawWaveform()}>
                 <div className={styles['sync-area-canvas-wrap']}>
-                    <canvas ref={waveFormCanvas} width={canvasSize[0]} height={canvasSize[1]} />
+                    <canvas ref={waveFormCanvas} />
                 </div>
                 <div
                     className={styles['sync-area-marker-wrap']}
                     style={{ width: `${virtualWidth}px`, height: `${canvasSize[1]}px` }}>
                     {syncPointInfo.masterBarMarkers.map(m => (
                         <div
-                            key={m.label}
-                            className={`${styles['masterbar-marker']}  ${m.modifiedTempo ? styles['has-sync-point'] : ''}`}
+                            key={`${m.masterBarIndex}-${m.occurence}`}
+                            className={`${styles['masterbar-marker']}  ${m.modifiedTempo !== undefined ? styles['has-sync-point'] : ''}`}
                             style={computeMarkerInlineStyle(m, zoom, draggingMarker, draggingMarkerInfo)}
-                            data-tooltip-id="tooltip-playground"
-                            data-tooltip-content={
-                                m.modifiedTempo === undefined
-                                    ? 'Double Click to add sync point'
-                                    : 'Double Click to remove sync point'
-                            }
                             onDoubleClick={e => toggleMarker(m, e)}
                             onMouseDown={e => {
                                 startMarkerDrag(m, e);
                             }}>
-                            <div className={styles['marker-label']}>{m.label}</div>
+                            <div className={styles['marker-label']}>{buildMarkerLabel(m)}</div>
                             <div className={styles['marker-head']}>
                                 <div className={`${styles['marker-arrow']}`} />
                                 {!m.isEndMarker && m.modifiedTempo && (
