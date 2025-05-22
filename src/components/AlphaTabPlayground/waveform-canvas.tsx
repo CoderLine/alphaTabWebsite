@@ -62,6 +62,9 @@ const drawFrame = (ctx: CanvasRenderingContext2D, options: DrawWaveFormOptions, 
 };
 
 const drawSamples = (ctx: CanvasRenderingContext2D, options: DrawWaveFormOptions, drawInfo: CommonDrawInfo) => {
+    // NOTE: this is not very efficient. 
+    // we likely should render main parts of the waveform once and reuse the drawn images? 
+    // e.g. render multiple PNG chunks and simply show them. (re-draw on zoom)
     ctx.save();
 
     ctx.translate(-options.scrollOffset, 0);
@@ -184,13 +187,21 @@ export const WaveformCanvas: React.FC<WaveformCanvasProps> = props => {
         ...props
     };
 
+    // watch all props by converting them to JSON, all props affect display
+    // but watching props directly causes re-draw on every component render.
+    const watchedProps = JSON.stringify({
+        ...realProps,
+        leftSamples: null!,
+        rightSamples: null!
+    } satisfies WaveformCanvasProps);
+
     useEffect(() => {
         if (waveFormCanvas.current) {
             waveFormCanvas.current.width = props.width;
             waveFormCanvas.current.height = props.height;
             drawWaveform(waveFormCanvas.current, realProps);
         }
-    }, [props, waveFormCanvas]);
+    }, [watchedProps, realProps.leftPadding, realProps.rightSamples, waveFormCanvas]);
 
     return <canvas ref={waveFormCanvas} />;
 };
