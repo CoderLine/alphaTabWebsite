@@ -529,7 +529,7 @@ export function updateSyncPointsAfterModification(
         const newBpmAfter = syncedDuration > 0 ? (synthDuration / syncedDuration) * modifiedMarker.synthBpm : 0;
         modifiedMarker.modifiedTempo = newBpmAfter;
 
-        const tickDuration = nextMarker.synthTick - modifiedMarker.synthTick;
+        const tickDuration = s.syncPointMarkers[modifiedIndex + 1].synthTick - modifiedMarker.synthTick;
         let syncedTimePosition = modifiedMarker.syncTime + ticksToMilliseconds(tickDuration, newBpmAfter);
 
         for (let i = modifiedIndex + 1; i < nextIndexForUpdate; i++) {
