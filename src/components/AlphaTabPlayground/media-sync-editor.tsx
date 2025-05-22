@@ -10,24 +10,33 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import useResizeObserver from '@react-hook/resize-observer';
 import { useAlphaTabEvent } from '@site/src/hooks';
 
+// TODO: cleanup the code (splitup helpers and components properly)
+
 export type MediaSyncEditorProps = {
     api: alphaTab.AlphaTabApi;
     score: alphaTab.model.Score;
 };
 
-type MasterBarMarker = {
+enum SyncPointMarkerType {
+    StartMarker = 0,
+    EndMarker = 1,
+    MasterBar = 2,
+    Intermediate = 3
+}
+
+type SyncPointMarker = {
     syncTime: number;
 
     synthTime: number;
     synthBpm: number;
-    synthTickDuration: number;
+    synthTick: number;
 
     masterBarIndex: number;
+    ratioPosition: number;
     occurence: number;
     modifiedTempo?: number;
 
-    isStartMarker: boolean;
-    isEndMarker: boolean;
+    markerType: SyncPointMarkerType;
 };
 
 type SyncPointInfo = {
@@ -36,16 +45,17 @@ type SyncPointInfo = {
     sampleRate: number;
     leftSamples: Float32Array;
     rightSamples: Float32Array;
-    masterBarMarkers: MasterBarMarker[];
+    syncPointMarkers: SyncPointMarker[];
 };
-
-// TODO: handle intermediate tempo changes and sync points
 
 function ticksToMilliseconds(tick: number, bpm: number): number {
     return (tick * 60000.0) / (bpm * 960);
 }
 
-async function buildSyncPointInfo(api: alphaTab.AlphaTabApi, createInitialSyncPoints: boolean): Promise<SyncPointInfo> {
+async function buildSyncPointInfoFromApi(
+    api: alphaTab.AlphaTabApi,
+    createInitialSyncPoints: boolean
+): Promise<SyncPointInfo> {
     const tickCache = api.tickCache;
     if (!tickCache || !api.score?.backingTrack?.rawAudioFile) {
         return {
@@ -54,7 +64,7 @@ async function buildSyncPointInfo(api: alphaTab.AlphaTabApi, createInitialSyncPo
             sampleRate: 0,
             leftSamples: new Float32Array(0),
             rightSamples: new Float32Array(0),
-            masterBarMarkers: []
+            syncPointMarkers: []
         };
     }
 
@@ -72,7 +82,7 @@ async function buildSyncPointInfo(api: alphaTab.AlphaTabApi, createInitialSyncPo
 
     const state: SyncPointInfo = {
         endTick: api.tickCache.masterBars.at(-1)!.end,
-        masterBarMarkers: [],
+        syncPointMarkers: [],
         sampleRate,
         leftSamples: rawSamples[0],
         rightSamples: rawSamples[1],
@@ -86,7 +96,7 @@ async function buildSyncPointInfo(api: alphaTab.AlphaTabApi, createInitialSyncPo
         let synthTimePosition = 0;
         let synthTickPosition = 0;
 
-        const syncPoints: MasterBarMarker[] = [];
+        const syncPoints: SyncPointMarker[] = [];
 
         // first create all changes not respecting the song start and end
         const occurences = new Map<number, number>();
@@ -105,30 +115,34 @@ async function buildSyncPointInfo(api: alphaTab.AlphaTabApi, createInitialSyncPo
                     synthTimePosition += timeOffset;
                 }
 
-                if (changes.tick === masterBar.start) {
-                    const marker: MasterBarMarker = {
-                        isStartMarker: masterBar.start === 0,
-                        isEndMarker: false,
-                        masterBarIndex: masterBar.masterBar.index,
-                        occurence,
-                        syncTime: synthTimePosition,
-                        synthBpm,
-                        synthTickDuration: masterBar.end - masterBar.start,
-                        synthTime: synthTimePosition,
-                        modifiedTempo: undefined
-                    };
+                const marker: SyncPointMarker = {
+                    markerType: SyncPointMarkerType.MasterBar,
+                    masterBarIndex: masterBar.masterBar.index,
+                    occurence,
+                    syncTime: synthTimePosition,
+                    synthBpm,
+                    synthTime: synthTimePosition,
+                    modifiedTempo: undefined,
+                    ratioPosition: 0,
+                    synthTick: synthTickPosition
+                };
 
-                    if (changes.tempo !== synthBpm || marker.isStartMarker) {
-                        syncPoints.push(marker);
-                        marker.modifiedTempo = changes.tempo;
-                    }
-
-                    synthBpm = changes.tempo;
-
-                    state.masterBarMarkers.push(marker);
-                } else {
-                    // TOOD: other tempo changes
+                if (masterBar.start === 0) {
+                    marker.markerType = SyncPointMarkerType.StartMarker;
+                } else if (changes.tick > masterBar.start) {
+                    marker.markerType = SyncPointMarkerType.Intermediate;
+                    const duration = masterBar.start - masterBar.end;
+                    marker.ratioPosition = changes.tick / duration;
                 }
+
+                if (changes.tempo !== synthBpm || marker.markerType === SyncPointMarkerType.StartMarker) {
+                    syncPoints.push(marker);
+                    marker.modifiedTempo = changes.tempo;
+                }
+
+                synthBpm = changes.tempo;
+
+                state.syncPointMarkers.push(marker);
             }
 
             const tickOffset = masterBar.end - synthTickPosition;
@@ -139,16 +153,16 @@ async function buildSyncPointInfo(api: alphaTab.AlphaTabApi, createInitialSyncPo
 
         // end marker
         const lastMasterBar = api.tickCache!.masterBars.at(-1)!;
-        state.masterBarMarkers.push({
+        state.syncPointMarkers.push({
             masterBarIndex: lastMasterBar.masterBar.index,
-            synthTickDuration: 0,
             occurence: occurences.get(lastMasterBar.masterBar.index)!,
             syncTime: synthTimePosition,
             synthTime: synthTimePosition,
             synthBpm,
             modifiedTempo: synthBpm,
-            isStartMarker: false,
-            isEndMarker: true
+            markerType: SyncPointMarkerType.EndMarker,
+            ratioPosition: 1,
+            synthTick: synthTickPosition
         });
 
         // with the final durations known, we can "squeeze" together the song
@@ -184,20 +198,24 @@ async function buildSyncPointInfo(api: alphaTab.AlphaTabApi, createInitialSyncPo
             syncTime += newDuration;
         }
 
-        // // 2nd Pass: adjust all in-between markers according to the new position
+        // 2nd Pass: adjust all in-between markers according to the new position
         syncTime = songStart;
         let syncedBpm = syncPoints[0].modifiedTempo!;
-        for (const marker of state.masterBarMarkers) {
+        for (let i = 0; i < state.syncPointMarkers.length; i++) {
+            const marker = state.syncPointMarkers[i];
             marker.syncTime = syncTime;
 
             if (marker.modifiedTempo) {
                 syncedBpm = marker.modifiedTempo;
             }
 
-            syncTime += ticksToMilliseconds(marker.synthTickDuration, syncedBpm);
+            if (i < state.syncPointMarkers.length - 1) {
+                const tickDiff = state.syncPointMarkers[i + 1].synthTick - marker.synthTick;
+                syncTime += ticksToMilliseconds(tickDiff, syncedBpm);
+            }
         }
     } else {
-        state.masterBarMarkers = buildMasterBarMarkers(api);
+        state.syncPointMarkers = buildSyncPointMarkers(api);
     }
 
     return state;
@@ -210,8 +228,7 @@ function resetSyncPoints(api: alphaTab.AlphaTabApi, state: SyncPointInfo): SyncP
 
     return {
         ...state,
-        // TODO: create initial ones
-        masterBarMarkers: buildMasterBarMarkers(api)
+        syncPointMarkers: buildSyncPointMarkers(api)
     };
 }
 
@@ -307,27 +324,27 @@ function cropToAudio(state: SyncPointInfo): SyncPointInfo {
     const [songStart, songEnd] = findAudioStartAndEnd(state);
     const newState: SyncPointInfo = {
         ...state,
-        masterBarMarkers: [...state.masterBarMarkers]
+        syncPointMarkers: [...state.syncPointMarkers]
     };
     // move first marker
-    newState.masterBarMarkers[0] = {
-        ...newState.masterBarMarkers[0],
+    newState.syncPointMarkers[0] = {
+        ...newState.syncPointMarkers[0],
         syncTime: songStart
     };
     updateSyncPointsAfterModification(0, newState, false, true);
 
     // move last marker
-    newState.masterBarMarkers[newState.masterBarMarkers.length - 1] = {
-        ...newState.masterBarMarkers[newState.masterBarMarkers.length - 1],
+    newState.syncPointMarkers[newState.syncPointMarkers.length - 1] = {
+        ...newState.syncPointMarkers[newState.syncPointMarkers.length - 1],
         syncTime: songEnd
     };
-    updateSyncPointsAfterModification(newState.masterBarMarkers.length - 1, newState, false, true);
+    updateSyncPointsAfterModification(newState.syncPointMarkers.length - 1, newState, false, true);
 
     return newState;
 }
 
-function buildMasterBarMarkers(api: alphaTab.AlphaTabApi): MasterBarMarker[] {
-    const markers: MasterBarMarker[] = [];
+function buildSyncPointMarkers(api: alphaTab.AlphaTabApi): SyncPointMarker[] {
+    const markers: SyncPointMarker[] = [];
 
     const occurences = new Map<number, number>();
     let syncBpm = api.score!.tempo;
@@ -342,56 +359,131 @@ function buildMasterBarMarkers(api: alphaTab.AlphaTabApi): MasterBarMarker[] {
         const occurence = occurences.get(masterBar.masterBar.index) ?? 0;
         occurences.set(masterBar.masterBar.index, occurence + 1);
 
-        const startSyncPoint = masterBar.masterBar.syncPoints?.find(m => m.ratioPosition === 0 &&
-            m.syncPointValue!.barOccurence === occurence
-        );
+        const duration = masterBar.end - masterBar.start;
 
-        let syncedStartTime: number;
-        if (startSyncPoint) {
-            syncedStartTime = startSyncPoint.syncPointValue!.millisecondOffset;
-            syncBpm = startSyncPoint.syncPointValue!.modifiedTempo;
-            syncLastMillisecondOffset = syncedStartTime;
-            syncLastTick = masterBar.start;
-        } else {
-            const tickOffset = masterBar.start - syncLastTick;
-            syncedStartTime = syncLastMillisecondOffset + ticksToMilliseconds(tickOffset, syncBpm);
-        }
+        if (masterBar.masterBar.syncPoints) {
+            // if we have sync points we have to correctly walk through the points and tempo changes
+            // and place the markers accordingly
 
-        const isStartMarker = masterBar.masterBar.index === 0 && occurence === 0;
-        const newMarker: MasterBarMarker = {
-            masterBarIndex: masterBar.masterBar.index,
-            synthTickDuration: masterBar.end - masterBar.start,
-            occurence: occurence,
-            syncTime: syncedStartTime,
-            synthTime: synthTimePosition,
-            synthBpm: masterBar.tempoChanges.length > 0 ? masterBar.tempoChanges[0].tempo : synthBpm,
-            modifiedTempo: startSyncPoint?.syncPointValue?.modifiedTempo,
-            isStartMarker,
-            isEndMarker: false
-        };
-        markers.push(newMarker);
+            // TODO: create placeholder markers matching the time signature and relative offsets.
 
-        for (const changes of masterBar.tempoChanges) {
-            const absoluteTick = changes.tick;
-            const tickOffset = absoluteTick - synthTickPosition;
-            if (tickOffset > 0) {
-                const timeOffset = ticksToMilliseconds(tickOffset, synthBpm);
+            let tempoChangeIndex = 0;
+            for (const syncPoint of masterBar.masterBar.syncPoints) {
+                if (syncPoint.syncPointValue!.barOccurence !== occurence) {
+                    continue;
+                }
 
-                synthTickPosition = absoluteTick;
-                synthTimePosition += timeOffset;
+                const syncPointTick = masterBar.start + syncPoint.ratioPosition * duration;
+
+                // first process all tempo change until this sync point
+                while (
+                    tempoChangeIndex < masterBar.tempoChanges.length &&
+                    masterBar.tempoChanges[tempoChangeIndex].tick <= syncPointTick
+                ) {
+                    const tempoChange = masterBar.tempoChanges[tempoChangeIndex];
+                    const absoluteTick = tempoChange.tick;
+                    const tickOffset = absoluteTick - synthTickPosition;
+                    if (tickOffset > 0) {
+                        const timeOffset = ticksToMilliseconds(tickOffset, synthBpm);
+                        synthTickPosition = absoluteTick;
+                        synthTimePosition += timeOffset;
+                    }
+
+                    synthBpm = tempoChange.tempo;
+                    tempoChangeIndex++;
+                }
+
+                // process time until sync point
+                const tickOffset = syncPointTick - synthTickPosition;
+                if (tickOffset > 0) {
+                    synthTickPosition = syncPointTick;
+                    const timeOffset = ticksToMilliseconds(tickOffset, synthBpm);
+                    synthTimePosition += timeOffset;
+                }
+
+                // create sync point marker
+                const newMarker: SyncPointMarker = {
+                    masterBarIndex: masterBar.masterBar.index,
+                    occurence: occurence,
+                    syncTime: syncPoint.syncPointValue!.millisecondOffset,
+                    synthTime: synthTimePosition,
+                    synthBpm: masterBar.tempoChanges[0].tempo,
+                    modifiedTempo: syncPoint!.syncPointValue!.modifiedTempo,
+                    markerType:
+                        syncPoint.ratioPosition === 0
+                            ? SyncPointMarkerType.MasterBar
+                            : SyncPointMarkerType.Intermediate,
+                    ratioPosition: syncPoint.ratioPosition,
+                    synthTick: synthTickPosition
+                };
+                if (syncPointTick === 0) {
+                    newMarker.markerType = SyncPointMarkerType.StartMarker;
+                }
+                markers.push(newMarker);
+
+                // remember values for artificially generated markers
+                syncBpm = syncPoint.syncPointValue!.modifiedTempo;
+                syncLastMillisecondOffset = syncPoint.syncPointValue!.millisecondOffset;
+                syncLastTick = masterBar.start;
             }
 
-            synthBpm = changes.tempo;
-        }
+            // process remaining tempo changes after all sync points
+            while (tempoChangeIndex < masterBar.tempoChanges.length) {
+                const tempoChange = masterBar.tempoChanges[tempoChangeIndex];
+                const absoluteTick = tempoChange.tick;
+                const tickOffset = absoluteTick - synthTickPosition;
+                if (tickOffset > 0) {
+                    const timeOffset = ticksToMilliseconds(tickOffset, synthBpm);
+                    synthTickPosition = absoluteTick;
+                    synthTimePosition += timeOffset;
+                }
 
-        const tickOffset = masterBar.end - synthTickPosition;
-        const timeOffset = ticksToMilliseconds(tickOffset, synthBpm);
-        synthTickPosition += tickOffset;
-        synthTimePosition += timeOffset;
+                synthBpm = tempoChange.tempo;
+                tempoChangeIndex++;
+            }
+        } else {
+            // TODO: Create intermediate markers matching time signature
+
+            // if there are no sync points, we create a main masterbar sync point marker at start
+            let tickOffset = masterBar.start - syncLastTick;
+
+            const newMarker: SyncPointMarker = {
+                masterBarIndex: masterBar.masterBar.index,
+                occurence: occurence,
+                syncTime: syncLastMillisecondOffset + ticksToMilliseconds(tickOffset, syncBpm),
+                synthTime: synthTimePosition,
+                synthTick: synthTickPosition,
+                synthBpm: masterBar.tempoChanges[0].tempo,
+                modifiedTempo: undefined,
+                markerType: masterBar.start === 0 ? SyncPointMarkerType.StartMarker : SyncPointMarkerType.MasterBar,
+                ratioPosition: 0
+            };
+            markers.push(newMarker);
+
+            // and then we walk through the tempo changes
+            for (const changes of masterBar.tempoChanges) {
+                const absoluteTick = changes.tick;
+                const tickOffset = absoluteTick - synthTickPosition;
+                if (tickOffset > 0) {
+                    const timeOffset = ticksToMilliseconds(tickOffset, synthBpm);
+
+                    synthTickPosition = absoluteTick;
+                    synthTimePosition += timeOffset;
+                }
+
+                synthBpm = changes.tempo;
+            }
+
+            // don't forget the part after the last tempo change
+            tickOffset = masterBar.end - synthTickPosition;
+            const timeOffset = ticksToMilliseconds(tickOffset, synthBpm);
+            synthTickPosition += tickOffset;
+            synthTimePosition += timeOffset;
+        }
     }
 
+    // at the very end we create the end marker
     const lastMasterBar = api.tickCache!.masterBars.at(-1)!;
-
     const endSyncPoint = lastMasterBar.masterBar.syncPoints?.find(m => m.ratioPosition === 1);
 
     const tickOffset = lastMasterBar.end - syncLastTick;
@@ -401,14 +493,14 @@ function buildMasterBarMarkers(api: alphaTab.AlphaTabApi): MasterBarMarker[] {
 
     markers.push({
         masterBarIndex: lastMasterBar.masterBar.index,
-        synthTickDuration: 0,
         occurence: occurences.get(lastMasterBar.masterBar.index)!,
         syncTime: endSyncPointTime,
         synthTime: synthTimePosition,
         synthBpm,
         modifiedTempo: endSyncPoint?.syncPointValue?.modifiedTempo ?? synthBpm,
-        isStartMarker: false,
-        isEndMarker: true
+        markerType: SyncPointMarkerType.EndMarker,
+        ratioPosition: 1,
+        synthTick: synthTickPosition
     });
 
     return markers;
@@ -440,9 +532,9 @@ type MarkerDragInfo = {
 };
 
 function computeMarkerInlineStyle(
-    m: MasterBarMarker,
+    m: SyncPointMarker,
     zoom: number,
-    draggingMarker: MasterBarMarker | null,
+    draggingMarker: SyncPointMarker | null,
     draggingMarkerInfo: MarkerDragInfo | null
 ): React.CSSProperties {
     let left = timePositionToX(m.syncTime, zoom);
@@ -465,26 +557,26 @@ function updateSyncPointsAfterModification(
 ) {
     // find previous and next sync point (or start/end of the song)
     let startIndexForUpdate = Math.max(0, modifiedIndex - 1);
-    while (startIndexForUpdate > 0 && !s.masterBarMarkers[startIndexForUpdate].modifiedTempo) {
+    while (startIndexForUpdate > 0 && !s.syncPointMarkers[startIndexForUpdate].modifiedTempo) {
         startIndexForUpdate--;
     }
 
-    let nextIndexForUpdate = Math.min(s.masterBarMarkers.length - 1, modifiedIndex + 1);
+    let nextIndexForUpdate = Math.min(s.syncPointMarkers.length - 1, modifiedIndex + 1);
     while (
-        nextIndexForUpdate < s.masterBarMarkers.length - 1 &&
-        !s.masterBarMarkers[nextIndexForUpdate].modifiedTempo
+        nextIndexForUpdate < s.syncPointMarkers.length - 1 &&
+        !s.syncPointMarkers[nextIndexForUpdate].modifiedTempo
     ) {
         nextIndexForUpdate++;
     }
 
-    const modifiedMarker = s.masterBarMarkers[modifiedIndex];
+    const modifiedMarker = s.syncPointMarkers[modifiedIndex];
 
     // update from previous to current
     if (startIndexForUpdate < modifiedIndex) {
         const previousMarker = cloneMarkers
-            ? { ...s.masterBarMarkers[startIndexForUpdate] }
-            : s.masterBarMarkers[startIndexForUpdate];
-        s.masterBarMarkers[startIndexForUpdate] = previousMarker;
+            ? { ...s.syncPointMarkers[startIndexForUpdate] }
+            : s.syncPointMarkers[startIndexForUpdate];
+        s.syncPointMarkers[startIndexForUpdate] = previousMarker;
         const synthDuration = modifiedMarker.synthTime - previousMarker.synthTime;
         const syncedDuration = modifiedMarker.syncTime - previousMarker.syncTime;
         const newBpmBefore = (synthDuration / syncedDuration) * previousMarker.synthBpm;
@@ -492,29 +584,37 @@ function updateSyncPointsAfterModification(
 
         let syncedTimePosition = previousMarker.syncTime;
         for (let i = startIndexForUpdate; i < modifiedIndex; i++) {
-            const marker = cloneMarkers ? { ...s.masterBarMarkers[i] } : s.masterBarMarkers[i];
-            s.masterBarMarkers[i] = marker;
+            const marker = cloneMarkers ? { ...s.syncPointMarkers[i] } : s.syncPointMarkers[i];
+            s.syncPointMarkers[i] = marker;
 
             marker.syncTime = syncedTimePosition;
-            syncedTimePosition += ticksToMilliseconds(marker.synthTickDuration, newBpmBefore);
+
+            if (i < modifiedIndex - 1) {
+                const tickDuration = s.syncPointMarkers[i + 1].synthTick - marker.synthTick;
+                syncedTimePosition += ticksToMilliseconds(tickDuration, newBpmBefore);
+            }
         }
     }
 
     if (!isDelete) {
-        const nextMarker = s.masterBarMarkers[nextIndexForUpdate];
+        const nextMarker = s.syncPointMarkers[nextIndexForUpdate];
         const synthDuration = nextMarker.synthTime - modifiedMarker.synthTime;
         const syncedDuration = nextMarker.syncTime - modifiedMarker.syncTime;
         const newBpmAfter = (synthDuration / syncedDuration) * modifiedMarker.synthBpm;
         modifiedMarker.modifiedTempo = newBpmAfter;
 
-        let syncedTimePosition =
-            modifiedMarker.syncTime + ticksToMilliseconds(modifiedMarker.synthTickDuration, newBpmAfter);
+        const tickDuration = s.syncPointMarkers[modifiedIndex + 1].synthTick - modifiedMarker.synthTick;
+        let syncedTimePosition = modifiedMarker.syncTime + ticksToMilliseconds(tickDuration, newBpmAfter);
+
         for (let i = modifiedIndex + 1; i < nextIndexForUpdate; i++) {
-            const marker = cloneMarkers ? { ...s.masterBarMarkers[i] } : s.masterBarMarkers[i];
-            s.masterBarMarkers[i] = marker;
+            const marker = cloneMarkers ? { ...s.syncPointMarkers[i] } : s.syncPointMarkers[i];
+            s.syncPointMarkers[i] = marker;
             marker.syncTime = syncedTimePosition;
 
-            syncedTimePosition += ticksToMilliseconds(marker.synthTickDuration, newBpmAfter);
+            if (i < nextIndexForUpdate - 1) {
+                const tickDuration = s.syncPointMarkers[i + 1].synthTick - marker.synthTick;
+                syncedTimePosition += ticksToMilliseconds(tickDuration, newBpmAfter);
+            }
         }
     }
 }
@@ -539,10 +639,10 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
         sampleRate: 44100,
         leftSamples: new Float32Array(0),
         rightSamples: new Float32Array(0),
-        masterBarMarkers: []
+        syncPointMarkers: []
     });
 
-    const [draggingMarker, setDraggingMarker] = useState<MasterBarMarker | null>(null);
+    const [draggingMarker, setDraggingMarker] = useState<SyncPointMarker | null>(null);
     const [draggingMarkerInfo, setDraggingMarkerInfo] = useState<MarkerDragInfo | null>(null);
     const [undoStack, setUndoStack] = useState<UndoStack>({ undo: [], redo: [] });
     const [shouldStoreToUndo, setStoreToUndo] = useState(false);
@@ -565,7 +665,7 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
             setAudioElement(
                 (api.player!.output as alphaTab.synth.IAudioElementBackingTrackSynthOutput)?.audioElement ?? null
             );
-            buildSyncPointInfo(api, shouldCreateInitialSyncPoints).then(x => setSyncPointInfo(x));
+            buildSyncPointInfoFromApi(api, shouldCreateInitialSyncPoints).then(x => setSyncPointInfo(x));
             setCreateInitialSyncPoints(false);
         },
         [shouldCreateInitialSyncPoints]
@@ -632,7 +732,7 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
         }
 
         const syncPointLookup = new Map<number, alphaTab.model.Automation[]>();
-        for (const m of syncPointInfo.masterBarMarkers) {
+        for (const m of syncPointInfo.syncPointMarkers) {
             if (m.modifiedTempo) {
                 let syncPoints = syncPointLookup.get(m.masterBarIndex);
                 if (!syncPoints) {
@@ -641,7 +741,7 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
                 }
 
                 const automation = new alphaTab.model.Automation();
-                automation.ratioPosition = m.isEndMarker ? 1 : 0;
+                automation.ratioPosition = m.ratioPosition;
                 automation.type = alphaTab.model.AutomationType.SyncPoint;
                 automation.syncPointValue = new alphaTab.model.SyncPointData();
                 automation.syncPointValue.modifiedTempo = m.modifiedTempo;
@@ -693,7 +793,7 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
         });
     };
 
-    const toggleMarker = (marker: MasterBarMarker, e: React.MouseEvent) => {
+    const toggleMarker = (marker: SyncPointMarker, e: React.MouseEvent) => {
         e.stopPropagation();
         e.preventDefault();
         setStoreToUndo(true);
@@ -704,18 +804,28 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
             }
 
             // no removal of start and end marker
-            if (marker.isStartMarker || marker.isEndMarker) {
+            if (
+                marker.markerType === SyncPointMarkerType.StartMarker ||
+                marker.markerType === SyncPointMarkerType.EndMarker
+            ) {
                 return s;
             }
 
-            const markerIndex = s!.masterBarMarkers.indexOf(marker);
+            const markerIndex = s!.syncPointMarkers.indexOf(marker);
             if (markerIndex === -1) {
                 return s;
             }
 
-            const newS = { ...s, masterBarMarkers: [...s.masterBarMarkers] };
+            const newS: SyncPointInfo = { ...s, syncPointMarkers: [...s.syncPointMarkers] };
             if (marker.modifiedTempo) {
-                newS.masterBarMarkers[markerIndex] = { ...marker, modifiedTempo: undefined };
+                switch (marker.markerType) {
+                    case SyncPointMarkerType.MasterBar:
+                        newS.syncPointMarkers[markerIndex] = { ...marker, modifiedTempo: undefined };
+                        break;
+                    case SyncPointMarkerType.Intermediate:
+                        newS.syncPointMarkers.splice(markerIndex, 1);
+                        break;
+                }
                 updateSyncPointsAfterModification(markerIndex, newS, true, true);
             } else {
                 updateSyncPointsAfterModification(markerIndex, newS, false, true);
@@ -732,7 +842,7 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
                 e.stopPropagation();
 
                 const deltaX = draggingMarkerInfo!.endX - draggingMarkerInfo!.startX;
-                if (deltaX > dragThreshold || draggingMarker.modifiedTempo !== undefined) {
+                if (deltaX > dragThreshold || (draggingMarker.modifiedTempo !== undefined && Math.abs(deltaX) > 0)) {
                     setStoreToUndo(true);
                     setApplySyncPoints(true);
                     setSyncPointInfo(s => {
@@ -740,27 +850,28 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
                             return s;
                         }
 
-                        const markerIndex = s.masterBarMarkers.findIndex(m => m === draggingMarker);
+                        const markerIndex = s.syncPointMarkers.findIndex(m => m === draggingMarker);
 
                         const zoomedPixelPerMillisecond = pixelPerMilliseconds * zoom;
                         const deltaTime = deltaX / zoomedPixelPerMillisecond;
 
                         const newTimePosition = draggingMarker.syncTime + deltaTime;
 
-                        const newS = { ...s, masterBarMarkers: [...s.masterBarMarkers] };
+                        const newS: SyncPointInfo = { ...s, syncPointMarkers: [...s.syncPointMarkers] };
 
                         // move the marker to the new position
-                        newS.masterBarMarkers[markerIndex] = {
-                            ...newS.masterBarMarkers[markerIndex],
+                        newS.syncPointMarkers[markerIndex] = {
+                            ...newS.syncPointMarkers[markerIndex],
                             syncTime: Math.max(0, newTimePosition)
                         };
 
                         updateSyncPointsAfterModification(markerIndex, newS, false, true);
                         return newS;
                     });
-                    setDraggingMarker(null);
-                    setDraggingMarkerInfo(null);
                 }
+
+                setDraggingMarker(null);
+                setDraggingMarkerInfo(null);
             }
         },
         [draggingMarker, draggingMarkerInfo]
@@ -776,31 +887,60 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
                     return s;
                 }
 
-                const index = syncPointInfo.masterBarMarkers.indexOf(draggingMarker!);
+                const index = syncPointInfo.syncPointMarkers.indexOf(draggingMarker!);
                 if (index === -1) {
                     return s;
                 }
 
                 let pageX = e.pageX;
-                if (index < syncPointInfo.masterBarMarkers.length - 1) {
-                    const deltaX = pageX - s.startX;
-                    const thisX = timePositionToX(draggingMarker!.syncTime, zoom);
-                    const newX = thisX + deltaX;
+                const deltaX = pageX - s.startX;
 
-                    let nextMarkerIndex = index + 1;
-                    while (
-                        nextMarkerIndex < syncPointInfo.masterBarMarkers.length - 1 &&
-                        !syncPointInfo.masterBarMarkers[nextMarkerIndex].modifiedTempo
-                    ) {
-                        nextMarkerIndex++;
+                if (deltaX < 0) {
+                    if (index > 0) {
+                        const thisX = timePositionToX(draggingMarker!.syncTime, zoom);
+                        const newX = thisX + deltaX;
+
+                        let previousMarkerIndex = index - 1;
+                        if (draggingMarker!.markerType !== SyncPointMarkerType.Intermediate) {
+                            while (
+                                previousMarkerIndex > 0 &&
+                                !syncPointInfo.syncPointMarkers[previousMarkerIndex].modifiedTempo
+                            ) {
+                                previousMarkerIndex--;
+                            }
+                        }
+
+                        const previousMarker = syncPointInfo.syncPointMarkers[previousMarkerIndex];
+                        const previousX = timePositionToX(previousMarker.syncTime, zoom);
+                        const minX = previousX + dragLimit;
+
+                        if (newX < minX) {
+                            pageX = s.startX - (thisX - minX);
+                        }
                     }
 
-                    const nextMarker = syncPointInfo.masterBarMarkers[nextMarkerIndex];
-                    const nextX = timePositionToX(nextMarker.syncTime, zoom);
-                    const maxX = nextX - dragLimit;
+                } else {
+                    if (index < syncPointInfo.syncPointMarkers.length - 1) {
+                        const thisX = timePositionToX(draggingMarker!.syncTime, zoom);
+                        const newX = thisX + deltaX;
 
-                    if (newX > maxX) {
-                        pageX = s.startX + (maxX - thisX);
+                        let nextMarkerIndex = index + 1;
+                        if (draggingMarker!.markerType !== SyncPointMarkerType.Intermediate) {
+                            while (
+                                nextMarkerIndex < syncPointInfo.syncPointMarkers.length - 1 &&
+                                !syncPointInfo.syncPointMarkers[nextMarkerIndex].modifiedTempo
+                            ) {
+                                nextMarkerIndex++;
+                            }
+                        }
+
+                        const nextMarker = syncPointInfo.syncPointMarkers[nextMarkerIndex];
+                        const nextX = timePositionToX(nextMarker.syncTime, zoom);
+                        const maxX = nextX - dragLimit;
+
+                        if (newX > maxX) {
+                            pageX = s.startX + (maxX - thisX);
+                        }
                     }
                 }
 
@@ -822,7 +962,7 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
         };
     }, [draggingMarker, mouseUpListener, mouseMoveListener]);
 
-    const startMarkerDrag = (marker: MasterBarMarker, e: React.MouseEvent) => {
+    const startMarkerDrag = (marker: SyncPointMarker, e: React.MouseEvent) => {
         if (e.button !== 0 || marker.modifiedTempo === undefined) {
             return;
         }
@@ -838,7 +978,7 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
             redo: []
         });
         setStoreToUndo(true);
-        buildSyncPointInfo(api, shouldCreateInitialSyncPoints).then(x => setSyncPointInfo(x));
+        buildSyncPointInfoFromApi(api, shouldCreateInitialSyncPoints).then(x => setSyncPointInfo(x));
         setCreateInitialSyncPoints(false);
     }, [api]);
 
@@ -1013,18 +1153,20 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
         });
     };
 
-    function buildMarkerLabel(m: MasterBarMarker): React.ReactNode {
-        if (m.isStartMarker) {
-            return 'Start';
+    function buildMarkerLabel(m: SyncPointMarker): React.ReactNode {
+        switch (m.markerType) {
+            case SyncPointMarkerType.StartMarker:
+                return 'Start';
+            case SyncPointMarkerType.EndMarker:
+                return 'End';
+            case SyncPointMarkerType.MasterBar:
+                if (m.occurence > 0) {
+                    return `${m.masterBarIndex + 1} (${m.occurence + 1})`;
+                }
+                return `${m.masterBarIndex + 1}`;
+            case SyncPointMarkerType.Intermediate:
+                return '';
         }
-        if (m.isEndMarker) {
-            return 'End';
-        }
-
-        if (m.occurence > 0) {
-            return `${m.masterBarIndex + 1} (${m.occurence + 1})`;
-        }
-        return `${m.masterBarIndex + 1}`;
     }
 
     return (
@@ -1139,10 +1281,10 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
                 <div
                     className={styles['sync-area-marker-wrap']}
                     style={{ width: `${virtualWidth}px`, height: `${canvasSize[1]}px` }}>
-                    {syncPointInfo.masterBarMarkers.map(m => (
+                    {syncPointInfo.syncPointMarkers.map(m => (
                         <div
-                            key={`${m.masterBarIndex}-${m.occurence}`}
-                            className={`${styles['masterbar-marker']}  ${m.modifiedTempo !== undefined ? styles['has-sync-point'] : ''}`}
+                            key={`${m.masterBarIndex}-${m.occurence}-${m.ratioPosition.toFixed(1)}`}
+                            className={`${styles['masterbar-marker']} ${styles[`masterbar-marker-${SyncPointMarkerType[m.markerType].toLowerCase()}`]}  ${m.modifiedTempo !== undefined ? styles['has-sync-point'] : ''}`}
                             style={computeMarkerInlineStyle(m, zoom, draggingMarker, draggingMarkerInfo)}
                             onDoubleClick={e => toggleMarker(m, e)}
                             onMouseDown={e => {
@@ -1151,7 +1293,7 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
                             <div className={styles['marker-label']}>{buildMarkerLabel(m)}</div>
                             <div className={styles['marker-head']}>
                                 <div className={`${styles['marker-arrow']}`} />
-                                {!m.isEndMarker && m.modifiedTempo && (
+                                {m.markerType !== SyncPointMarkerType.EndMarker && m.modifiedTempo && (
                                     <div className={styles['marker-tempo']}>{m.modifiedTempo.toFixed(1)} bpm</div>
                                 )}
                             </div>

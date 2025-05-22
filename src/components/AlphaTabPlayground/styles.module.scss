@@ -439,12 +439,14 @@
             transition: transform linear 0.1s;
             white-space: nowrap;
             padding-top: 50px;
-            font-size: 12px;;
+            font-size: 12px;
+            ;
         }
 
         & .sync-area-marker-wrap {
             position: absolute;
             top: 0;
+
 
             &>.masterbar-marker {
                 position: absolute;
@@ -464,6 +466,7 @@
                 &:hover {
                     opacity: 1;
                 }
+
 
                 &>.marker-label {
                     height: 20px;
@@ -500,12 +503,32 @@
                     }
                 }
 
-
                 &>.marker-line {
                     flex-grow: 1;
-                    width: 1px;
-                    background: #444950;
+                    width: 0;
+                    border-right: 1px solid #444950;
                 }
+
+                &.masterbar-marker-startmarker,
+                &.masterbar-marker-endmarker {
+                    &>.marker-line {
+                        border-right-style: solid;
+                        border-right-width: 2px;
+                    }
+                }
+
+                &.masterbar-marker-masterbar {
+                    &>.marker-line {
+                        border-right-style: solid;
+                    }
+                }
+
+                &.masterbar-marker-intermediate {
+                    &>.marker-line {
+                        border-right-style: dashed;
+                    }
+                }
+
 
                 cursor: col-resize;
 
@@ -520,8 +543,6 @@
                         background: #4972a1;
                     }
                 }
-
-
             }
         }
 
