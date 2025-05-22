@@ -131,8 +131,8 @@ async function buildSyncPointInfoFromApi(
                     marker.markerType = SyncPointMarkerType.StartMarker;
                 } else if (changes.tick > masterBar.start) {
                     marker.markerType = SyncPointMarkerType.Intermediate;
-                    const duration = masterBar.start - masterBar.end;
-                    marker.ratioPosition = changes.tick / duration;
+                    const duration = masterBar.end - masterBar.start;
+                    marker.ratioPosition = (changes.tick - masterBar.start) / duration;
                 }
 
                 if (changes.tempo !== synthBpm || marker.markerType === SyncPointMarkerType.StartMarker) {
@@ -1116,7 +1116,7 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
     const onLoadAudioFile = () => {
         const input = document.createElement('input');
         input.type = 'file';
-        input.accept = '.mp3,.ogg,*.wav,*.flac,*.aac';
+        input.accept = '.mp3,.ogg,*.wav,*.flac,*.aac,*.mp4,*.mkv,*.avi,*.webm';
         input.onchange = () => {
             if (input.files?.length === 1) {
                 const reader = new FileReader();
@@ -1283,7 +1283,7 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
                     style={{ width: `${virtualWidth}px`, height: `${canvasSize[1]}px` }}>
                     {syncPointInfo.syncPointMarkers.map(m => (
                         <div
-                            key={`${m.masterBarIndex}-${m.occurence}-${m.ratioPosition.toFixed(1)}`}
+                            key={`${m.masterBarIndex}-${m.occurence}-${m.ratioPosition.toFixed(3)}`}
                             className={`${styles['masterbar-marker']} ${styles[`masterbar-marker-${SyncPointMarkerType[m.markerType].toLowerCase()}`]}  ${m.modifiedTempo !== undefined ? styles['has-sync-point'] : ''}`}
                             style={computeMarkerInlineStyle(m, zoom, draggingMarker, draggingMarkerInfo)}
                             onDoubleClick={e => toggleMarker(m, e)}
