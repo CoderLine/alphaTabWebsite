@@ -6,88 +6,134 @@ import styles from './styles.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as solid from '@fortawesome/free-solid-svg-icons';
 import * as brands from '@fortawesome/free-brands-svg-icons';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import useResizeObserver from '@react-hook/resize-observer';
 import { useAlphaTabEvent } from '@site/src/hooks';
 import {
     applySyncPoints,
-    buildSyncPointInfoFromApi,
+    buildSyncPointInfoFromAudio,
     autoSync,
     resetSyncPoints,
-    type SyncPointInfo
+    type SyncPointInfo,
+    buildSyncPointInfoFromYoutube,
+    buildSyncPointInfoFromSynth
 } from './sync-point-info';
 import { WaveformCanvas } from './waveform-canvas';
 import { SyncPointMarkerPanel } from './sync-point-marker-panel';
-import { timePositionToX, useSyncPointInfoUndo } from './helpers';
+import {
+    extractYouTubeVideoId,
+    type HTMLMediaElementLike,
+    MediaType,
+    type MediaTypeState,
+    timePositionToX,
+    useSyncPointInfoUndo
+} from './helpers';
 
 // General Settings for the UI
 const pixelPerMilliseconds = 100 / 1000;
 const leftPadding = 15;
 const scrollThresholdPercent = 0.2;
 
-export type MediaSyncEditorProps = {
-    api: alphaTab.AlphaTabApi;
-    score: alphaTab.model.Score;
-};
-
-const useAudioElementPlaybackTime = (api: alphaTab.AlphaTabApi) => {
-    const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
+const useMediaElementPlaybackTime = (
+    api: alphaTab.AlphaTabApi,
+    youtubePlayer: HTMLMediaElementLike | undefined
+): [number, React.Dispatch<React.SetStateAction<number>>] => {
+    const [mediaElement, setMediaElement] = useState<HTMLMediaElementLike | null>(null);
 
     const [playbackTime, setPlaybackTime] = useState<number>(0);
 
+    const updateMediaElement = () => {
+        switch (api.actualPlayerMode) {
+            case alphaTab.PlayerMode.EnabledBackingTrack:
+                setMediaElement(
+                    (api.player!.output as alphaTab.synth.IAudioElementBackingTrackSynthOutput)?.audioElement ?? null
+                );
+                break;
+            case alphaTab.PlayerMode.EnabledExternalMedia:
+                setMediaElement(youtubePlayer ?? null);
+                break;
+            default:
+                setMediaElement(null);
+        }
+    };
+
+    useEffect(() => {}, [youtubePlayer]);
+
     useEffect(() => {
-        setAudioElement(
-            (api.player!.output as alphaTab.synth.IAudioElementBackingTrackSynthOutput)?.audioElement ?? null
-        );
+        updateMediaElement();
     }, [api.player!.output]);
 
+    useEffect(() => {
+        updateMediaElement();
+    }, [youtubePlayer]);
+
     useAlphaTabEvent(api, 'midiLoad', () => {
-        setAudioElement(
-            (api.player!.output as alphaTab.synth.IAudioElementBackingTrackSynthOutput)?.audioElement ?? null
-        );
+        updateMediaElement();
     });
 
     useEffect(() => {
         const updateWaveFormCursor = () => {
-            if (audioElement) {
-                setPlaybackTime(audioElement.currentTime * 1000);
+            if (mediaElement) {
+                setPlaybackTime(mediaElement.currentTime * 1000);
             }
         };
 
         let timeUpdate: number = 0;
 
-        if (audioElement) {
-            audioElement.addEventListener('timeupdate', updateWaveFormCursor);
-            audioElement.addEventListener('durationchange', updateWaveFormCursor);
-            audioElement.addEventListener('seeked', updateWaveFormCursor);
+        if (mediaElement) {
+            mediaElement.addEventListener('timeupdate', updateWaveFormCursor);
+            mediaElement.addEventListener('durationchange', updateWaveFormCursor);
+            mediaElement.addEventListener('seeked', updateWaveFormCursor);
             timeUpdate = window.setInterval(() => {
-                if (audioElement) {
-                    setPlaybackTime(audioElement.currentTime * 1000);
+                if (mediaElement) {
+                    setPlaybackTime(mediaElement.currentTime * 1000);
                 }
             }, 50);
             updateWaveFormCursor();
         }
 
         return () => {
-            if (audioElement) {
-                audioElement.removeEventListener('timeupdate', updateWaveFormCursor);
-                audioElement.removeEventListener('durationchange', updateWaveFormCursor);
-                audioElement.removeEventListener('seeked', updateWaveFormCursor);
+            if (mediaElement) {
+                mediaElement.removeEventListener('timeupdate', updateWaveFormCursor);
+                mediaElement.removeEventListener('durationchange', updateWaveFormCursor);
+                mediaElement.removeEventListener('seeked', updateWaveFormCursor);
                 window.clearInterval(timeUpdate);
             }
         };
-    }, [audioElement]);
+    }, [mediaElement]);
 
-    return playbackTime;
+    return [
+        playbackTime,
+        (playbackTime: number) => {
+            if (mediaElement) {
+                mediaElement.currentTime = playbackTime / 1000;
+            }
+        }
+    ];
 };
 
-export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) => {
+export type MediaSyncEditorProps = {
+    api: alphaTab.AlphaTabApi;
+    score: alphaTab.model.Score;
+    youtubePlayer?: HTMLMediaElementLike;
+    mediaType: MediaTypeState;
+    onMediaTypeChange(newMediaType: MediaTypeState): void;
+};
+
+export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({
+    api,
+    score,
+    youtubePlayer,
+    mediaType,
+    onMediaTypeChange
+}) => {
     const syncArea = useRef<HTMLDivElement | null>(null);
 
     const [canvasSize, setCanvasSize] = useState([0, 0]);
     const [virtualWidth, setVirtualWidth] = useState(0);
     const [zoom, setZoom] = useState(1);
     const [scrolOffset, setScrollOffset] = useState(0);
+    const [newYoutubeUrl, setNewYoutubeUrl] = useState<string>('');
 
     const [syncPointInfo, setSyncPointInfo] = useState<SyncPointInfo>({
         endTick: 0,
@@ -99,20 +145,37 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
     });
 
     const shouldStoreToUndo = useRef(false);
-    const shouldApplySyncPoints = useRef(false);
-    const shouldCreateInitialSyncPoints = useRef(false);
 
     const undo = useSyncPointInfoUndo();
-    const playbackTime = useAudioElementPlaybackTime(api);
+    const [playbackTime, setPlaybackTime] = useMediaElementPlaybackTime(api, youtubePlayer);
 
     // Sync Point Info building and update
 
-    const initFromApi = () => {
+    const initFromApi = useCallback(() => {
         undo.resetUndo();
         shouldStoreToUndo.current = true;
-        buildSyncPointInfoFromApi(api, shouldCreateInitialSyncPoints.current).then(x => setSyncPointInfo(x));
-        shouldCreateInitialSyncPoints.current = false;
-    };
+        switch (mediaType.type) {
+            case MediaType.Synth:
+                const synthInfo = buildSyncPointInfoFromSynth(api);
+                if (synthInfo) {
+                    setSyncPointInfo(synthInfo);
+                }
+                break;
+            case MediaType.Audio:
+                buildSyncPointInfoFromAudio(api).then(x => {
+                    if (x) {
+                        setSyncPointInfo(x);
+                    }
+                });
+                break;
+            case MediaType.YouTube:
+                const youtubeInfo = buildSyncPointInfoFromYoutube(api, youtubePlayer);
+                if (youtubeInfo) {
+                    setSyncPointInfo(youtubeInfo);
+                }
+                break;
+        }
+    }, [api, youtubePlayer, mediaType]);
 
     useAlphaTabEvent(
         api,
@@ -120,12 +183,12 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
         () => {
             initFromApi();
         },
-        [shouldCreateInitialSyncPoints]
+        []
     );
 
     useEffect(() => {
         initFromApi();
-    }, [api]);
+    }, [api, youtubePlayer, mediaType]);
 
     useEffect(() => {
         // store to undo if needed
@@ -134,20 +197,18 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
             shouldStoreToUndo.current = false;
         }
 
-        // apply if needed
-        if (shouldApplySyncPoints) {
-            applySyncPoints(api, syncPointInfo);
-            shouldApplySyncPoints.current = false;
-        }
+        applySyncPoints(api, syncPointInfo);
     }, [syncPointInfo]);
 
     // cursor handling
+    const lastScroll = useRef(0);
     useEffect(() => {
-        if (syncArea.current) {
+        if (syncArea.current && (lastScroll.current === 0 || performance.now() - lastScroll.current > 500)) {
             const xPos = timePositionToX(pixelPerMilliseconds, playbackTime, zoom, leftPadding);
             const canvasWidth = canvasSize[0];
             const threshold = canvasWidth * scrollThresholdPercent;
             const scrollOffset = syncArea.current.scrollLeft;
+            lastScroll.current = performance.now();
 
             // is out of screen?
             if (xPos < scrollOffset + threshold || xPos - scrollOffset > canvasWidth - threshold) {
@@ -158,6 +219,14 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
             }
         }
     }, [playbackTime, canvasSize, syncArea]);
+
+    const [isYoutubeModalOpen, setYoutubeModalOpen] = useState(false);
+    const onLoadYouTube = () => {
+        setNewYoutubeUrl(mediaType.youtubeUrl ?? '');
+        setYoutubeModalOpen(true);
+    };
+
+    const newYoutubeUrlError = extractYouTubeVideoId(newYoutubeUrl) ? '' : 'Invalid YouTube URL or video ID';
 
     // UI parts
     useResizeObserver(syncArea, entry => {
@@ -182,16 +251,10 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
                     score.backingTrack = new alphaTab.model.BackingTrack();
                     score.backingTrack.rawAudioFile = new Uint8Array(e.target!.result as ArrayBuffer);
 
-                    // create a fresh set of sync points upon load (start->end)
-                    shouldApplySyncPoints.current = true;
-                    shouldCreateInitialSyncPoints.current = true;
-
-                    // clear any potential sync points
-                    for (const m of score.masterBars) {
-                        m.syncPoints = undefined;
-                    }
-                    api.updateSettings();
-                    api.loadMidiForScore(); // will fire the initialization above once ready.
+                    onMediaTypeChange({
+                        type: MediaType.Audio,
+                        audioFile: score.backingTrack.rawAudioFile
+                    });
                 };
                 reader.readAsArrayBuffer(input.files[0]);
             }
@@ -201,8 +264,20 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
         document.body.removeChild(input);
     };
 
+    const onLoadYouTubeVideo = (url: string) => {
+        onMediaTypeChange({
+            type: MediaType.YouTube,
+            youtubeUrl: newYoutubeUrl
+        });
+    };
+
+    const onLoadSynthesizer = () => {
+        onMediaTypeChange({
+            type: MediaType.Synth
+        });
+    };
+
     const onResetSyncPoints = () => {
-        shouldApplySyncPoints.current = true;
         shouldStoreToUndo.current = true;
         setSyncPointInfo(s => {
             return s ? resetSyncPoints(api, s) : s;
@@ -210,7 +285,6 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
     };
 
     const onAutoSync = () => {
-        shouldApplySyncPoints.current = true;
         shouldStoreToUndo.current = true;
         setSyncPointInfo(s => {
             return s ? autoSync(s, api) : s;
@@ -219,24 +293,74 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
 
     return (
         <div className={styles['media-sync-editor']}>
+            {isYoutubeModalOpen && (
+                <div className={styles['youtube-select-modal']}>
+                    <div className={styles['youtube-select-modal-body']}>
+                        <label htmlFor="newYoutubeUrl">YouTube URL:</label>
+                        <input
+                            id="newYoutubeUrl"
+                            type="text"
+                            defaultValue={newYoutubeUrl}
+                            onInput={e => {
+                                setNewYoutubeUrl((e.target as HTMLInputElement).value);
+                            }}
+                        />
+                        <div className={styles['youtube-select-modal-actions']}>
+                            <div data-tooltip-id="tooltip-playground" data-tooltip-content={newYoutubeUrlError}>
+                                <button
+                                    type="button"
+                                    className="button button--primary"
+                                    disabled={!!newYoutubeUrlError}
+                                    onClick={() => {
+                                        onLoadYouTubeVideo(newYoutubeUrl);
+                                        setYoutubeModalOpen(false);
+                                    }}>
+                                    Load
+                                </button>
+                            </div>
+                            <button
+                                type="button"
+                                className="button button--secondary"
+                                onClick={() => {
+                                    setYoutubeModalOpen(false);
+                                }}>
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <div className={styles.toolbar}>
-                <button
-                    className="button button--secondary"
-                    type="button"
-                    data-tooltip-id="tooltip-playground"
-                    onClick={() => {
-                        onLoadAudioFile();
-                    }}
-                    data-tooltip-content="Load Audio File">
-                    <FontAwesomeIcon icon={solid.faFileAudio} />
-                </button>
-                <button
-                    className="button button--secondary"
-                    type="button"
-                    data-tooltip-id="tooltip-playground"
-                    data-tooltip-content="Load Youtube Video">
-                    <FontAwesomeIcon icon={brands.faYoutube} />
-                </button>
+                <div className={styles['button-group']}>
+                    <button
+                        className={`button ${mediaType.type === MediaType.Synth ? 'button--primary' : 'button--secondary'}`}
+                        type="button"
+                        data-tooltip-id="tooltip-playground"
+                        onClick={() => {
+                            onLoadSynthesizer();
+                        }}>
+                        <FontAwesomeIcon icon={solid.faWaveSquare} /> Synthesizer
+                    </button>
+                    <button
+                        className={`button ${mediaType.type === MediaType.Audio ? 'button--primary' : 'button--secondary'}`}
+                        type="button"
+                        data-tooltip-id="tooltip-playground"
+                        onClick={() => {
+                            onLoadAudioFile();
+                        }}>
+                        <FontAwesomeIcon icon={solid.faFileAudio} /> Audio Track
+                    </button>
+                    <button
+                        className={`button ${mediaType.type === MediaType.YouTube ? 'button--primary' : 'button--secondary'}`}
+                        type="button"
+                        data-tooltip-id="tooltip-playground"
+                        onClick={() => {
+                            onLoadYouTube();
+                        }}>
+                        <FontAwesomeIcon icon={brands.faYoutube} /> Youtube Video
+                    </button>
+                </div>
                 <div className={'dropdown dropdown--hoverable'}>
                     <button type="button" className={'button button--secondary'} data-toggle="dropdown">
                         <FontAwesomeIcon icon={solid.faMapPin} />
@@ -306,7 +430,6 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
                     disabled={!undo.canUndo}
                     onClick={() => {
                         undo.undo(i => {
-                            shouldApplySyncPoints.current = true;
                             setSyncPointInfo(i);
                         });
                     }}>
@@ -321,7 +444,6 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
                     disabled={!undo.canRedo}
                     onClick={() => {
                         undo.redo(i => {
-                            shouldApplySyncPoints.current = true;
                             setSyncPointInfo(i);
                         });
                     }}>
@@ -337,6 +459,7 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
                         leftPadding={leftPadding}
                         leftSamples={syncPointInfo.leftSamples}
                         rightSamples={syncPointInfo.rightSamples}
+                        endTime={syncPointInfo.endTime}
                         sampleRate={syncPointInfo.sampleRate}
                         pixelPerMilliseconds={pixelPerMilliseconds}
                         scrollOffset={scrolOffset}
@@ -353,9 +476,11 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
                     pixelPerMilliseconds={pixelPerMilliseconds}
                     zoom={zoom}
                     onSyncPointInfoChanged={newInfo => {
-                        shouldApplySyncPoints.current = true;
                         shouldStoreToUndo.current = true;
                         setSyncPointInfo(newInfo);
+                    }}
+                    onSeek={pos => {
+                        setPlaybackTime(pos);
                     }}
                 />
                 <div
@@ -363,7 +488,6 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({ api, score }) 
                     style={{
                         transform: `translateX(${timePositionToX(
                             pixelPerMilliseconds,
-
                             playbackTime,
                             zoom,
                             leftPadding
