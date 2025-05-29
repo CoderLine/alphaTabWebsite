@@ -20,6 +20,7 @@ enum YoutubeIFrameApiPlayerState {
 type YoutubeIFrameApiPlayerOptions = {
     width?: number;
     height?: number;
+    host?: string;
     videoId?: string;
     playerVars?: {
         autoplay?: 0 | 1;
@@ -228,6 +229,7 @@ export const YouTubePlayer = forwardRef<YouTubePlayerRef, YouTubePlayerProps>(({
 
             if (iframeApi && node) {
                 new iframeApi.Player(node, {
+                    host: 'https://www.youtube-nocookie.com',
                     playerVars: { autoplay: 0 },
                     events: {
                         onReady: e => {

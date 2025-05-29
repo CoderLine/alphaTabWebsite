@@ -11,7 +11,7 @@ export function xToTimePosition(pixelPerMilliseconds: number,
     x: number, zoom: number, leftPadding: number): number {
 
     const zoomedPixelPerMilliseconds = pixelPerMilliseconds * zoom;
-    return (x -leftPadding) / zoomedPixelPerMilliseconds;
+    return (x - leftPadding) / zoomedPixelPerMilliseconds;
 }
 
 type UndoStack = {
@@ -92,6 +92,9 @@ export function extractYouTubeVideoId(src: string | undefined) {
         const host = url.host.toLowerCase();
         if (host.endsWith('youtube.com') && url.searchParams.has('v')) {
             return url.searchParams.get('v')!;
+        }
+        if (host.endsWith('youtube-nocookie.com')) {
+            return url.pathname.split('/')[2];
         }
         if (host.endsWith('youtu.be')) {
             return url.pathname.split('/')[1];

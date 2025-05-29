@@ -1,4 +1,4 @@
-import * as alphaTab from '@coderline/alphatab';
+import type * as alphaTab from '@coderline/alphatab';
 import type { HTMLMediaElementLike } from './helpers';
 
 export enum SyncPointMarkerType {
@@ -306,7 +306,7 @@ function buildSyncPointMarkers(api: alphaTab.AlphaTabApi): SyncPointMarker[] {
 
     markers.push({
         masterBarIndex: lastMasterBar.masterBar.index,
-        occurence: occurences.get(lastMasterBar.masterBar.index)!,
+        occurence: occurences.get(lastMasterBar.masterBar.index)! - 1,
         syncTime: endSyncPointTime,
         synthTime: synthTimePosition,
         synthBpm,
@@ -482,7 +482,7 @@ export function autoSync(oldState: SyncPointInfo, api: alphaTab.AlphaTabApi, pad
     const lastMasterBar = api.tickCache!.masterBars.at(-1)!;
     state.syncPointMarkers.push({
         masterBarIndex: lastMasterBar.masterBar.index,
-        occurence: occurences.get(lastMasterBar.masterBar.index)!,
+        occurence: occurences.get(lastMasterBar.masterBar.index)! - 1,
         syncTime: synthTimePosition,
         synthTime: synthTimePosition,
         synthBpm,
@@ -676,37 +676,63 @@ export function resetSyncPoints(api: alphaTab.AlphaTabApi, state: SyncPointInfo)
 }
 
 export function applySyncPoints(api: alphaTab.AlphaTabApi, syncPointInfo: SyncPointInfo) {
-    const syncPointLookup = new Map<number, alphaTab.model.Automation[]>();
-    for (const m of syncPointInfo.syncPointMarkers) {
-        if (m.modifiedTempo) {
-            let syncPoints = syncPointLookup.get(m.masterBarIndex);
-            if (!syncPoints) {
-                syncPoints = [];
-                syncPointLookup.set(m.masterBarIndex, syncPoints);
-            }
-
-            const automation = new alphaTab.model.Automation();
-            automation.ratioPosition = m.ratioPosition;
-            automation.type = alphaTab.model.AutomationType.SyncPoint;
-            automation.syncPointValue = new alphaTab.model.SyncPointData();
-            automation.syncPointValue.modifiedTempo = m.modifiedTempo;
-            automation.syncPointValue.millisecondOffset = m.syncTime;
-            automation.syncPointValue.barOccurence = m.occurence;
-            syncPoints.push(automation);
-        }
-    }
+    const flatSyncPoints: alphaTab.model.FlatSyncPoint[] = toFlatSyncPoints(syncPointInfo);
 
     // remember and set again the tick position after sync point update
     // this will ensure the cursor and player seek accordingly with keeping the cursor
     // where it is currently shown on the notation.
     const tickPosition = api.tickPosition;
-    for (const masterBar of api.score!.masterBars) {
-        masterBar.syncPoints = syncPointLookup.get(masterBar.index);
-    }
+    api.score!.applyFlatSyncPoints(flatSyncPoints);
     api.updateSyncPoints();
     api.tickPosition = tickPosition;
 }
 
+function toFlatSyncPoints(syncPointInfo: SyncPointInfo) {
+    const flatSyncPoints: alphaTab.model.FlatSyncPoint[] = [];
+    for (const m of syncPointInfo.syncPointMarkers) {
+        if (m.modifiedTempo) {
+            flatSyncPoints.push({
+                barIndex: m.masterBarIndex,
+                barOccurence: m.occurence,
+                barPosition: m.ratioPosition,
+                millisecondOffset: m.syncTime | 0,
+                modifiedTempo: m.modifiedTempo
+            })
+        }
+    }
+    return flatSyncPoints;
+}
 
+export function syncPointsToTypeScriptCode(info: SyncPointInfo, indent: string): string {
+    const lines: string[] = [];
 
+    const flat = toFlatSyncPoints(info);
+    for (const m of flat) {
+        lines.push(`${indent}${JSON.stringify(m)}`)
+    }
 
+    return lines.join(',\n');
+}
+
+export function syncPointsToCSharpCode(info: SyncPointInfo, indent: string): string {
+    const lines: string[] = [];
+
+    const flat = toFlatSyncPoints(info);
+    for (const m of flat) {
+        const parameters = Object.entries(m).map(m => `${m[0]}: ${m[1]}`).join(',');
+        lines.push(`${indent}new(${parameters})`)
+    }
+
+    return lines.join(',\n');
+}
+export function syncPointsToKotlinCode(info: SyncPointInfo, indent: string): string {
+    const lines: string[] = [];
+
+    const flat = toFlatSyncPoints(info);
+    for (const m of flat) {
+        const parameters = Object.entries(m).map(m => `${m[0]} = ${m[1]}`).join(',');
+        lines.push(`${indent}FlatSyncPoints(${parameters})`)
+    }
+
+    return lines.join(',\n');
+}

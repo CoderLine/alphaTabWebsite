@@ -16,7 +16,10 @@ import {
     resetSyncPoints,
     type SyncPointInfo,
     buildSyncPointInfoFromYoutube,
-    buildSyncPointInfoFromSynth
+    buildSyncPointInfoFromSynth,
+    syncPointsToTypeScriptCode,
+    syncPointsToCSharpCode,
+    syncPointsToKotlinCode
 } from './sync-point-info';
 import { WaveformCanvas } from './waveform-canvas';
 import { SyncPointMarkerPanel } from './sync-point-marker-panel';
@@ -28,6 +31,10 @@ import {
     timePositionToX,
     useSyncPointInfoUndo
 } from './helpers';
+import { downloadFile } from '@site/src/utils';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
 
 // General Settings for the UI
 const pixelPerMilliseconds = 100 / 1000;
@@ -221,6 +228,7 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({
     }, [playbackTime, canvasSize, syncArea]);
 
     const [isYoutubeModalOpen, setYoutubeModalOpen] = useState(false);
+    const [isGenerateCodeModalOpen, setGenerateCodeModalOpen] = useState(false);
     const onLoadYouTube = () => {
         setNewYoutubeUrl(mediaType.youtubeUrl ?? '');
         setYoutubeModalOpen(true);
@@ -294,8 +302,8 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({
     return (
         <div className={styles['media-sync-editor']}>
             {isYoutubeModalOpen && (
-                <div className={styles['youtube-select-modal']}>
-                    <div className={styles['youtube-select-modal-body']}>
+                <div className={`${styles.modal} ${styles['modal-sm']}`}>
+                    <div className={styles['modal-body']}>
                         <label htmlFor="newYoutubeUrl">YouTube URL:</label>
                         <input
                             id="newYoutubeUrl"
@@ -305,7 +313,27 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({
                                 setNewYoutubeUrl((e.target as HTMLInputElement).value);
                             }}
                         />
-                        <div className={styles['youtube-select-modal-actions']}>
+
+                        <p>
+                            Enabling the synchronization with YouTube, requires the use of Youtube APIs loaded from
+                            youtube.com and youtube-nocookie.com. With pressing <strong>Load</strong> you accept the
+                            load of these resources and accept related policies from Google and Youtube.
+                            <ul>
+                                <li>
+                                    <a href="https://policies.google.com/technologies/cookies">Google Cookie Policy</a>
+                                </li>
+                                <li>
+                                    <a href="https://policies.google.com/privacy">Google Privacy Policy</a>
+                                </li>
+                                <li>
+                                    <a href="https://policies.google.com/terms">Google Terms of Service</a>
+                                </li>
+                            </ul>
+                            It should be obvious that syncing with YouTube requires this, but we still want to inform
+                            you of the impact.
+                        </p>
+
+                        <div className={styles['modal-actions']}>
                             <div data-tooltip-id="tooltip-playground" data-tooltip-content={newYoutubeUrlError}>
                                 <button
                                     type="button"
@@ -331,124 +359,265 @@ export const MediaSyncEditor: React.FC<MediaSyncEditorProps> = ({
                 </div>
             )}
 
+            {isGenerateCodeModalOpen && (
+                <div className={`${styles.modal} ${styles['modal-lg']}`}>
+                    <div className={styles['modal-body']}>
+                        <h3>Generate Sync Code</h3>
+                        The following code helps you setting up the sync points in your app. The exact logic depends on
+                        your app, but generally you would store the sync points in parallel to the file (e.g. in a
+                        database) and load them along the main file. Then when the file is loaded by alphaTab you
+                        additionally apply the sync points.
+                        <Tabs
+                            defaultValue="ts"
+                            values={[
+                                { label: 'TypeScript', value: 'ts' },
+                                { label: 'C#', value: 'cs' },
+                                { label: 'Kotlin', value: 'kt' }
+                            ]}>
+                            <TabItem value="ts">
+                                <CodeBlock language="typescript" title="SyncPoints">
+                                    {[
+                                        'const syncPoints: alphaTab.model.FlatSyncPoints[] = [',
+                                        syncPointsToTypeScriptCode(syncPointInfo, '  '),
+                                        '];'
+                                    ].join('\n')}
+                                </CodeBlock>
+                                <CodeBlock language="typescript" title="Applying">
+                                    {[
+                                        '// Variant 1: constant/data available when score is loaded.',
+                                        'api.scoreLoaded.on(score => {',
+                                        '  score.backingTrack = new alphaTab.model.BackingTrack();',
+                                        '  score.backingTrack.rawAudioFile = rawAudioFileBytes /*Uint8Array*/;',
+                                        '  score.applyFlatSyncPoints(syncPoints);',
+                                        '});',
+                                        '',
+                                        '// Variant 2: dynamic load and apply',
+                                        'const syncPoints: alphaTab.model.FlatSyncPoints[] = await loadSyncPointsForScoreFromBackend(score);',
+                                        'const rawAudioFileBytes: Uint8Array = await loadAudioForScoreFromBackend(score);',
+                                        'api.score.applyFlatSyncPoints(syncPoints);',
+                                        'api.score.backingTrack = new alphaTab.model.BackingTrack();',
+                                        'api.score.backingTrack.rawAudioFile = rawAudioFileBytes;',
+                                        'api.updateSettings();   // ensures the right backing track player is started',
+                                        'api.updateSyncPoints(); // updates the sync points in the player'
+                                    ].join('\n')}
+                                </CodeBlock>
+                            </TabItem>
+                            <TabItem value="cs">
+                                <CodeBlock language="csharp" title="SyncPoints">
+                                    {[
+                                        'var syncPoints = new AlphaTab.Model.FlatSyncPoints[]',
+                                        '{',
+                                        syncPointsToCSharpCode(syncPointInfo, '    '),
+                                        '};'
+                                    ].join('\n')}
+                                </CodeBlock>
+                                <CodeBlock language="csharp" title="Applying">
+                                    {[
+                                        '// Variant 1: constant/data available when score is loaded.',
+                                        'api.ScoreLoaded.On(score =>',
+                                        '{',
+                                        '    score.BackingTrack = new AlphaTab.Model.BackingTrack();',
+                                        '    score.BackingTrack.RawAudioFile = rawAudioFileBytes;',
+                                        '    score.ApplyFlatSyncPoints(syncPoints);',
+                                        '});',
+                                        '',
+                                        '// Variant 2: dynamic load and apply',
+                                        'var syncPoints = await LoadSyncPointsForScore(score);',
+                                        'var rawAudioFileBytes = await LoadAudioForScore(score);',
+                                        'api.Score.ApplyFlatSyncPoints(syncPoints);',
+                                        'api.Score.BackingTrack = new AlphaTab.Model.BackingTrack();',
+                                        'api.Score.BackingTrack.RawAudioFile = rawAudioFileBytes;',
+                                        'api.UpdateSettings();   // ensures the right backing track player is started',
+                                        'api.UpdateSyncPoints(); // updates the sync points in the player'
+                                    ].join('\n')}
+                                </CodeBlock>
+                            </TabItem>
+                            <TabItem value="kt">
+                                <CodeBlock language="kotlin" title="SyncPoints">
+                                    {[
+                                        'val syncPoints: Array<alphaTab.model.FlatSyncPoints> = arrayOf(',
+                                        syncPointsToKotlinCode(syncPointInfo, '  '),
+                                        ')'
+                                    ].join('\n')}
+                                </CodeBlock>
+                                <CodeBlock language="kotlin" title="Applying">
+                                    {[
+                                        '// Variant 1: constant/data available when score is loaded.',
+                                        'api.scoreLoaded.on{ score ->',
+                                        '  score.backingTrack = alphaTab.model.BackingTrack();',
+                                        '  score.backingTrack.rawAudioFile = rawAudioFileBytes;',
+                                        '  score.applyFlatSyncPoints(syncPoints);',
+                                        '}',
+                                        '',
+                                        '// Variant 2: dynamic load and apply',
+                                        'val syncPoints = loadSyncPointsForScore(score);',
+                                        'val rawAudioFileBytes = loadAudioForScore(score);',
+                                        'api.score.applyFlatSyncPoints(syncPoints);',
+                                        'api.score.backingTrack = alphaTab.model.BackingTrack();',
+                                        'api.score.backingTrack.rawAudioFile = rawAudioFileBytes;',
+                                        'api.updateSettings();   // ensures the right backing track player is started',
+                                        'api.updateSyncPoints(); // updates the sync points in the player'
+                                    ].join('\n')}
+                                </CodeBlock>
+                            </TabItem>
+                        </Tabs>
+                        <div className={styles['modal-actions']}>
+                            <button
+                                type="button"
+                                className="button button--secondary"
+                                onClick={() => {
+                                    setGenerateCodeModalOpen(false);
+                                }}>
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <div className={styles.toolbar}>
-                <div className={styles['button-group']}>
+                <div>
+                    <div className={styles['button-group']}>
+                        <button
+                            className={`button ${mediaType.type === MediaType.Synth ? 'button--primary' : 'button--secondary'}`}
+                            type="button"
+                            data-tooltip-id="tooltip-playground"
+                            onClick={() => {
+                                onLoadSynthesizer();
+                            }}>
+                            <FontAwesomeIcon icon={solid.faWaveSquare} /> Synthesizer
+                        </button>
+                        <button
+                            className={`button ${mediaType.type === MediaType.Audio ? 'button--primary' : 'button--secondary'}`}
+                            type="button"
+                            data-tooltip-id="tooltip-playground"
+                            onClick={() => {
+                                onLoadAudioFile();
+                            }}>
+                            <FontAwesomeIcon icon={solid.faFileAudio} /> Audio Track
+                        </button>
+                        <button
+                            className={`button ${mediaType.type === MediaType.YouTube ? 'button--primary' : 'button--secondary'}`}
+                            type="button"
+                            data-tooltip-id="tooltip-playground"
+                            onClick={() => {
+                                onLoadYouTube();
+                            }}>
+                            <FontAwesomeIcon icon={brands.faYoutube} /> Youtube Video
+                        </button>
+                    </div>
+                    <div className={'dropdown dropdown--hoverable'}>
+                        <button type="button" className={'button button--secondary'} data-toggle="dropdown">
+                            <FontAwesomeIcon icon={solid.faMapPin} />
+                        </button>
+                        <ul className={'dropdown__menu'}>
+                            <li>
+                                <a
+                                    className="dropdown__link"
+                                    href="#reset-sync-points"
+                                    onClick={e => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        onResetSyncPoints();
+                                    }}>
+                                    Reset Sync Points
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    className="dropdown__link"
+                                    href="#crop-to-audio"
+                                    onClick={e => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        onAutoSync();
+                                    }}>
+                                    Automatic Sync with Tempo Changes and Audio
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
                     <button
-                        className={`button ${mediaType.type === MediaType.Synth ? 'button--primary' : 'button--secondary'}`}
+                        className="button button--secondary"
                         type="button"
                         data-tooltip-id="tooltip-playground"
+                        data-tooltip-content="Zoom Out"
                         onClick={() => {
-                            onLoadSynthesizer();
+                            setZoom(v => v / 1.2);
                         }}>
-                        <FontAwesomeIcon icon={solid.faWaveSquare} /> Synthesizer
+                        <FontAwesomeIcon icon={solid.faMagnifyingGlassMinus} />
                     </button>
+
                     <button
-                        className={`button ${mediaType.type === MediaType.Audio ? 'button--primary' : 'button--secondary'}`}
+                        className="button button--secondary button--outline"
+                        type="button"
+                        onClick={() => {
+                            setZoom(1);
+                        }}>{`${(zoom * 100).toFixed(1)}%`}</button>
+
+                    <button
+                        className="button button--secondary"
                         type="button"
                         data-tooltip-id="tooltip-playground"
+                        data-tooltip-content="Zoom In"
                         onClick={() => {
-                            onLoadAudioFile();
+                            setZoom(v => v * 1.2);
                         }}>
-                        <FontAwesomeIcon icon={solid.faFileAudio} /> Audio Track
+                        <FontAwesomeIcon icon={solid.faMagnifyingGlassPlus} />
                     </button>
+
                     <button
-                        className={`button ${mediaType.type === MediaType.YouTube ? 'button--primary' : 'button--secondary'}`}
+                        className="button button--secondary"
                         type="button"
                         data-tooltip-id="tooltip-playground"
+                        data-tooltip-content="Undo"
+                        disabled={!undo.canUndo}
                         onClick={() => {
-                            onLoadYouTube();
+                            undo.undo(i => {
+                                setSyncPointInfo(i);
+                            });
                         }}>
-                        <FontAwesomeIcon icon={brands.faYoutube} /> Youtube Video
+                        <FontAwesomeIcon icon={solid.faUndo} />
+                    </button>
+
+                    <button
+                        className="button button--secondary"
+                        type="button"
+                        data-tooltip-id="tooltip-playground"
+                        data-tooltip-content="Redo"
+                        disabled={!undo.canRedo}
+                        onClick={() => {
+                            undo.redo(i => {
+                                setSyncPointInfo(i);
+                            });
+                        }}>
+                        <FontAwesomeIcon icon={solid.faRedo} />
                     </button>
                 </div>
-                <div className={'dropdown dropdown--hoverable'}>
-                    <button type="button" className={'button button--secondary'} data-toggle="dropdown">
-                        <FontAwesomeIcon icon={solid.faMapPin} />
-                    </button>
-                    <ul className={'dropdown__menu'}>
-                        <li>
-                            <a
-                                className="dropdown__link"
-                                href="#reset-sync-points"
-                                onClick={e => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    onResetSyncPoints();
-                                }}>
-                                Reset Sync Points
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                className="dropdown__link"
-                                href="#crop-to-audio"
-                                onClick={e => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    onAutoSync();
-                                }}>
-                                Automatic Sync with Tempo Changes and Audio
-                            </a>
-                        </li>
-                    </ul>
+
+                <div>
+                    {mediaType.type === MediaType.Audio && (
+                        <button
+                            className="button button--secondary"
+                            type="button"
+                            onClick={() => {
+                                downloadFile(api);
+                            }}>
+                            <FontAwesomeIcon icon={solid.faDownload} /> Download Synced GP File
+                        </button>
+                    )}
+                    {(mediaType.type === MediaType.YouTube || mediaType.type === MediaType.Audio) && (
+                        <button
+                            className="button button--secondary"
+                            type="button"
+                            onClick={() => {
+                                setGenerateCodeModalOpen(true);
+                            }}>
+                            <FontAwesomeIcon icon={solid.faCode} /> Generate Sync Code
+                        </button>
+                    )}
                 </div>
-
-                <button
-                    className="button button--secondary"
-                    type="button"
-                    data-tooltip-id="tooltip-playground"
-                    data-tooltip-content="Zoom Out"
-                    onClick={() => {
-                        setZoom(v => v / 1.2);
-                    }}>
-                    <FontAwesomeIcon icon={solid.faMagnifyingGlassMinus} />
-                </button>
-
-                <button
-                    className="button button--secondary button--outline"
-                    type="button"
-                    onClick={() => {
-                        setZoom(1);
-                    }}>{`${(zoom * 100).toFixed(1)}%`}</button>
-
-                <button
-                    className="button button--secondary"
-                    type="button"
-                    data-tooltip-id="tooltip-playground"
-                    data-tooltip-content="Zoom In"
-                    onClick={() => {
-                        setZoom(v => v * 1.2);
-                    }}>
-                    <FontAwesomeIcon icon={solid.faMagnifyingGlassPlus} />
-                </button>
-
-                <button
-                    className="button button--secondary"
-                    type="button"
-                    data-tooltip-id="tooltip-playground"
-                    data-tooltip-content="Undo"
-                    disabled={!undo.canUndo}
-                    onClick={() => {
-                        undo.undo(i => {
-                            setSyncPointInfo(i);
-                        });
-                    }}>
-                    <FontAwesomeIcon icon={solid.faUndo} />
-                </button>
-
-                <button
-                    className="button button--secondary"
-                    type="button"
-                    data-tooltip-id="tooltip-playground"
-                    data-tooltip-content="Redo"
-                    disabled={!undo.canRedo}
-                    onClick={() => {
-                        undo.redo(i => {
-                            setSyncPointInfo(i);
-                        });
-                    }}>
-                    <FontAwesomeIcon icon={solid.faRedo} />
-                </button>
             </div>
             <div
                 className={styles['sync-area']}

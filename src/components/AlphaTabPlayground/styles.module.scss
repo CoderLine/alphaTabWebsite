@@ -191,7 +191,7 @@
     transform: translateX(50px);
     font-size: 80%;
     border-radius: var(--ifm-alert-border-radius);
-    z-index: 0;
+    z-index: -1;
 
     &.open {
         z-index: 1001;
@@ -203,7 +203,6 @@
     &>.at-settings-group {
         border-bottom: 2px dashed #00000033;
     }
-
 }
 
 .at-settings-close {
@@ -406,11 +405,19 @@
     border-top: 1px solid rgba(0, 0, 0, 0.12);
 
     & .toolbar {
+        zoom: 0.8;
         padding: 0.2rem;
         display: flex;
-        gap: 0.2rem;
         align-items: center;
         border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+        justify-content: space-between;
+
+        &>div {
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+
     }
 
     & .sync-area {
@@ -564,7 +571,7 @@
     }
 }
 
-.youtube-select-modal {
+.modal {
     position: absolute;
     top: 0;
     left: 0;
@@ -576,13 +583,14 @@
     justify-content: center;
     align-items: center;
 
-    & .youtube-select-modal-body {
-
+    & .modal-body {
         background: #FFF;
         box-shadow: var(--ifm-global-shadow-md) !important;
         padding: 1rem;
         border-radius: var(--ifm-alert-border-radius);
         width: 30vw;
+        max-height: 80vh;
+        overflow: auto;
 
         & label {
             font-weight: bold;
@@ -604,10 +612,18 @@
             width: 100%;
         }
 
-        & .youtube-select-modal-actions {
+        & .modal-actions {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
+    }
+
+    &.modal-sm .modal-body {
+        width: 30vw;
+    }
+
+    &.modal-lg .modal-body {
+        width: 70vw;
     }
 }
