@@ -898,3 +898,15 @@ export function syncPointsToKotlinCode(info: SyncPointInfo, indent: string): str
 
     return lines.join(',\n');
 }
+
+export function syncPointsToAlphaTex(info: SyncPointInfo): string {
+    const lines: string[] = [];
+
+    const flat = toFlatSyncPoints(info);
+    for (const m of flat) {
+        const barPosition = m.barPosition > 0 ? ` ${Number(m.barPosition.toFixed(3))}` : '';
+        lines.push(`\\sync ${m.barIndex} ${m.barOccurence} ${m.millisecondOffset}${barPosition}`)
+    }
+
+    return lines.join(',\n');
+}
