@@ -3,7 +3,8 @@ title: exportAudio
 description: "Starts the audio export for the currently loaded song."
 sidebar_custom_props:
   kind: method
-  category: Methods - Core
+  category: Methods - Player
+  since: 1.5.0
 ---
 
 import { ParameterTable, ParameterRow } from '@site/src/components/ParameterTable';
@@ -15,10 +16,13 @@ import { SinceBadge } from '@site/src/components/SinceBadge';
 import DynHeading from '@site/src/components/DynHeading';
 import Link from '@docusaurus/Link';
 
+<SinceBadge since="1.5.0" />
 
 ### Description
 Starts the audio export for the currently loaded song. This will not export or use any backing track media but will always use the synthesizer to generate the output.
 This method works with any PlayerMode active but changing the mode during export can lead to unexpected side effects.
+
+See [Audio Export](/docs/guides/audio-export) for further guidance how to use this feature.
 
 <Tabs defaultValue="js" values={[{label: "JavaScript", value: "js"},{label: "C#", value: "cs"},{label:"Kotlin", value: "kt"}]}>
 <TabItem value="js">
