@@ -1,0 +1,201 @@
+---
+title: Tracks, Staves and Voices
+---
+
+import { AlphaTexSample } from '@site/src/components/AlphaTexSample';
+
+For some songs you might want to define that the song has multiple tracks, staves or voices.
+
+* Multiple tracks are used when multiple instruments are playing together in one song.
+* Multiple staves are typically used to write grand staff piano notation (left hand/right hand) or 
+  splitup voices for readability. 
+* Multiple voices are typically used to write notation where multiple independent timings and pitches are played. 
+  This can be if multiple vocals are singing together (hence the name voices), or special playing techniques (playing a base rhythm and melody on the same instrument). 
+
+In alphaTex new tracks, staves and voices are started with their respective metadata tags specified at the start of a bar:
+
+* `\track`
+* `\staff`
+* `\voice`
+
+alphaTab refers to these kind of metadata tags as "structural" tags as they define the general structure of the song.
+
+The initial track, staff or voice is implicitly started. Only on the "second" item you need to specify the tags. For clarity
+it is encouraged to also specify the initial item if there are multiple tracks, staves or voices.
+
+## `\track`
+
+A new track can be started with the `\track` metadata.
+
+The track metadata has two values: 
+1. `track long name` (string, optional) 
+2. `track short name` (string, optional)`
+
+Both names are optional and the short name is the one displayed before the track starts.
+The long name can be used e.g. in your custom UI.
+If the short name is not specified, the first 10 characters of the long name are used as short name. <br />
+
+<AlphaTexSample tracks="all">{`
+\\track "First Track" "frst"
+    1.1 2.1 3.1 4.1
+\\track // new track
+    \\tuning A1 D2 A2 D3 G3 B3 E4 // tuning of new track (with 7 strings)
+    4.1 3.1 2.1 1.1 |
+`}</AlphaTexSample>
+
+Following properties are available on track level. 
+
+### Track Color 
+
+**Syntax:** `color colorCode`
+
+The data model holds information about the color of the track which might be used by user interfaces to visually differenciate them. 
+This data mainly originates from the Guitar Pro file format where colors are used to differenciate the tracks in the track picker and 
+some other visualizations. It does not have an impact on the color of the music notation but can be used in a custom UI. 
+
+The `colorCode` is a string of [any supported color format](/docs/reference/settings/display/resources#colors)
+
+<AlphaTexSample tracks="all">{`
+\\track { color "#FF0000" }
+1.1 2.1 3.1 4.1
+`}</AlphaTexSample>
+
+### System Layout
+
+**Syntax:** `systemsLayout (system1Bars system2Bars...)`
+**Syntax:** `defaultSystemsLayout bars`
+
+The `systemsLayout` and `defaultSystemsLayout` allow configuring the system layout. The system layout, defines how many bars should be displayed per system (line) if enabled via [`systemsLayoutMode`](/docs/reference/settings/display/systemslayoutmode).
+
+The system layout can be configured either on score or on track level via these two options.
+
+* `defaultSystemsLayout` - defines the number of bars to display unless specified differently. (default: 3)
+* `systemsLayout` - defines the number of bars to display per system. (default: empty)
+
+<AlphaTexSample tracks="all" settings={{ display: {systemsLayoutMode: 'UseModelLayout'}  }}>{`
+\\title "Single Track"
+.
+\\track { defaultSystemsLayout 3 systemsLayout 2 2 }
+    :1 c4 | c4 | c4 | c4 | c4 | c4 | c4 | c4
+`}</AlphaTexSample>
+
+The `score` level options are used in case multiple tracks are displayed, otherwise the `track` level information is used. 
+
+<AlphaTexSample tracks="all" settings={{ display: {systemsLayoutMode: 'UseModelLayout'}  }}>{`
+\\title "Multi Track"
+\\defaultSystemsLayout 2
+\\systemsLayout 1 1
+.
+\\track { defaultSystemsLayout 1 systemsLayout 2 2 }
+    :1 c4 | c4 | c4 | c4 | c4 | c4 | c4 | c4
+\\track { defaultSystemsLayout 4 systemsLayout 3 3 }
+    :1 c4 | c4 | c4 | c4 | c4 | c4 | c4 | c4
+`}</AlphaTexSample>
+
+### Playback Information
+
+Following properties allow specifying details on the playback of the track.
+
+**Syntax:** `solo` - set the track to be played alone in the data model. (no values)
+**Syntax:** `mute` - set the track to be muted (not played) in the data model. (no values)
+**Syntax:** `volume value` - set the track volume, value can be a number in the range of 0-16
+**Syntax:** `volume balance` - set the track balance, value can be a number in the range of 0-16 (8 is centered)
+**Syntax:** `instrument nameOrNumber` - set the midi instrument for this track. This can either be a General MIDI number or instrument name. 
+
+## `\staff`
+
+A new staff can be started with the `\staff` metadata. 
+
+The staff metadata has no values.
+
+The staff properties are described below.
+
+<AlphaTexSample tracks="all">{`
+\\track "Piano with Grand Staff" "pno."
+    \\staff{score} \\tuning piano \\instrument acousticgrandpiano
+    c4 d4 e4 f4 |
+    \\staff{score} \\tuning piano \\clef F4
+    c2 c2 c2 c2 |
+\\track "Guitar"
+    \\staff{tabs slash} \\capo 5
+    1.2 3.2 0.1 1.1
+`}</AlphaTexSample>
+
+The staff with the largest number of bars defines how long the overall song is.
+There is no need to manually ensure that all staves have the correct number of bars.
+AlphaTab will create missing empty bars automatically.
+
+<AlphaTexSample tracks="all">{`
+\\track "Piano with Grand Staff" "pno."
+    \\staff{score} \\tuning piano \\instrument acousticgrandpiano
+    c4 d4 e4 f4 |
+    \\staff{score} \\tuning piano \\clef F4
+    c2 c2 c2 c2 | c2 c2 c2 c2 | c2 c2 c2 c2 |
+\\track "Guitar"
+    \\staff{tabs} \\capo 5
+    1.2 3.2 0.1 1.1 | 1.2 3.2 0.1 1.1
+`}</AlphaTexSample>
+
+If no properties describing the visible notation are provided, the default is `score tabs`.
+
+### `score` - Standard notation 
+
+The `score` staff property enables the display of standard notation. 
+
+The values are:
+
+* `lines` - Defines the number of staff lines shown in the standard music notation (number, optional)
+
+<AlphaTexSample tracks="all">{`
+\\track
+    \\staff{score 3}
+    c4 d4 e4 f4
+`}</AlphaTexSample>
+
+### `tabs`
+
+The `tabs` staff property enables the display of guitar tablature (only if the contained notes are really containing stringed/fretted notes)
+
+This property has no values.
+
+### `slash`
+
+The `slash` staff property enables the display of slash notation.
+
+This property has no values.
+
+### `numbered`
+
+The `numbered` staff property enables the display of Jianpu / numbered notation.
+
+This property has no values.
+
+## `\voice`
+
+A new track can be started with the `\voice` metadata. 
+
+The voice metadata has no values and no properties.
+
+Unlike the structure in the data model, alphaTex expects you to define all bars of a voice, then all the bars of the next voice. 
+
+It structure is: `\voice /* Voice 1 Bar 1*/ |  /* Voice 1 Bar 2*/ \voice /* Voice 2 Bar 1*/ |  /* Voice21 Bar 2*/` 
+Once a new voice starts, you again can define the notes starting from the first bar. alphaTab will try to consolidate inconsistencies in the number of bars across voices. 
+
+<AlphaTexSample tracks="all">{`
+\\track "Piano"
+    \\staff{score} \\tuning piano \\instrument acousticgrandpiano
+        \\voice 
+            c4 d4 e4 f4 | c4 d4 e4 f4
+        \\voice 
+            c3 d3 e3 f3 | c3 d3 e3 f3
+
+\\track "Piano2"
+    \\staff{score} \\tuning piano \\instrument acousticgrandpiano
+        \\voice 
+            c4 d4 e4 f4 | c4 d4 e4 f4
+        \\voice 
+            c3 d3 e3 f3
+
+`}</AlphaTexSample>
+
+
