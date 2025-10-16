@@ -143,6 +143,8 @@ const sidebars: SidebarsConfig = {
   alphaTex: {
     alphaTex: [
       "alphatex/introduction",
+      "alphatex/syntax",
+      "alphatex/document-structure",
       "alphatex/structural-metadata",
       "alphatex/score-metadata",
       "alphatex/staff-metadata",

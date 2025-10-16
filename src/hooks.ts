@@ -11,6 +11,15 @@ export function useAlphaTab(
   const [api, setApi] = useState<alphaTab.AlphaTabApi>();
   const element = React.createRef<HTMLDivElement>();
 
+  // for easier testing and troubleshooting
+  useEffect(()=>{
+    const e = element.current as any; 
+    e.at = api;
+    return ()=>{
+      e.at = undefined;
+    }
+  }, [api, element.current])
+
   useEffect(
     () => {
       const container = element.current;
@@ -32,8 +41,6 @@ export function useAlphaTab(
     // on component mounted
     []
   );
-
-  useEffect(() => { });
 
   return [api, element];
 }

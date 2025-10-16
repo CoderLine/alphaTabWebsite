@@ -2,103 +2,404 @@
 title: Score Metadata
 ---
 
+import { AlphaTexSample } from '@site/src/components/AlphaTexSample';
+import { SinceBadge } from '@site/src/components/SinceBadge';
+
 This page lists all metadata tags which affect the overall song. 
 
 It is recommended that these tags are specified at the very beginning of the file.
 
+## `\title`
 
+```plain title="Tag Syntax"
+\title value
+\title (value template textAlign)
+```
+**Description:** Sets the title of the song in the data model.
 
-import { AlphaTexSample } from '@site/src/components/AlphaTexSample';
-import { SinceBadge } from '@site/src/components/SinceBadge';
+**Values:**
 
-Metadata is specified using `\tagname value` at the beginning of the score.
-It can be used to specify global information like title, tempo or track tuning.
-Metadata is optional, but if specified, it must be followed by a dot to indicate the end
-of the metadata.
+| Name | Description | Type | Required |
+|------|-------------|------|----------|
+| value | The title of the song | `string` | yes |
+| template | The text template used to render the title | `string` | no |
+| textAlign | The text alignment of the text to display on the music sheet | `left`, `center` or `right` | no |
 
-Some of the metadata tags can also be specified when starting a new staff or track.
-Please refer to the [Tracks and Staves](/docs/alphatex/tracks-staves) or details on how to start new tracks and staves.
+**Example**
 
-## Song Information
-
-There is a range of metadata tags which define the general information on the music piece like the title and artist. 
-
-They have the following values: 
-
-* `value` The exact value for the property (e.g. the song title) (required, string)
-* `template` A template what text to display on the music sheet. (optional, string) <SinceBadge inline={true} since="1.5.0" /> 
-* `textAlign` The text alignment of the text to display on the music sheet. (optional, oneOf: `left`, `center`, `right`) <SinceBadge inline={true} since="1.5.0" /> 
-
-See [Song Details Formatting](/docs/guides/formatting-templates) for more details on the template and text alignment.
-
-Properties marked with a `*` have no `value` as they are rather computed values. 
-
-* `\title` The title of the song
-* `\subtitle`The subtitle of the song
-* `\artist` The artist of the song
-* `\album` The album of the song
-* `\words` The author of the song lyrics
-* `\music` The author of the music.
-* `\wordsandmusic`* If words and music author are the same, they are combined into one element.
-* `\copyright` The owner of the copyright of this song.
-* `\copyright2`* The second copyright information. Typically used for a text like `All rights reserved`. Use the template to define the text.
-* `\instructions` Additional textual instructions attached to the music sheet (not displayed).
-* `\notices` General notices attached to the music sheet (not displayed).
-* `\tab` The transcriber of the music sheet
-
-<AlphaTexSample>{`
-\\title "Song Title" "Title: %TITLE%" left
-\\artist Artist "Written by %ARTIST%" right
+<AlphaTexSample tracks="all">{`
+\\title ("Song Title" "Title: %TITLE%" left)
+C4
 `}</AlphaTexSample>
 
-## System Layout
+## `\subtitle`
 
-The `\defaultsystemslayout` and `\systemslayout` allow configuring the system layout for all tracks. 
+```plain title="Tag Syntax"
+\subtitle value
+\subtitle (value template textAlign)
+```
+**Description:** Sets the subtitle of the song in the data model.
+
+**Values:**
+
+| Name | Description | Type | Required |
+|------|-------------|------|----------|
+| value | The subtitle of the song | `string` | yes |
+| template | The text template used to render the subtitle | `string` | no |
+| textAlign | The text alignment of the text to display on the music sheet | `left`, `center` or `right` | no |
+
+**Example**
+
+<AlphaTexSample tracks="all">{`
+\\title ("Song Title" "Title: %TITLE%" left)
+\\subtitle ("Subtitle" "[%SUBTITLE%]" left)
+C4
+`}</AlphaTexSample>
+
+## `\artist`
+
+```plain title="Tag Syntax"
+\artist value
+\artist (value template textAlign)
+```
+**Description:** Sets the artist of the song in the data model.
+
+**Values:**
+
+| Name | Description | Type | Required |
+|------|-------------|------|----------|
+| value | The artist of the song | `string` | yes |
+| template | The text template used to render the artist | `string` | no |
+| textAlign | The text alignment of the text to display on the music sheet | `left`, `center` or `right` | no |
+
+**Example**
+
+<AlphaTexSample tracks="all">{`
+\\title ("Song Title" "Title: %TITLE%" left)
+\\artist "alphaTab"
+C4
+`}</AlphaTexSample>
+
+## `\album`
+
+```plain title="Tag Syntax"
+\album value
+\album (value template textAlign)
+```
+**Description:** Sets the album of the song in the data model.
+
+**Values:**
+
+| Name | Description | Type | Required |
+|------|-------------|------|----------|
+| value | The album of the song | `string` | yes |
+| template | The text template used to render the album | `string` | no |
+| textAlign | The text alignment of the text to display on the music sheet | `left`, `center` or `right` | no |
+
+**Example**
+
+<AlphaTexSample tracks="all">{`
+\\title ("Song Title" "Title: %TITLE%" left)
+\\album "alphaTab vol.1"
+C4
+`}</AlphaTexSample>
+
+## `\words`
+
+```plain title="Tag Syntax"
+\words value
+\words (value template textAlign)
+```
+**Description:** Sets the words/lyrics author of the song in the data model.
+
+**Values:**
+
+| Name | Description | Type | Required |
+|------|-------------|------|----------|
+| value | The words/lyrics author of the song | `string` | yes |
+| template | The text template used to render the words/lyrics author | `string` | no |
+| textAlign | The text alignment of the text to display on the music sheet | `left`, `center` or `right` | no |
+
+**Example**
+
+<AlphaTexSample tracks="all">{`
+\\words "CoderLine"
+C4
+`}</AlphaTexSample>
+
+## `\music`
+
+```plain title="Tag Syntax"
+\music value
+\music (value template textAlign)
+```
+**Description:** Sets the music author of the song in the data model.
+
+**Values:**
+
+| Name | Description | Type | Required |
+|------|-------------|------|----------|
+| value | The music author of the song | `string` | yes |
+| template | The text template used to render the music author | `string` | no |
+| textAlign | The text alignment of the text to display on the music sheet | `left`, `center` or `right` | no |
+
+**Example**
+
+<AlphaTexSample tracks="all">{`
+\\music "CoderLine and Contributors"
+C4
+`}</AlphaTexSample>
+
+## `\wordsandmusic`
+
+```plain title="Tag Syntax"
+\wordsAndMusic (template textAlign)
+```
+**Description:** Sets the template and text align for the words and music (if they have the same value) 
+**Values:**
+
+| Name | Description | Type | Required |
+|------|-------------|------|----------|
+| template | The text template used to render the item | `string` | yes |
+| textAlign | The text alignment of the text to display on the music sheet | `left`, `center` or `right` | no |
+
+There is no own "value" for the wordsAndMusic meta as this display activates
+if `\words` and `\music` have the same value which will be used. 
+
+**Example**
+
+<AlphaTexSample tracks="all">{`
+\\words "CoderLine"
+\\music "CoderLine"
+\\wordsAndMusic ("Words & Music: %WORDS%")
+C4
+`}</AlphaTexSample>
+
+## `\copyright`
+
+```plain title="Tag Syntax"
+\copyright value
+\copyright (value template textAlign)
+```
+**Description:** Sets owner of the copyright of the song in the data model.
+
+**Values:**
+
+| Name | Description | Type | Required |
+|------|-------------|------|----------|
+| value | The owner of the copyright of the song | `string` | yes |
+| template | The text template used to render the item | `string` | no |
+| textAlign | The text alignment of the text to display on the music sheet | `left`, `center` or `right` | no |
+
+**Example**
+
+<AlphaTexSample tracks="all">{`
+\\copyright "CoderLine"
+C4
+`}</AlphaTexSample>
+
+## `\copyright2`
+
+```plain title="Tag Syntax"
+\copyright2 (template textAlign)
+```
+**Description:** Sets the template and text align for the second copyright line.
+**Values:**
+
+| Name | Description | Type | Required |
+|------|-------------|------|----------|
+| template | The text template used to render the item | `string` | yes |
+| textAlign | The text alignment of the text to display on the music sheet | `left`, `center` or `right` | no |
+
+There is no own "value" as it is typically used to just define a static text like "All rights reserved". The "template" can be used for defining the display.  
+
+**Example**
+
+<AlphaTexSample tracks="all">{`
+\\copyright "CoderLine"
+\\copyright2 "All rights reserved"
+C4
+`}</AlphaTexSample>
+
+## `\instructions`
+
+```plain title="Tag Syntax"
+\instructions value
+```
+**Description:** Sets the additional textual instructions attached to the music sheet (not displayed).
+
+**Values:**
+
+| Name | Description | Type | Required |
+|------|-------------|------|----------|
+| value | The music author of the song | `string` | yes |
+
+**Example**
+
+<AlphaTexSample tracks="all">{`
+\\instructions "Practice this piece until you get it perfect."
+C4
+`}</AlphaTexSample>
+
+## `\notices`
+
+```plain title="Tag Syntax"
+\notices value
+```
+**Description:** Sets the general notices attached to the music sheet (not displayed).
+
+**Values:**
+
+| Name | Description | Type | Required |
+|------|-------------|------|----------|
+| value | The music author of the song | `string` | yes |
+
+**Example**
+
+<AlphaTexSample tracks="all">{`
+\\notices "I hope you appreciate this music sheet, it was a lot of effort to create!"
+C4
+`}</AlphaTexSample>
+
+## `\tab`
+
+```plain title="Tag Syntax"
+\tab value
+\tab (value template textAlign)
+```
+**Description:** Sets the transcriber of the music sheet in the data model.
+
+**Values:**
+
+| Name | Description | Type | Required |
+|------|-------------|------|----------|
+| value | The transcriber of the music sheet | `string` | yes |
+| template | The text template used to render this item | `string` | no |
+| textAlign | The text alignment of the text to display on the music sheet | `left`, `center` or `right` | no |
+
+**Example**
+
+<AlphaTexSample tracks="all">{`
+\\tab "Transcribed by me"
+C4
+`}</AlphaTexSample>
+
+## `\systemsLayout`
+
+```plain title="Tag Syntax"
+\systemsLayout (system1Bars system2Bars...)
+```
+**Description:** Defines the number of bars to display per system when rendering multiple tracks.
+
+The `systemsLayout` and `defaultSystemsLayout` allow configuring the system layout. 
 The system layout, defines how many bars should be displayed per system (line) if enabled via [`systemsLayoutMode`](/docs/reference/settings/display/systemslayoutmode).
-See [System Layout](./structural-metadata.mdx#system-layout) for more details.
 
-## Show/Hide Dynamics
+**Values:**
 
-To configure on the stylesheet whether dynamics are shown use: `\showDynamics` and `\hideDynamics`
+| Name | Description | Type | Required |
+|------|-------------|------|----------|
+| numberOfBars | Defines for every system (line) the number of bars it should contain | `number` (repeated) | yes |
+
+**Example**
+
+<AlphaTexSample tracks="all" settings={{ display: {systemsLayoutMode: 'UseModelLayout'}  }}>{`
+\\systemsLayout (2 3 2)
+\\track 
+    :1 c4 | c4 | c4 | c4 | c4 | c4 | c4
+\\track 
+    :1 c4 | c4 | c4 | c4 | c4 | c4 | c4
+`}</AlphaTexSample>
+
+## `\defaultSystemsLayout`
+
+```plain title="Tag Syntax"
+\defaultSystemsLayout numberOfBars
+```
+**Description:** Defines the default number of bars to display per system when rendering multiple tracks. 
+
+The `systemsLayout` and `defaultSystemsLayout` allow configuring the system layout. 
+The system layout, defines how many bars should be displayed per system (line) if enabled via [`systemsLayoutMode`](/docs/reference/settings/display/systemslayoutmode).
+
+**Values:**
+
+| Name | Description | Type | Required |
+|------|-------------|------|----------|
+| numberOfBars | Defines for every system (line) the number of bars it should contain | `number` | yes |
+
+**Example**
+
+<AlphaTexSample tracks="all" settings={{ display: {systemsLayoutMode: 'UseModelLayout'}  }}>{`
+\\defaultSystemsLayout 2
+\\track 
+    :1 c4 | c4 | c4 | c4 | c4 | c4 | c4
+\\track 
+    :1 c4 | c4 | c4 | c4 | c4 | c4 | c4
+`}</AlphaTexSample>
+
+## `\showDynamics` and `\hideDynamics`
+
+```plain title="Tag Syntax"
+\showDynamics
+\hideDynamics
+```
+**Description:** Enables or disables the display of dynamics. 
+
+**Values:**
+
+None.
+
+**Example**
 
 <AlphaTexSample>{`
 \\showDynamics
-.
-C4 D4 E4 F4
+    C4 {dy FFF} D4
+    E4 {dy PP} F4 
 `}</AlphaTexSample>
-
 
 <AlphaTexSample>{`
 \\hideDynamics
-.
-C4 D4 E4 F4
+    C4 {dy FFF} D4
+    E4 {dy PP} F4 
 `}</AlphaTexSample>
 
-## System Sign Separator
+## `\useSystemSignSeparator`
 
-The `\useSystemSignSeparator` option configures whether a system sign separator should be added (in case multiple tracks are shown).
+```plain title="Tag Syntax"
+\useSystemSignSeparator
+```
+**Description:** Configures whether a system sign separator should be added (in case multiple tracks are shown)
+
+**Values:**
+
+None.
+
+**Example**
 
 <AlphaTexSample tracks="all" settings={{ display: {systemsLayoutMode: 'UseModelLayout'}  }}>{`
 \\useSystemSignSeparator
 \\defaultSystemsLayout 2
-.
 \\track "T1"
 :1 C4 | C4 | C4
 \\track "T2"
 :1 C4 | C4 | C4
 `}</AlphaTexSample>
 
-## Multi-Bar Rests
+## `\multiBarRest`
 
-To configure whether [multibar rests](/docs/showcase/layouts.mdx#multi-bar-rests) should be enabled use:
+```plain title="Tag Syntax"
+\multiBarRest
+```
+**Description:** Enable the display of multibar rests in case multiple tracks are shown.
 
-* `\multiBarRest` - On top level for configuring the use on multi-track renderings
-* `\track { multiBarRest }` - On track level for single track renderings
+**Values:**
+
+None.
+
+**Example**
 
 <AlphaTexSample tracks="all">{`
 \\title "Multi Track"
 \\multiBarRest
-.
 \\track "Piano 1" "pno1"
     \\staff {score}
     C4 D4 E4 F4 | r | r | C4 D4 E4 F4 | r | r | r | C4
@@ -108,28 +409,22 @@ To configure whether [multibar rests](/docs/showcase/layouts.mdx#multi-bar-rests
     C4 D4 E4 F4 | r | r | C4 D4 E4 F4 | r | r | r | r |
 `}</AlphaTexSample>
 
-<AlphaTexSample tracks="all">{`
-\\title "Single Track"
-.
-\\track "Piano 1" "pno1" { multiBarRest }
-    \\staff {score}
-    C4 D4 E4 F4 | r | r | C4 D4 E4 F4 | r | r | r | C4
-`}</AlphaTexSample>
+## `\bracketExtendMode`
 
-## Brackets and Braces
 
-To configure the mode how to show [brackets and braces](/docs/showcase/general.mdx#brackets-and-braces) use 
+```plain title="Tag Syntax"
+\bracketExtendMode mode
+```
+**Description:** Configure the mode how to show [brackets and braces](/docs/showcase/general.mdx#brackets-and-braces).
 
-* `\bracketExtendMode NoBrackets`
-* `\bracketExtendMode GroupStaves`
-* `\bracketExtendMode GroupSimilarInstruments`
+**Values:**
 
-The `\useSystemSignSeparator` option configures whether a system sign separator should be added
+| Name | Description | Type | Required |
+|------|-------------|------|----------|
+| mode | The mode to use | `noBrackets`, `groupStaves` or `groupSimilarInstruments` | yes |
 
 <AlphaTexSample tracks="all">{`
 \\bracketextendmode GroupSimilarInstruments
-\\useSystemSignSeparator
-.
 \\track "Piano1"
     \\staff {score}
 	\\instrument piano
@@ -153,16 +448,73 @@ The `\useSystemSignSeparator` option configures whether a system sign separator 
     0.3.4 2.3.4 5.3.4 7.3.4 
 `}</AlphaTexSample>
 
-## Track Names
+## `\singleTrackTrackNamePolicy` and `\multiTrackTrackNamePolicy`
 
-To configure the mode how to show [track names](/docs/showcase/general.mdx#track-names) use:
+```plain title="Tag Syntax"
+\singleTrackTrackNamePolicy mode
+\multiTrackTrackNamePolicy mode
+```
+**Description:** Configures on which systems to show the [track names](/docs/showcase/general.mdx#track-names)
 
-* `\singleTrackTrackNamePolicy hidden`, `\singleTrackTrackNamePolicy firstSystem`, `singleTrackTrackNamePolicy allSystems`
-* `\multiTrackTrackNamePolicy hidden`, `\multiTrackTrackNamePolicy firstSystem`, `multiTrackTrackNamePolicy allSystems`
-* `\firstSystemTrackNameMode shortName`, `\firstSystemTrackNameMode fullName`
-* `\otherSystemsTrackNameMode shortName`, `\otherSystemsTrackNameMode fullName`
-* `\firstSystemTrackNameOrientation horizontal`, `\firstSystemTrackNameOrientation vertical`
-* `\otherSystemsTrackNameOrientation horizontal`, `\otherSystemsTrackNameOrientation vertical`
+As the name implies the tags configure how to behave if only a single, or multiple tracks are displayed.
+
+**Values:**
+
+| Name | Description | Type | Required |
+|------|-------------|------|----------|
+| mode | The mode to use | `hidden`, `firstSystem` or `allSystems` | yes |
+
+**Example**
+
+<AlphaTexSample tracks="all">{`
+\\singletracktracknamepolicy AllSystems
+\\track "Piano 1" "pno1" { defaultsystemslayout 3 }
+    C4 D4 E4 F4 | C4 D4 E4 F4 | C4 D4 E4 F4 | C4 D4 E4 F4 | C4 D4 E4 F4 |
+`}</AlphaTexSample>
+
+## `\firstSystemTrackNameMode` and `\otherSystemsTrackNameMode`
+
+```plain title="Tag Syntax"
+\firstSystemTrackNameMode mode
+\otherSystemsTrackNameMode mode
+```
+**Description:** Configures the text how to show as [track names](/docs/showcase/general.mdx#track-names)
+
+As the name implies the tags configure how to behave on the first or on subquent tracks.
+
+**Values:**
+
+| Name | Description | Type | Required |
+|------|-------------|------|----------|
+| mode | The mode to use | `shortName` or `fullName` | yes |
+
+**Example**
+
+<AlphaTexSample tracks="all">{`
+\\singletracktracknamepolicy AllSystems
+\\firstsystemtracknamemode fullname
+\\othersystemstracknamemode shortname
+\\track "Piano 1" "pno1" { defaultsystemslayout 3 }
+    C4 D4 E4 F4 | C4 D4 E4 F4 | C4 D4 E4 F4 | C4 D4 E4 F4 | C4 D4 E4 F4 |
+`}</AlphaTexSample>
+
+## `\firstSystemTrackNameOrientation` and `\otherSystemsTrackNameOrientation`
+
+```plain title="Tag Syntax"
+\firstSystemTrackNameOrientation orientation
+\otherSystemsTrackNameOrientation orientation
+```
+**Description:** Configures the orientation of the [track names](/docs/showcase/general.mdx#track-names)
+
+As the name implies the tags configure how to behave on the first or on subquent tracks.
+
+**Values:**
+
+| Name | Description | Type | Required |
+|------|-------------|------|----------|
+| orientation | The orientation to use | `horizontal` or `vertical` | yes |
+
+**Example**
 
 <AlphaTexSample tracks="all">{`
 \\singletracktracknamepolicy AllSystems

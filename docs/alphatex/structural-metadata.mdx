@@ -1,5 +1,5 @@
 ---
-title: Tracks, Staves and Voices
+title: Structural Metadata
 ---
 
 import { AlphaTexSample } from '@site/src/components/AlphaTexSample';
@@ -25,87 +25,226 @@ it is encouraged to also specify the initial item if there are multiple tracks, 
 
 ## `\track`
 
-A new track can be started with the `\track` metadata.
+```plain title="Tag Syntax"
+\track
+\track longName
+\track (shortName longName)
+```
+**Description:** Marks the start of a new track 
 
-The track metadata has two values: 
-1. `track long name` (string, optional) 
-2. `track short name` (string, optional)`
+**Values:**
 
-Both names are optional and the short name is the one displayed before the track starts.
-The long name can be used e.g. in your custom UI.
-If the short name is not specified, the first 10 characters of the long name are used as short name. <br />
+| Name | Description | Type | Required |
+|------|-------------|------|----------|
+| longName | The long name of the track | `string` | no |
+| shortName | The short name of the track | `string` | no |
+
+The displayed name depends on the configured [`Track Name Policy`](./score-metadata.mdx#track-names).
+If the short name is not specified, the first 10 characters of the long name are used as short name.
+
+**Example**
 
 <AlphaTexSample tracks="all">{`
-\\track "First Track" "frst"
-    1.1 2.1 3.1 4.1
-\\track // new track
-    \\tuning A1 D2 A2 D3 G3 B3 E4 // tuning of new track (with 7 strings)
-    4.1 3.1 2.1 1.1 |
+\\track "First Track" "frst" 
+    C4 D4 E4 F4
+\\track
+    C5 D5 E5 F5
 `}</AlphaTexSample>
 
-Following properties are available on track level. 
+Following properties are available. 
 
 ### Track Color 
 
-**Syntax:** `color colorCode`
+```plain title="Syntax"
+color colorCode
+```
+
+**Description:** 
 
 The data model holds information about the color of the track which might be used by user interfaces to visually differenciate them. 
 This data mainly originates from the Guitar Pro file format where colors are used to differenciate the tracks in the track picker and 
 some other visualizations. It does not have an impact on the color of the music notation but can be used in a custom UI. 
 
-The `colorCode` is a string of [any supported color format](/docs/reference/settings/display/resources#colors)
+**Values:**
+
+| Name | Description | Type | Required |
+|------|-------------|------|----------|
+| colorCode | The `colorCode` in [any supported color format](/docs/reference/settings/display/resources#colors) | `string` | yes |
+
+**Example:**
 
 <AlphaTexSample tracks="all">{`
 \\track { color "#FF0000" }
 1.1 2.1 3.1 4.1
 `}</AlphaTexSample>
 
-### System Layout
+### Systems Layout
 
-**Syntax:** `systemsLayout (system1Bars system2Bars...)`
-**Syntax:** `defaultSystemsLayout bars`
+```plain title="Syntax"
+systemsLayout (system1Bars system2Bars...)
+```
 
-The `systemsLayout` and `defaultSystemsLayout` allow configuring the system layout. The system layout, defines how many bars should be displayed per system (line) if enabled via [`systemsLayoutMode`](/docs/reference/settings/display/systemslayoutmode).
+**Description:** 
 
-The system layout can be configured either on score or on track level via these two options.
+Defines the number of bars to display per system. 
 
-* `defaultSystemsLayout` - defines the number of bars to display unless specified differently. (default: 3)
-* `systemsLayout` - defines the number of bars to display per system. (default: empty)
+The `systemsLayout` and `defaultSystemsLayout` allow configuring the system layout. 
+The system layout, defines how many bars should be displayed per system (line) if enabled via [`systemsLayoutMode`](/docs/reference/settings/display/systemslayoutmode).
 
-<AlphaTexSample tracks="all" settings={{ display: {systemsLayoutMode: 'UseModelLayout'}  }}>{`
+**Values:**
+
+| Name | Description | Type | Required |
+|------|-------------|------|----------|
+| numberOfBars | Defines for every system (line) the number of bars it should contain | `number` (repeated) | yes |
+
+**Example:**
+
+<AlphaTexSample settings={{ display: {systemsLayoutMode: 'UseModelLayout'}  }}>{`
+\\title "Single Track"
+\\track { systemsLayout (2 3 2) }
+    :1 c4 | c4 | c4 | c4 | c4 | c4 | c4
+`}</AlphaTexSample>
+
+### Default Systems Layout
+
+```plain title="Syntax"
+defaultSystemsLayout numberOfBars`
+```
+
+**Description:** 
+
+Defines the default number of bars to display per system. 
+
+The `systemsLayout` and `defaultSystemsLayout` allow configuring the system layout. 
+The system layout, defines how many bars should be displayed per system (line) if enabled via [`systemsLayoutMode`](/docs/reference/settings/display/systemslayoutmode).
+
+**Values:**
+
+| Name | Description | Type | Required |
+|------|-------------|------|----------|
+| numberOfBars | Defines for every system (line) the number of bars it should contain | `number` | yes |
+
+**Example:**
+
+<AlphaTexSample settings={{ display: {systemsLayoutMode: 'UseModelLayout'}  }}>{`
 \\title "Single Track"
 .
-\\track { defaultSystemsLayout 3 systemsLayout 2 2 }
-    :1 c4 | c4 | c4 | c4 | c4 | c4 | c4 | c4
+\\track { defaultSystemsLayout 2 }
+    :1 c4 | c4 | c4 | c4 | c4 | c4 | c4
 `}</AlphaTexSample>
 
-The `score` level options are used in case multiple tracks are displayed, otherwise the `track` level information is used. 
+### Track solo
 
-<AlphaTexSample tracks="all" settings={{ display: {systemsLayoutMode: 'UseModelLayout'}  }}>{`
-\\title "Multi Track"
-\\defaultSystemsLayout 2
-\\systemsLayout (1 1)
-.
-\\track { defaultSystemsLayout 1 systemsLayout (2 2) }
-    :1 c4 | c4 | c4 | c4 | c4 | c4 | c4 | c4
-\\track { defaultSystemsLayout 4 systemsLayout (3 3) }
-    :1 c4 | c4 | c4 | c4 | c4 | c4 | c4 | c4
+```plain title="Syntax"
+solo
+```
+
+**Description:** 
+
+Set the track to be played alone in the data model. 
+
+**Values:**
+
+None.
+
+**Example:**
+
+<AlphaTexSample tracks="all" player={true}>{`
+\\track { solo }
+1.1 2.1 3.1 4.1
+\\track 
+10.1 11.1 12.1 13.1
 `}</AlphaTexSample>
 
-### Playback Information
+#### Track Mute
 
-Following properties allow specifying details on the playback of the track.
+```plain title="Syntax"
+mute
+```
 
-**Syntax:** `solo` - set the track to be played alone in the data model. (no values)
-**Syntax:** `mute` - set the track to be muted (not played) in the data model. (no values)
-**Syntax:** `volume value` - set the track volume, value can be a number in the range of 0-16
-**Syntax:** `volume balance` - set the track balance, value can be a number in the range of 0-16 (8 is centered)
+**Description:** 
 
-### Instrument
+Set the track to be muted (not played) in the data model. 
 
-**Syntax:** `instrument nameOrNumber` - set the midi instrument for this track. This can either be a General MIDI number or instrument name. 
+**Values:**
 
-Refer to the following list of names you can use. 
+None.
+
+**Example:**
+
+<AlphaTexSample tracks="all" player={true}>{`
+\\track 
+1.1 2.1 3.1 4.1
+\\track { mute }
+10.1 11.1 12.1 13.1
+`}</AlphaTexSample>
+
+### Track volume
+
+```plain title="Syntax"
+volume value
+```
+
+**Description:** 
+
+Set the track volume in the data model.
+
+**Values:**
+
+| Name | Description | Type | Required |
+|------|-------------|------|----------|
+| value | The volume to set| `number` (0-16) | yes |
+
+**Example:**
+
+<AlphaTexSample tracks="all" player={true}>{`
+\\track { volume 0 } 
+1.1 2.1 3.1 4.1
+\\track { volume 16 }
+10.1 11.1 12.1 13.1
+`}</AlphaTexSample>
+
+### Track balance
+
+```plain title="Syntax"
+balance value
+```
+
+**Description:** 
+
+Set the track balance in the data model.
+
+**Values:**
+
+| Name | Description | Type | Required |
+|------|-------------|------|----------|
+| value | The balance to set| `number` (0-16; 8 is centered) | yes |
+
+**Example:**
+
+<AlphaTexSample tracks="all" player={true}>{`
+\\track { volume 0 } 
+1.1 2.1 3.1 4.1
+\\track { volume 16 }
+10.1 11.1 12.1 13.1
+`}</AlphaTexSample>
+
+### Track instrument
+
+```plain title="Syntax"
+instrument value
+```
+
+**Description:** 
+
+Set the midi instrument for this track.
+ 
+**Values:**
+
+| Name | Description | Type | Required |
+|------|-------------|------|----------|
+| value | The MIDI instrument to set | `number` (MIDI program number 0-127) or `string` (midi instrument name) | yes |
+
 
 export function GeneralMidiList() {
     const items = [
@@ -240,7 +379,7 @@ export function GeneralMidiList() {
     ];
     return (
         <tbody>
-            {items.map((x,i) => {
+            {items.map((x, i) => {
                 return (<tr>
                     <td>{i}</td>
                     <td>{x}</td>
@@ -249,6 +388,8 @@ export function GeneralMidiList() {
         </tbody>
     )
 }
+
+Refer to the following list of names you can use. 
 
 <div style={{overflow: 'auto', height: "300px"}}>
     <table class="table table-striped table-condensed type-table">
@@ -262,13 +403,59 @@ export function GeneralMidiList() {
     </table>
 </div>
 
+**Example:**
+
+<AlphaTexSample tracks="all" player={true}>{`
+\\track { instrument 0 } 
+1.1 2.1 r r
+\\track { instrument "Acoustic Steel Guitar" }
+r r 12.1 13.1
+`}</AlphaTexSample>
+
+### Multibar rest display
+
+```plain title="Syntax"
+multiBarRest
+```
+
+**Description:** 
+
+Enables the display of multibar rests if this track is shown as standalone.
+
+**Values:**
+
+None
+
+**Example:**
+
+<AlphaTexSample tracks={[0]} player={true}>{`
+\\track { multiBarRest } 
+C4*4 | r.1 | r.1 | r.1 | C4 * 4
+`}</AlphaTexSample>
+
+<AlphaTexSample tracks={[0]} player={true}>{`
+\\track
+C4*4 | r.1 | r.1 | r.1 | C4 * 4
+`}</AlphaTexSample>
+
 ## `\staff`
 
-A new staff can be started with the `\staff` metadata. 
+```plain title="Tag Syntax"
+\staff
+```
+**Description:** 
 
-The staff metadata has no values.
+Marks the start of a new staff.
 
-The staff properties are described below.
+The staff with the largest number of bars defines how long the overall song is.
+There is no need to manually ensure that all staves have the correct number of bars.
+AlphaTab will create missing empty bars automatically.
+
+**Values:**
+
+None.
+
+**Example**
 
 <AlphaTexSample tracks="all">{`
 \\track "Piano with Grand Staff" "pno."
@@ -281,65 +468,123 @@ The staff properties are described below.
     1.2 3.2 0.1 1.1
 `}</AlphaTexSample>
 
-The staff with the largest number of bars defines how long the overall song is.
-There is no need to manually ensure that all staves have the correct number of bars.
-AlphaTab will create missing empty bars automatically.
-
-<AlphaTexSample tracks="all">{`
-\\track "Piano with Grand Staff" "pno."
-    \\staff{score} \\tuning piano \\instrument acousticgrandpiano
-    c4 d4 e4 f4 |
-    \\staff{score} \\tuning piano \\clef F4
-    c2 c2 c2 c2 | c2 c2 c2 c2 | c2 c2 c2 c2 |
-\\track "Guitar"
-    \\staff{tabs} \\capo 5
-    1.2 3.2 0.1 1.1 | 1.2 3.2 0.1 1.1
-`}</AlphaTexSample>
+Following properties are available. 
 
 If no properties describing the visible notation are provided, the default is `score tabs`.
 
-### `score` - Standard notation 
+### Standard notation 
 
-The `score` staff property enables the display of standard notation. 
+```plain title="Syntax"
+score lineCount
+```
 
-The values are:
+**Description:** 
 
-* `lines` - Defines the number of staff lines shown in the standard music notation (number, optional)
+Enable the display of standard notation.
+
+**Values:**
+
+| Name | Description | Type | Required |
+|------|-------------|------|----------|
+| lineCount | The number of staff lines | `number` | no (default: 5) |
+
+**Example:**
 
 <AlphaTexSample tracks="all">{`
 \\track
-    \\staff{score 3}
-    c4 d4 e4 f4
+    \\staff {score 3}
+    D4 D4 D4 D4
+    \\staff {score}
+    C4 C4 C4 C4
 `}</AlphaTexSample>
 
-### `tabs`
+### Guitar Tabs
 
-The `tabs` staff property enables the display of guitar tablature (only if the contained notes are really containing stringed/fretted notes)
+```plain title="Syntax"
+tabs
+```
 
-This property has no values.
+**Description:** 
 
-### `slash`
+Enable the display of guitar tablature.
 
-The `slash` staff property enables the display of slash notation.
+Guitar tabs are only shown if the contained notes are stringed/fretted notes.
 
-This property has no values.
+**Values:**
 
-### `numbered`
+None
 
-The `numbered` staff property enables the display of Jianpu / numbered notation.
+**Example:**
 
-This property has no values.
+<AlphaTexSample tracks="all">{`
+\\track
+    \\staff {tabs}
+    3.3 4.3 5.3 5.5
+`}</AlphaTexSample>
+
+### Slash notation
+
+```plain title="Syntax"
+slash
+```
+
+**Description:** 
+
+Enable the display of slash notation.
+
+**Values:**
+
+None
+
+**Example:**
+
+<AlphaTexSample tracks="all">{`
+\\track
+    \\staff {tabs slash}
+    3.3 4.3 5.3 5.5
+`}</AlphaTexSample>
+
+### Numbered notation (Jianpu)
+
+```plain title="Syntax"
+numbered
+```
+
+**Description:** 
+
+Enable the display of numbered notation (Jianpu).
+
+**Values:**
+
+None
+
+**Example:**
+
+<AlphaTexSample tracks="all">{`
+\\track
+    \\staff {score numbered}
+    C4 D4 E4 F4
+`}</AlphaTexSample>
 
 ## `\voice`
 
-A new track can be started with the `\voice` metadata. 
+```plain title="Tag Syntax"
+\voice
+```
+**Description:** 
 
-The voice metadata has no values and no properties.
+Marks the start of a new voice.
 
 Unlike the structure in the data model, alphaTex expects you to define all bars of a voice, then all the bars of the next voice. 
 
 It structure is: `\voice /* Voice 1 Bar 1*/ |  /* Voice 1 Bar 2*/ \voice /* Voice 2 Bar 1*/ |  /* Voice21 Bar 2*/` 
 Once a new voice starts, you again can define the notes starting from the first bar. alphaTab will try to consolidate inconsistencies in the number of bars across voices. 
+
+**Values:**
+
+None.
+
+**Example**
 
 <AlphaTexSample tracks="all">{`
 \\track "Piano"
@@ -358,4 +603,5 @@ Once a new voice starts, you again can define the notes starting from the first 
 
 `}</AlphaTexSample>
 
+This metadata has no properties.
 
