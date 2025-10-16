@@ -1,6 +1,12 @@
 ---
-title: Metadata
+title: Score Metadata
 ---
+
+This page lists all metadata tags which affect the overall song. 
+
+It is recommended that these tags are specified at the very beginning of the file.
+
+
 
 import { AlphaTexSample } from '@site/src/components/AlphaTexSample';
 import { SinceBadge } from '@site/src/components/SinceBadge';
@@ -13,234 +19,43 @@ of the metadata.
 Some of the metadata tags can also be specified when starting a new staff or track.
 Please refer to the [Tracks and Staves](/docs/alphatex/tracks-staves) or details on how to start new tracks and staves.
 
-<AlphaTexSample>{`
-// Song information (only at the beginning)
-    \\title "Song Title"
-    \\subtitle Subtitle
-    \\artist Artist
-    \\album 'My Album'
-    \\words Daniel
-    \\music alphaTab
-    \\copyright Daniel
-    \\instructions "This is an example.\\nWith instructions."
-    \\notices "Additional notes\\nEmbedded in the data model."
-    \\tab "Daniel"
-    // Tempo in BPM (label is optional)
-    \\tempo 200 "Tempo Label"
-// Track and Staff Settings (can be used after \\track and \\staff)
-    // Instrument as General MIDI number or name
-    \\instrument 30
-    // String tuning starting at the most bottom string
-    \\tuning e5 b4 g4 d4 a3 e3
-// end of metadata
-.
-`}</AlphaTexSample>
+## Song Information
 
-Strings can contain escape sequences: `\n`, `\r`, `\t`, `\\`, `\"`, `\'`.
+There is a range of metadata tags which define the general information on the music piece like the title and artist. 
 
-<SinceBadge inline={true} since="1.5.0" /> its possible to also change the template and alignment of the song information 
-via `\tagname value template alignment`. 
+They have the following values: 
 
-The `template` is a string which can have following placeholders which are then replaced with the respective info of the song:
+* `value` The exact value for the property (e.g. the song title) (required, string)
+* `template` A template what text to display on the music sheet. (optional, string) <SinceBadge inline={true} since="1.5.0" /> 
+* `textAlign` The text alignment of the text to display on the music sheet. (optional, oneOf: `left`, `center`, `right`) <SinceBadge inline={true} since="1.5.0" /> 
 
-* `%TITLE%`
-* `%SUBTITLE%`
-* `%ARTIST%`
-* `%ALBUM%`
-* `%WORDS%`
-* `%WORDSMUSIC%`
-* `%MUSIC%`
-* `%TABBER%`
-* `%COPYRIGHT%`
+See [Song Details Formatting](/docs/guides/formatting-templates) for more details on the template and text alignment.
 
-The `alignment` is one of the following values:
+Properties marked with a `*` have no `value` as they are rather computed values. 
 
-* `left`
-* `center`
-* `right`
+* `\title` The title of the song
+* `\subtitle`The subtitle of the song
+* `\artist` The artist of the song
+* `\album` The album of the song
+* `\words` The author of the song lyrics
+* `\music` The author of the music.
+* `\wordsandmusic`* If words and music author are the same, they are combined into one element.
+* `\copyright` The owner of the copyright of this song.
+* `\copyright2`* The second copyright information. Typically used for a text like `All rights reserved`. Use the template to define the text.
+* `\instructions` Additional textual instructions attached to the music sheet (not displayed).
+* `\notices` General notices attached to the music sheet (not displayed).
+* `\tab` The transcriber of the music sheet
 
 <AlphaTexSample>{`
 \\title "Song Title" "Title: %TITLE%" left
 \\artist Artist "Written by %ARTIST%" right
-.
 `}</AlphaTexSample>
 
-## Instrument
-As indicated above, the instrument can be changed via the `\instrument` metadata.
-Refer to the table below for all possible values and names. The list represents the General MIDI instrument list.
-You can either leave out the spaces or put the names into quotes e.g. `AcousticBass` vs `"Acoustic Bass"`.
+## System Layout
 
-export function GeneralMidiList() {
-    const items = [
-        'Acoustic Grand Piano',
-        'Bright Grand Piano',
-        'Electric Grand Piano',
-        'Honky tonk Piano',
-        'Electric Piano 1',
-        'Electric Piano 2',
-        'Harpsichord',
-        'Clavinet',
-        'Celesta',
-        'Glockenspiel',
-        'Musicbox',
-        'Vibraphone',
-        'Marimba',
-        'Xylophone',
-        'Tubularbells',
-        'Dulcimer',
-        'Drawbar Organ',
-        'Percussive Organ',
-        'Rock Organ',
-        'Church Organ',
-        'Reed Organ',
-        'Accordion',
-        'Harmonica',
-        'Tango Accordion',
-        'Acoustic Guitar Nylon',
-        'Acoustic Guitar Steel',
-        'Electric Guitar Jazz',
-        'Electric Guitar Clean',
-        'Electric Guitar Muted',
-        'Overdriven Guitar',
-        'Distortion Guitar',
-        'Guitar Harmonics',
-        'Acoustic Bass',
-        'Electric Bass Finger',
-        'Electric Bass Pick',
-        'Fretless Bass',
-        'Slap Bass 1',
-        'Slap Bass 2',
-        'Synth Bass 1',
-        'Synth Bass 2',
-        'Violin',
-        'Viola',
-        'Cello',
-        'Contrabass',
-        'Tremolo Strings',
-        'Pizzicato Strings',
-        'Orchestral Harp',
-        'Timpani',
-        'String Ensemble 1',
-        'String Ensemble 2',
-        'Synth Strings 1',
-        'Synth Strings 2',
-        'Choir Aahs',
-        'Voice Oohs',
-        'Synth Voice',
-        'Orchestra Hit',
-        'Trumpet',
-        'Trombone',
-        'Tuba',
-        'Muted Trumpet',
-        'French Horn',
-        'Brass Section',
-        'Synth Brass 1',
-        'Synth Brass 2',
-        'Soprano Sax',
-        'Alto Sax',
-        'Tenor Sax',
-        'Baritone Sax',
-        'Oboe',
-        'English Horn',
-        'Bassoon',
-        'Clarinet',
-        'Piccolo',
-        'Flute',
-        'Recorder',
-        'Pan Flute',
-        'Blown bottle',
-        'Shakuhachi',
-        'Whistle',
-        'Ocarina',
-        'Lead 1 Square',
-        'Lead 2 Sawtooth',
-        'Lead 3 Calliope',
-        'Lead 4 Chiff',
-        'Lead 5 Charang',
-        'Lead 6 Voice',
-        'Lead 7 Fifths',
-        'Lead 8 Bass and Lead',
-        'Pad 1 newage',
-        'Pad 2 warm',
-        'Pad 3 polysynth',
-        'Pad 4 choir',
-        'Pad 5 bowed',
-        'Pad 6 metallic',
-        'Pad 7 halo',
-        'Pad 8 sweep',
-        'Fx 1 rain',
-        'Fx 2 soundtrack',
-        'Fx 3 crystal',
-        'Fx 4 atmosphere',
-        'Fx 5 brightness',
-        'Fx 6 goblins',
-        'Fx 7 echoes',
-        'Fx 8 scifi',
-        'Sitar',
-        'Banjo',
-        'Shamisen',
-        'Koto',
-        'Kalimba',
-        'Bag pipe',
-        'Fiddle',
-        'Shanai',
-        'Tinkle Bell',
-        'Agogo',
-        'Steel Drums',
-        'Woodblock',
-        'Taiko Drum',
-        'Melodic Tom',
-        'Synth Drum',
-        'Reverse Cymbal',
-        'Guitar Fret Noise',
-        'Breath Noise',
-        'Seashore',
-        'Bird Tweet',
-        'Telephone Ring',
-        'Helicopter',
-        'Applause',
-        'Gunshot'
-    ];
-    return (
-        <tbody>
-            {items.map((x,i) => {
-                return (<tr>
-                    <td>{i}</td>
-                    <td>{x}</td>
-                </tr>);
-            })}
-        </tbody>
-    )
-}
-
-<div style={{overflow: 'auto', height: "300px"}}>
-    <table class="table table-striped table-condensed type-table">
-        <thead>
-            <tr>
-                <th>Number</th>
-                <th>Name</th>
-            </tr>
-        </thead>
-        <GeneralMidiList />
-    </table>
-</div>
-
-## Tuning
-
-The tuning of the instrument is defined by the `\tuning` tag. For stringed instruments like the Guitar,
-each tuning value defines one string. The format of the tuning value is `{note}{octave}`.
-`{note}` is one value of the following values: C, C# or Db, D, D# or Eb, E, F, F# or Gb, G, G# or Ab, A, A# or Bb, B.
-`{octave}` is a number defining the octave.
-
-For example, a standard guitar tuning is `\tuning E4 B3 G3 D3 A2 E2`. A 5 string bass would be `\tuning G2 D2 A1 E1 B0`.
-
-For non-stringed instruments, the values `piano`, `none` or `voice` can be used depending on preference.
-
-If `\instrument` is specified without `\tuning`, alphaTab will try to make a guess and apply the right default tuning.
-
-## Stylesheet
-
-There are various [stylesheet](/docs/reference/score) related options which can be specified in alphaTex.
+The `\defaultsystemslayout` and `\systemslayout` allow configuring the system layout for all tracks. 
+The system layout, defines how many bars should be displayed per system (line) if enabled via [`systemsLayoutMode`](/docs/reference/settings/display/systemslayoutmode).
+See [System Layout](./structural-metadata.mdx#system-layout) for more details.
 
 ## Show/Hide Dynamics
 
@@ -259,6 +74,47 @@ C4 D4 E4 F4
 C4 D4 E4 F4
 `}</AlphaTexSample>
 
+## System Sign Separator
+
+The `\useSystemSignSeparator` option configures whether a system sign separator should be added (in case multiple tracks are shown).
+
+<AlphaTexSample tracks="all" settings={{ display: {systemsLayoutMode: 'UseModelLayout'}  }}>{`
+\\useSystemSignSeparator
+\\defaultSystemsLayout 2
+.
+\\track "T1"
+:1 C4 | C4 | C4
+\\track "T2"
+:1 C4 | C4 | C4
+`}</AlphaTexSample>
+
+## Multi-Bar Rests
+
+To configure whether [multibar rests](/docs/showcase/layouts.mdx#multi-bar-rests) should be enabled use:
+
+* `\multiBarRest` - On top level for configuring the use on multi-track renderings
+* `\track { multiBarRest }` - On track level for single track renderings
+
+<AlphaTexSample tracks="all">{`
+\\title "Multi Track"
+\\multiBarRest
+.
+\\track "Piano 1" "pno1"
+    \\staff {score}
+    C4 D4 E4 F4 | r | r | C4 D4 E4 F4 | r | r | r | C4
+
+\\track "Piano 2" "pno1"
+    \\staff {score}
+    C4 D4 E4 F4 | r | r | C4 D4 E4 F4 | r | r | r | r |
+`}</AlphaTexSample>
+
+<AlphaTexSample tracks="all">{`
+\\title "Single Track"
+.
+\\track "Piano 1" "pno1" { multiBarRest }
+    \\staff {score}
+    C4 D4 E4 F4 | r | r | C4 D4 E4 F4 | r | r | r | C4
+`}</AlphaTexSample>
 
 ## Brackets and Braces
 
@@ -297,38 +153,6 @@ The `\useSystemSignSeparator` option configures whether a system sign separator 
     0.3.4 2.3.4 5.3.4 7.3.4 
 `}</AlphaTexSample>
 
-## System Sign Separator
-
-The `\useSystemSignSeparator` option configures whether a system sign separator should be added (in case multiple tracks are shown).
-
-<AlphaTexSample tracks="all" settings={{ display: {systemsLayoutMode: 'UseModelLayout'}  }}>{`
-\\useSystemSignSeparator
-\\defaultSystemsLayout 2
-.
-\\track "T1"
-:1 C4 | C4 | C4
-\\track "T2"
-:1 C4 | C4 | C4
-`}</AlphaTexSample>
-
-## Show Tuning (per track)
-
-For every track it can be configured whether the tuning should be shown via the `hide` option on the tuning. 
-
-<AlphaTexSample tracks="all">{`
-\\track \\staff \\tuning E4 B3 G3 D3 A2 E2
-    3.3.1
-\\track \\staff \\tuning D4 A3 F3 C3 G2 D2 
-    3.3.1
-`}</AlphaTexSample>
-
-<AlphaTexSample tracks="all">{`
-\\track \\staff \\tuning E4 B3 G3 D3 A2 E2 hide
-    3.3.1
-\\track \\staff \\tuning D4 A3 F3 C3 G2 D2 
-    3.3.1
-`}</AlphaTexSample>
-
 ## Track Names
 
 To configure the mode how to show [track names](/docs/showcase/general.mdx#track-names) use:
@@ -351,32 +175,3 @@ To configure the mode how to show [track names](/docs/showcase/general.mdx#track
     \\staff {score}
     C4 D4 E4 F4 | C4 D4 E4 F4 | C4 D4 E4 F4 | C4 D4 E4 F4 | C4 D4 E4 F4 |
 `}</AlphaTexSample>
-
-## Multi-Bar Rests
-
-To configure whether [multibar rests](/docs/showcase/layouts.mdx#multi-bar-rests) should be enabled use:
-
-* `\multiBarRest` - On top level for configuring the use on multi-track renderings
-* `\track { multiBarRest }` - On track level for single track renderings
-
-<AlphaTexSample tracks="all">{`
-\\title "Multi Track"
-\\multiBarRest
-.
-\\track "Piano 1" "pno1"
-    \\staff {score}
-    C4 D4 E4 F4 | r | r | C4 D4 E4 F4 | r | r | r | C4
-
-\\track "Piano 2" "pno1"
-    \\staff {score}
-    C4 D4 E4 F4 | r | r | C4 D4 E4 F4 | r | r | r | r |
-`}</AlphaTexSample>
-
-<AlphaTexSample tracks="all">{`
-\\title "Single Track"
-.
-\\track "Piano 1" "pno1" { multiBarRest }
-    \\staff {score}
-    C4 D4 E4 F4 | r | r | C4 D4 E4 F4 | r | r | r | C4
-`}</AlphaTexSample>
-

@@ -26,16 +26,19 @@ Special identifiers:
 The available properties are: 
 
 * `hide` - Hides the tuning from being displayed in the displayed tuning list.
+* `label "Label"` - Defines an additional textual label for the tuning.
 
 <AlphaTexSample>{`
 \\track "Track 1"
     \\staff {tabs}
-    \\tuning (A1 D2 A2 D3 G3 B3 E4) { hide }
+    \\tuning (A1 D2 A2 D3 G3 B3 E4) { hide label "Special Guitar Tuning" }
     4.1 3.1 2.1 1.1
 \\track "Track 2"
     \\tuning piano
     C4 D4 E4 F4
 `}</AlphaTexSample>
+
+If `instrument` is specified on the staff without a `\tuning`, alphaTab will try to make a guess and apply the right default tuning.
 
 ### `\chord`
 
@@ -98,6 +101,8 @@ The values are:
 * `bank` The MIDI bank value (required, number)
 
 There are no properties on this metadata. 
+
+### `\instrument`
 
 ### `\lyrics`
 
