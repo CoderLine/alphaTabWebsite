@@ -412,6 +412,30 @@ Refer to the following list of names you can use.
 r r 12.1 13.1
 `}</AlphaTexSample>
 
+### Track bank
+
+```plain title="Syntax"
+bank value
+```
+
+**Description:** 
+
+Set the MIDI bank to select when playing this track.
+The loaded soundfont needs to have this bank defined, otherwise
+there might be no audio.
+
+**Values:**
+
+| Name | Description | Type | Required |
+|------|-------------|------|----------|
+| value | The midi bank to set| `number`| yes |
+
+**Example:**
+
+<AlphaTexSample tracks="all">{`
+\\track { instrument 25 bank 2 } 
+`}</AlphaTexSample>
+
 ### Multibar rest display
 
 ```plain title="Syntax"
