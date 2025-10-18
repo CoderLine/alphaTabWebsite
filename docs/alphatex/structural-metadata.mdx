@@ -81,7 +81,7 @@ some other visualizations. It does not have an impact on the color of the music 
 ### Systems Layout
 
 ```plain title="Syntax"
-systemsLayout (system1Bars system2Bars...)
+systemsLayout (numberOfBars numberOfBars...)
 ```
 
 **Description:** 
@@ -407,8 +407,9 @@ Refer to the following list of names you can use.
 
 <AlphaTexSample tracks="all" player={true}>{`
 \\track { instrument 0 } 
-1.1 2.1 r r
+C4 C5 r r
 \\track { instrument "Acoustic Steel Guitar" }
+\\tuning (E4 B3 G3 D3 A2 E2)
 r r 12.1 13.1
 `}</AlphaTexSample>
 
