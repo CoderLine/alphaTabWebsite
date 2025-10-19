@@ -1,6 +1,7 @@
 import React, { type DependencyList, type EffectCallback, useEffect, useRef, useState } from "react";
 import * as alphaTab from "@coderline/alphatab";
 import environment from "./environment";
+import {useColorMode} from '@docusaurus/theme-common';
 
 export function useAlphaTab(
   settingsInit: (settings: alphaTab.Settings) => void,
@@ -10,6 +11,18 @@ export function useAlphaTab(
   ] {
   const [api, setApi] = useState<alphaTab.AlphaTabApi>();
   const element = React.createRef<HTMLDivElement>();
+
+  const { colorMode } = useColorMode();
+
+  useEffect(()=>{
+    if(api) {
+      environment.setAlphaTabColors(api.settings, colorMode);
+      api.updateSettings();
+      if(api.score) {
+        api.render();
+      }
+    }
+  }, [api, colorMode]);
 
   // for easier testing and troubleshooting
   useEffect(()=>{
@@ -28,7 +41,7 @@ export function useAlphaTab(
       }
 
       const settings = new alphaTab.Settings();
-      environment.setAlphaTabDefaults(settings);
+      environment.setAlphaTabDefaults(settings, colorMode);
       settingsInit(settings);
 
       const newApi = new alphaTab.AlphaTabApi(container, settings);

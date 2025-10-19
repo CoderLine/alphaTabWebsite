@@ -292,7 +292,7 @@ const config: Config = {
       additionalLanguages: ["csharp", "diff", "kotlin", "groovy"],
     },
     colorMode: {
-      disableSwitch: true,
+      defaultMode: 'light'
     },
   } satisfies Preset.ThemeConfig,
 
