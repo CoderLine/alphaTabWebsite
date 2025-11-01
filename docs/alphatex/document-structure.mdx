@@ -82,7 +82,7 @@ Optionally you can specify some properties afterwards the duration to specify tu
 
 `:4 {tu 3 2}`
 
-See [Tuplet Ranges](./beat-properties.mdx#TupletRanges) for more details.
+See [Tuplet Effect](./beat-properties.mdx#tu) for more details.
 
 <AlphaTexSample>{`
 :16 // 16th notes from here
@@ -112,7 +112,7 @@ A rest is simply indicated by specifying an `r`:
 :4 r r r r
 `}</AlphaTexSample>
 
-Multiple [Notes](#Notes) can be grouped with parenthesis `()`. Similar to the value lists, you can also just specify
+Multiple [Notes](#notes) can be grouped with parenthesis `()`. Similar to the value lists, you can also just specify
 one note and omit the parenthesis. 
 
 <AlphaTexSample>{`
@@ -185,7 +185,7 @@ notes are expressed as the fret and string the note is played on. The final note
 On percussion instruments, you specify the articulation which should be played as note. 
 The percussion can be a quoted string or an identifier (name without quotes).
 
-All details are described over at the [Percussion](./percussion.mdx) page.
+More details are described over at the [`\\articulation`](./staff-metadata.mdx#articulation) metadata docs.
 
 <AlphaTexSample>{`
 \\instrument percussion
