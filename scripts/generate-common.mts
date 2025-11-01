@@ -107,6 +107,7 @@ export async function writeReferenceTable(
 
 
   await table.writeLine(`import { CodeBadge } from "@site/src/components/CodeBadge";`);
+  await table.writeLine(`import { Signature } from "@site/src/components/Signature";`);
   await table.writeLine();
   await table.writeLine(`<table className="table table-striped table-condensed reference-table">`);
   await table.writeLine(`  <thead>`);
