@@ -86,11 +86,10 @@ const config: Config = {
   tagline: "Build modern music notation apps for web, desktop and mobile",
   url: "https://alphatab.net",
   baseUrl: "/",
-  onBrokenLinks: "throw",
-  onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.ico",
   organizationName: "CoderLine",
   projectName: "alphaTab",
+  onBrokenLinks: "throw",
   customFields: {
     isPreRelease: isPreRelease,
     alphaTabVersion: alphaTabVersion,
@@ -99,6 +98,9 @@ const config: Config = {
 
   markdown: {
     mermaid: true,
+    hooks: {
+      onBrokenMarkdownLinks: "warn",
+    }
   },
   themes: ["@docusaurus/theme-mermaid"],
 
