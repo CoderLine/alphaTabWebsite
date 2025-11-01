@@ -125,7 +125,7 @@ export async function writeReferenceTable(
 
 
   for (const [category, pages] of categoriesSorted) {
-    await table.writeLine(`    <tr><th colspan="4">${category}</th></tr>`);
+    await table.writeLine(`    <tr><th colSpan="4">${category}</th></tr>`);
 
     const sorted = pages
       .sort((a, b) => {

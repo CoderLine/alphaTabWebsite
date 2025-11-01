@@ -1,4 +1,5 @@
 import { CodeBadge } from "@site/src/components/CodeBadge";
+import { Signature } from "@site/src/components/Signature";
 
 <table className="table table-striped table-condensed reference-table">
   <thead>
@@ -8,7 +9,7 @@ import { CodeBadge } from "@site/src/components/CodeBadge";
     </tr>
   </thead>
   <tbody>
-    <tr><th colspan="4">Events - Core</th></tr>
+    <tr><th colSpan="4">Events - Core</th></tr>
 <tr>
   <td>
     <a href="/docs/reference/api/error">
@@ -79,7 +80,7 @@ import { CodeBadge } from "@site/src/components/CodeBadge";
      This event is fired when a settings update was requested.
   </td>
 </tr>
-    <tr><th colspan="4">Events - Player</th></tr>
+    <tr><th colSpan="4">Events - Player</th></tr>
 <tr>
   <td>
     <a href="/docs/reference/api/activebeatschanged">
@@ -260,7 +261,7 @@ import { CodeBadge } from "@site/src/components/CodeBadge";
      This event is fired when the SoundFont needed for playback was loaded.
   </td>
 </tr>
-    <tr><th colspan="4">Methods - Core</th></tr>
+    <tr><th colSpan="4">Methods - Core</th></tr>
 <tr>
   <td>
     <a href="/docs/reference/api/destroy">
@@ -341,7 +342,7 @@ import { CodeBadge } from "@site/src/components/CodeBadge";
      Applies any changes that were done to the settings object.
   </td>
 </tr>
-    <tr><th colspan="4">Methods - Player</th></tr>
+    <tr><th colSpan="4">Methods - Player</th></tr>
 <tr>
   <td>
     <a href="/docs/reference/api/changetrackmute">
@@ -552,7 +553,7 @@ import { CodeBadge } from "@site/src/components/CodeBadge";
      Triggers an update of the sync points for the current score after modification within the data model
   </td>
 </tr>
-    <tr><th colspan="4">Properties - Core</th></tr>
+    <tr><th colSpan="4">Properties - Core</th></tr>
 <tr>
   <td>
     <a href="/docs/reference/api/boundslookup">
@@ -633,7 +634,7 @@ import { CodeBadge } from "@site/src/components/CodeBadge";
      The UI facade used for interacting with the user interface (like the browser).
   </td>
 </tr>
-    <tr><th colspan="4">Properties - Player</th></tr>
+    <tr><th colSpan="4">Properties - Player</th></tr>
 <tr>
   <td>
     <a href="/docs/reference/api/actualplayermode">
@@ -652,6 +653,26 @@ import { CodeBadge } from "@site/src/components/CodeBadge";
   </td>
   <td>
      The volume of the count-in metronome ticks.
+  </td>
+</tr>
+<tr>
+  <td>
+    <a href="/docs/reference/api/endtick">
+      <CodeBadge name="endTick" type="all" />
+    </a>
+  </td>
+  <td>
+     The total length of the song in midi ticks.
+  </td>
+</tr>
+<tr>
+  <td>
+    <a href="/docs/reference/api/endtime">
+      <CodeBadge name="endTime" type="all" />
+    </a>
+  </td>
+  <td>
+     The total length of the song in milliseconds.
   </td>
 </tr>
 <tr>
