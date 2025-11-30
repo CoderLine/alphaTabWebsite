@@ -1,0 +1,121 @@
+---
+title: v1.7
+---
+
+import { AlphaTab } from '@site/src/components/AlphaTab/';
+
+## 1.7.0
+
+Half a year has passed since 1.6.0 and again a new release of alphaTab with new features is available.
+I always hope to pace up the release cycles but it always depends on much time I can actually invest into development. 
+
+After all, alphaTab is still mainly a solo project 😁
+
+This release focused on two main areas shipping a great range of new things. 
+
+A special thing about this release is that I developed most changes during my travels this year. That's why some features might 
+have taken a bit longer than they would have while developing focused at home. As you might expect, progress is slow if you travel 
+through beautiful countries like Scotland , Wales and Japan. 😆
+
+### Music Notation
+
+#### render: Improve SmuFL Spec Compliance
+https://github.com/CoderLine/alphaTab/pull/2257
+
+> SMuFL is a specification that provides a standard way of mapping the thousands of musical symbols required by conventional music notation into the Private Use Area in Unicode’s Basic Multilingual Plane for a single (format-independent) font.
+> https://www.smufl.org/
+
+For years alphaTab was using the SmuFL font Bravura to render the music notation symbols. But historically a lot of the visual aspects like spacings, paddings and other arrangements were a custom development originating in the roots of alphaTab.
+While music sheets were generally looking good, various aspects of the SmuFL specification were not followed leading into "incorrect" display according to this spec. 
+
+With these changes we have cleaned years of accumulated customizations in layouting the music sheet bringing things closer to the spec.
+Not only brings this change alphaTab closer too the expected look&feel compared to other music notation software, it also allows the usage of custom SmuFL compliant fonts.
+
+SMuFl fonts consist of two main parts: 
+
+1. The Font itself holding drawing and text-layout information of the glyphs
+2. A separate metadata.json holding SMuFL spec specific details on sizes to use.
+
+To activate a custom font these two things have to be provided to alphaTab. The following example shows the same music sheet with different SMuFL fonts: 
+
+**TODO: add a sample with Bravura and Petaluma**
+
+In [this post](https://github.com/CoderLine/alphaTab/discussions/2258) you can find a more direct before-after comparison. 
+
+#### render: Score Tempo Visibility
+https://github.com/CoderLine/alphaTab/pull/2340
+
+TODO
+
+### Player
+
+#### player: Midi Bank Support
+https://github.com/CoderLine/alphaTab/pull/2286
+
+TODO
+
+### alphaTex Extensions
+
+#### alphaTex: Exporter
+https://github.com/CoderLine/alphaTab/pull/2262
+https://github.com/CoderLine/alphaTab/pull/2281
+https://github.com/CoderLine/alphaTab/pull/2282
+
+TODO
+
+#### alphaTex: New AST based Parser
+https://github.com/CoderLine/alphaTab/pull/2339
+https://github.com/CoderLine/alphaTab/pull/2340
+
+TODO
+
+#### alphaTex: Language Server and Monaco Integration
+https://github.com/CoderLine/alphaTab/pull/2379
+
+TODO
+
+#### alphaTex: VS Code Extension (prototype)
+https://github.com/CoderLine/alphaTab/pull/2379
+
+TODO
+
+### Guitar Pro Extensions
+
+#### guitarpro: adjust key signature to match "c played as"
+https://github.com/CoderLine/alphaTab/pull/2283
+
+TODO
+
+### Improvements & Bugfixes
+
+#### alphaTex: Tenor and alt clef swapped
+https://github.com/CoderLine/alphaTab/pull/2282
+
+TODO
+
+#### development: Monorepo Setup
+https://github.com/CoderLine/alphaTab/pull/2304
+
+TODO
+
+#### build: Toolchain modernization
+https://github.com/CoderLine/alphaTab/pull/2349
+
+TODO
+
+* ES2022
+* Naming Convention Linting
+* Snapshot Testing
+* Private Member Mangling
+
+### Website
+
+#### search: Use Algolia Search
+https://github.com/CoderLine/alphaTabWebsite/pull/150
+
+TODO
+
+#### alphaTex: New generated documentation
+https://github.com/CoderLine/alphaTabWebsite/pull/153
+
+TODO
