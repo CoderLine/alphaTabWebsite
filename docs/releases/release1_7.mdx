@@ -4,12 +4,13 @@ title: v1.7
 
 import { AlphaTab } from '@site/src/components/AlphaTab';
 import { AlphaTexSample } from '@site/src/components/AlphaTexSample';
+import { AlphaTabPetaluma } from '@site/src/components/AlphaTabPetaluma';
+import { AlphaTexExporterSample } from '@site/src/components/AlphaTexExporterSample';
 
 ## 1.7.0
 
 Half a year has passed since 1.6.0 and again a new release of alphaTab with new features is available.
 I always hope to pace up the release cycles but it always depends on much time I can actually invest into development. 
-
 After all, alphaTab is still mainly a solo project 😁
 
 This release focused on two main areas shipping a great range of new things. 
@@ -39,7 +40,45 @@ SMuFl fonts consist of two main parts:
 
 To activate a custom font these two things have to be provided to alphaTab. The following example shows the same music sheet with different SMuFL fonts: 
 
-**TODO: add a sample with Bravura and Petaluma**
+<AlphaTab tex={true}>{`
+\\title "With Bravura"
+5.3{h}.8{beam Down}
+7.3{sl}.8{beam Down}
+8.3{sl acc #}.8{beam Down}
+7.3{h}.8{beam Down}
+5.3{sl}.8{beam Down}
+3.3{h acc #}.8{beam Down}
+5.3{h}.8{beam Down}
+3.3{acc #}.8{beam Down}
+|
+7.3{tr (9 16)}.1{beam Down}
+|
+21.1{acc #}.8{ot 8va beam Down}
+21.1{acc #}.8{ot 8va beam Down}
+21.1{acc #}.8{ot 8va beam Down}
+21.1{acc #}.8{ot 8va beam Down}
+r.2
+`}</AlphaTab>
+
+<AlphaTabPetaluma>{`
+\\title "With Petaluma"
+5.3{h}.8{beam Down}
+7.3{sl}.8{beam Down}
+8.3{sl acc #}.8{beam Down}
+7.3{h}.8{beam Down}
+5.3{sl}.8{beam Down}
+3.3{h acc #}.8{beam Down}
+5.3{h}.8{beam Down}
+3.3{acc #}.8{beam Down}
+|
+7.3{tr (9 16)}.1{beam Down}
+|
+21.1{acc #}.8{ot 8va beam Down}
+21.1{acc #}.8{ot 8va beam Down}
+21.1{acc #}.8{ot 8va beam Down}
+21.1{acc #}.8{ot 8va beam Down}
+r.2
+`}</AlphaTabPetaluma>
 
 In [this post](https://github.com/CoderLine/alphaTab/discussions/2258) you can find a more direct before-after comparison. 
 
@@ -52,7 +91,18 @@ alphaTab will now respect the visibility information specified in Guitar Pro fil
 This feature can be useful if you only show small music sheet snippets on your website or in cases the information about the tempo is 
 described differently to your users. 
 
-**TODO: create sample**
+<AlphaTexSample player={true}>{`
+// this tempo is visible
+\\tempo 120 
+    C4 * 4 
+|
+// this tempo change is invisibile
+\\tempo (60 hide)
+    C4 * 4
+|
+`}</AlphaTexSample>
+
+Check out the related [`\tempo`](/docs/alphatex/bar-metadata#tempo) and [`tempo` property](/docs/alphatex/beat-properties#tempo) syntax docs for the details.
 
 ### Player
 
@@ -64,14 +114,36 @@ SoundFonts, used by the synthesizer, can contain multiple variations of the same
 Both the program number and the bank are now respected to select the right sounds in the loaded sound font. 
 
 If you are using special SoundFonts in your app or website, you can now benefit from these additional sounds. 
+For the demo below we merged the Sonivox and the [FluidR3Mono_GM.sf3 (MIT)](https://github.com/musescore/MuseScore/blob/master/share/sound/).
 
-**TODO: create sample**
+
+<AlphaTexSample player={true} settings={{player: {soundFont: '/files/sonivox_musescore.sf2'}}}>{`
+\\title "Sonivox"
+    \\track { instrument 0 bank 0 } // bank 0 => sonivox
+    \\tuning (E4 B3 G3 D3 A2 E2)
+    \\tempo 80
+    \\ts 3 4
+    0.4.16 (3.2 -.4) (1.1 -.4) (5.1 -.4) 1.1 3.2 1.1 3.2 2.3.8 (3.2 3.4) |
+    (3.2 0.4).16 (3.2 -.4) (1.1 -.4) (5.1 -.4) 1.1 3.2 1.1 3.2 2.3.8 (3.2 3.4) |
+`}</AlphaTexSample>
+
+<AlphaTexSample player={true} settings={{player: {soundFont: '/files/sonivox_musescore.sf2'}}}>{`
+\\title "FluidR3Mono_GM"
+    \\track { instrument 0 bank 1 } // bank 1 => FluidR3Mono_GM
+    \\tuning (E4 B3 G3 D3 A2 E2)
+    \\tempo 80
+    \\ts 3 4
+    0.4.16 (3.2 -.4) (1.1 -.4) (5.1 -.4) 1.1 3.2 1.1 3.2 2.3.8 (3.2 3.4) |
+    (3.2 0.4).16 (3.2 -.4) (1.1 -.4) (5.1 -.4) 1.1 3.2 1.1 3.2 2.3.8 (3.2 3.4) | 
+`}</AlphaTexSample>
 
 ### alphaTex Extensions
 
 #### alphaTex: Exporter
 https://github.com/CoderLine/alphaTab/pull/2262
+
 https://github.com/CoderLine/alphaTab/pull/2281
+
 https://github.com/CoderLine/alphaTab/pull/2282
 
 Similar to the Guitar Pro export, alphaTab can now also export the whole data model into an alphaTex document.
@@ -84,13 +156,19 @@ This opens the door for a variety of use cases like:
 In alphaTab 1.6 we layed the foundation with adding a lot of missing features to the language. In 1.7 we completed these
 efforts ensuring that all data model elements can be expressed in alphaTex allowing us to read & write all (almost) information without data loss.
 
-**TODO: create sample**
+See [alphaTex Exporter](/docs/guides/exporter#alphatex-exporter-since-170)
+
+In the following demo the song was loaded from a Guitar Pro file, the alphaTex code below was generated via the exporter.
+You can drag&drop (or double click) any custom file on top of this demo to update the file and alphaTex displayed.
+
+<AlphaTexExporterSample />
 
 #### alphaTex: New AST based Parser
 https://github.com/CoderLine/alphaTab/pull/2339
+
 https://github.com/CoderLine/alphaTab/pull/2340
 
-**TODO: teaser image**
+<img src="/img/release/v17/ast.png" />
 
 While this is a fairly technical change, it is the foundation for the other great features added in this release. 
 
@@ -127,7 +205,7 @@ makes it hard to write alphaTex correctly and efficiently.
 
 ##### Language Server
 
-**TODO screenshots/video**
+<img src="/img/release/v17/editor.png" />
 
 Many years ago, Microsoft invented a protocol named "Language Server Protocol" (LSP) which defines a unified way, how (programming/scripting) language authors, can provide
 additional editor features to text and code editors like Visual Studio Code. 
@@ -149,7 +227,7 @@ Learn more in-depth about this feature [here](/docs/alphatex/lsp.mdx)
 
 ##### Monaco Integration
 
-**TODO screenshots/video**
+<img src="/img/release/v17/playground-editor.png" />
 
 [Monaco](https://microsoft.github.io/monaco-editor/) is the code editor used in Visual Studio Code. It provides advanced editor capabilities
 allowing you to integrate an advanced code editor into your web application.
@@ -159,14 +237,14 @@ Unfortunately Monaco itself does not have built-in support for the Language Serv
 To make it easier to use the alphaTex language server together with Monaco in your app we created an own basic LSP integration. With this integration you can 
 spawn a language server as a web worker, and connect it to your Monaco editor providing a rich editing experience with all features like you would expect from a code editor.
 
+We also use this integration now in the alphaTex editor of the development playground.
 
 Learn more in-depth about this feature [here](/docs/alphatex/monaco.mdx)
 
 #### alphaTex: VS Code Extension (prototype)
 https://github.com/CoderLine/alphaTab/pull/2379
 
-**TODO screenshots/video**
-
+<img src="/img/release/v17/vscode.png" />
 
 To develop and test the language server we created a basic Visual Studio Code extension allowing you to write alphaTex right within this IDE. 
 It provides all editor capabilities you'd expect and even a live preview of the music notation you write. 
@@ -176,7 +254,6 @@ alphaTab as end-user feature via a VS Code Extension.
 
 This goal might change in future when alphaTab aims to ship own apps, not "only" an SDK. 
 
-
 ### Guitar Pro Extensions
 
 #### guitarpro: adjust key signature to match "c played as"
@@ -185,8 +262,6 @@ https://github.com/CoderLine/alphaTab/pull/2283
 alphaTab now respects correctly the setting `C played as` configurable for every track in Guitar Pro. 
 This setting serves special transposition needs for instruments. alphaTab now also adjusts the key signature
 of the track according to this setting. 
-
-**TODO: sample**
 
 ### Improvements & Bugfixes
 
@@ -263,11 +338,12 @@ We might still need to fine tune the search results over time.
 #### Dark Mode (experimental)
 
 I personally use dark mode almost everywhere on my devices, but still alphaTab remained a bright white counterpart to that.
-Not only does this attract bugs in a joking fashion, I was actually fighting against mosquitos while developing alphaTab in the evenings. 🤪
+Not only does this attract software bugs, I was against actual mosquitos while developing alphaTab in the evenings. 🦟🤪
 
 At some point I simply activated the dark-mode switcher of Docusaurus again and tweaked a range of styles to make the website available in a dark mode. 
 Some pages and demos still need fine-tuning. 
 
+Test it live on the top right.
 
 #### alphaTex: New generated documentation
 https://github.com/CoderLine/alphaTabWebsite/pull/153
