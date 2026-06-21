@@ -38,22 +38,25 @@ function setAlphaTabColors(settings: alphaTab.Settings, colorMode: ColorMode) {
       
     setAlphaTabColors(settings, colorMode);
 
-    settings.display.resources.copyrightFont.families = ["Noto Sans"];
-    settings.display.resources.titleFont.families = ["Noto Serif"];
-    settings.display.resources.subTitleFont.families = ["Noto Serif"];
-    settings.display.resources.wordsFont.families = ["Noto Serif"];
-    settings.display.resources.effectFont.families = ["Noto Serif"];
-    settings.display.resources.timerFont.families = ["Noto Serif"];
-    settings.display.resources.fretboardNumberFont.families = ["Noto Sans"];
-    settings.display.resources.tablatureFont.families = ["Noto Sans"];
-    settings.display.resources.graceFont.families = ["Noto Sans"];
-    settings.display.resources.barNumberFont.families = ["Noto Sans"];
-    settings.display.resources.fingeringFont.families = ["Noto Serif"];
-    settings.display.resources.inlineFingeringFont.families = ["Noto Serif"];
-    settings.display.resources.markerFont.families = ["Noto Serif"];
-    settings.display.resources.directionsFont.families = ["Noto Serif"];
-    settings.display.resources.numberedNotationFont.families = ["Noto Sans"];
-    settings.display.resources.numberedNotationGraceFont.families = ["Noto Sans"];
+    const sansStack = ["Noto Sans", "Arial", "Helvetica", "sans-serif"];
+    const serifStack = ["Noto Serif", "Georgia", "Times New Roman", "serif"];
+
+    settings.display.resources.copyrightFont.families = sansStack;
+    settings.display.resources.titleFont.families = serifStack;
+    settings.display.resources.subTitleFont.families = serifStack;
+    settings.display.resources.wordsFont.families = serifStack;
+    settings.display.resources.effectFont.families = serifStack;
+    settings.display.resources.timerFont.families = serifStack;
+    settings.display.resources.fretboardNumberFont.families = sansStack;
+    settings.display.resources.tablatureFont.families = sansStack;
+    settings.display.resources.graceFont.families = sansStack;
+    settings.display.resources.barNumberFont.families = sansStack;
+    settings.display.resources.fingeringFont.families = serifStack;
+    settings.display.resources.inlineFingeringFont.families = serifStack;
+    settings.display.resources.markerFont.families = serifStack;
+    settings.display.resources.directionsFont.families = serifStack;
+    settings.display.resources.numberedNotationFont.families = sansStack;
+    settings.display.resources.numberedNotationGraceFont.families = sansStack;
 }
 
 export default {
