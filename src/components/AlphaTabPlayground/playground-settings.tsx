@@ -858,6 +858,15 @@ export const PlaygroundSettings: React.FC<PlaygroundSettingsProps> = ({ api, isO
                     <button
                         type="button"
                         onClick={() => {
+                            api.print()
+                        }}
+                        className="button button--sm button--secondary">
+                        Print
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={() => {
                             api.downloadMidi();
                         }}
                         className="button button--sm button--secondary">
