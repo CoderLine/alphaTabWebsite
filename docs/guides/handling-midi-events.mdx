@@ -156,7 +156,7 @@ From this starting point we will be adding the logic.
 ### Simple counter
 
 First we will add the code to add the counter. For this we will listen to the `SystemExclusive2` event by adding it to the filter and subscribing 
-to the event. Without the filter, the event will not fire. For performance reasons alphaTab signales only events which have been registered, not all events
+to the event. Without the filter, the event will not fire. For performance reasons alphaTab signals only events which have been registered, not all events
 which are played. 
 
 ```js
@@ -240,7 +240,7 @@ Nothing special right? Just hiding and showing some span at some given times.
 
 Now it is up to you to use this feature in any way you can make use of it. You can subscribe to midi events
 and forward them to any further component you prefer. Keep in mind that subscribing to too many events might
-also cause some performance degredation and as there is a bit audio latency involved, there might be some delays.
+also cause some performance degradation and as there is a bit audio latency involved, there might be some delays.
 
 
 ## Final File

@@ -19,7 +19,7 @@ notation elements to be described. This also makes it quite complex to handle as
 Unfortunately MusicXML implies a lot of details on the visual arrangements of elements and expect applications like alphaTab to adhere to their layouting principles.  
 With alphaTab not having a strict print-page display (yet) respecting those arrangement aspects is not possible. 
 
-Additionally MusicXML differenciates between "displayed" music notation and the "sound" of elements which can be potentially inconsistent.
+Additionally MusicXML differentiates between "displayed" music notation and the "sound" of elements which can be potentially inconsistent.
 
 alphaTab does its best to load any semantic information contained in the files (both in visual and sound related elements). 
 Due to this alphaTab might visually indicate some elements which are not visually described in MusicXML. This can be a benefit in some cases. 
@@ -33,10 +33,10 @@ Be sure to check the [MusicXML reference](https://www.w3.org/2021/06/musicxml40/
 
 **How to read the table:**
 
-* The feature table tries to describe the support matching [MusicXML 4.0 element eference](https://www.w3.org/2021/06/musicxml40/musicxml-reference/elements/).
+* The feature table tries to describe the support matching [MusicXML 4.0 element reference](https://www.w3.org/2021/06/musicxml40/musicxml-reference/elements/).
 * Every group is typically a MusicXML Element describing what attributes and sub-elements are supported.
 * Elements are listed with their exact names, attributes are prefixed with `@`. 
-* If individual attribute values are not supported they might be listed in a format like `@attribute=value`. But for keeping this docs at a managable scale not all details might be listed.
+* If individual attribute values are not supported they might be listed in a format like `@attribute=value`. But for keeping this docs at a manageable scale not all details might be listed.
 * The sub-element support indicates whether generally the tag is considered. What parts are supported, are then listed in the dedicated group of the respective tag.
 * Some common attributes are only listed once instead on each element. Some simple elements are listed as part of their parent element, while other element are listed as own feature section.
 * Some attributes we considered not relevant at all are not even listed (e.g. `@id` of `credit`).
@@ -2812,13 +2812,13 @@ import { FileFormatFeatureTable, FileFormatFeatureGroup, FileFormatFeatureRow, F
                         render={[FeatureStatus.NotSupported]}
                         audio={[FeatureStatus.NotSupported]}
                         tex={[FeatureStatus.NotSupported]} />
-        <FileFormatFeatureRow feature="dashes (if preceeded by words LetRing)" 
+        <FileFormatFeatureRow feature="dashes (if preceded by words LetRing)" 
                         model={[FeatureStatus.Supported]}
                         reading={[FeatureStatus.Supported]}
                         render={[FeatureStatus.Supported]}
                         audio={[FeatureStatus.Supported]}
                         tex={[FeatureStatus.Supported]} />
-        <FileFormatFeatureRow feature="dashes (if preceeded by words P.M.)" 
+        <FileFormatFeatureRow feature="dashes (if preceded by words P.M.)" 
                         model={[FeatureStatus.Supported]}
                         reading={[FeatureStatus.Supported]}
                         render={[FeatureStatus.Supported]}
@@ -3430,7 +3430,7 @@ import { FileFormatFeatureTable, FileFormatFeatureGroup, FileFormatFeatureRow, F
                         render={[FeatureStatus.Supported]}
                         audio={[FeatureStatus.Supported]}
                         tex={[FeatureStatus.Supported]} />
-        <FileFormatFeatureRow feature="interchangable" 
+        <FileFormatFeatureRow feature="interchangeable" 
                         model={[FeatureStatus.NotSupported]}
                         reading={[FeatureStatus.NotSupported]}
                         render={[FeatureStatus.NotSupported]}
