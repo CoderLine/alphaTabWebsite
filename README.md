@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> Our website is now part of the main repository as https://github.com/CoderLine/alphaTab
+
 # alphaTab Website and Documentation
 
 ![alphaTab](https://raw.githubusercontent.com/CoderLine/alphaTab/develop/img/banner.png)
